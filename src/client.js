@@ -1,5 +1,4 @@
 import { GraphQLClient } from '@afosto/graphql-client';
-import { isDefined } from '@afosto/utils';
 import {
   addItemToCartMutation,
   createCartMutation,
@@ -7,6 +6,7 @@ import {
   updateItemInCartMutation,
 } from './mutations';
 import { getCartQuery } from './queries';
+import isDefined from './utils/isDefined';
 import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants';
 
 /**
@@ -23,7 +23,6 @@ const Client = options => {
     storageType: DEFAULT_STORAGE_TYPE,
     ...(options || {}),
   };
-  const storageSupported = typeof window !== 'undefined' && typeof Storage !== 'undefined';
   let storedCartToken;
 
   if (!isDefined(config?.storefrontToken)) {
@@ -39,7 +38,7 @@ const Client = options => {
     );
   }
 
-  if (!storageSupported && config.storeCartToken) {
+  if (!(typeof window !== 'undefined' && typeof Storage !== 'undefined') && config.storeCartToken) {
     config.storeCartToken = false;
   }
 

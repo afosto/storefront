@@ -1,6 +1,6 @@
 {
   "name": "@afosto/storefront",
-  "version": "0.2.0",
+  "version": "0.2.3",
   "description": "Afosto storefront client",
   "keywords": [
     "storefront",
@@ -29,8 +29,7 @@
     "build": "cross-env NODE_ENV=production rollup -c"
   },
   "dependencies": {
-    "@afosto/graphql-client": "^2.0.1",
-    "@afosto/utils": "^1.0.2"
+    "@afosto/graphql-client": "^2.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
@@ -38,6 +37,7 @@
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-replace": "^4.0.0",
     "cross-env": "^7.0.3",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
