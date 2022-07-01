@@ -44,7 +44,7 @@ If you would like to use the client with other configuration than the default co
 | storageKeyPrefix | The prefix used for storing storefront information in web storage.                                               | 'afosto.storefront' |
 | storageType | The type of storage you would like to use for storing storefront information 'localStorage' or 'sessionStorage'. | 'localStorage' |
 
-
+<br /><br />
 ## Examples
 
 Before using these examples check the **Get started** section how to initialize the client.

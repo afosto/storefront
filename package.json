@@ -1,6 +1,6 @@
 {
   "name": "@afosto/storefront",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Afosto storefront client",
   "keywords": [
     "storefront",
@@ -15,7 +15,11 @@
   "repository": "git@github.com:afosto/storefront.git",
   "author": "Afosto Saas BV",
   "license": "MIT",
+  "private": false,
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "bugs": {
     "url": "https://github.com/afosto/storefront/issues"
   },
