@@ -1,0 +1,49 @@
+{
+  "name": "@afosto/storefront",
+  "version": "0.1.0",
+  "description": "Afosto storefront client",
+  "keywords": [
+    "storefront",
+    "storefront-client"
+  ],
+  "files": [
+    "dist/*"
+  ],
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "source": "src/index.js",
+  "repository": "git@github.com:afosto/storefront.git",
+  "author": "Afosto Saas BV",
+  "license": "MIT",
+  "sideEffects": false,
+  "bugs": {
+    "url": "https://github.com/afosto/storefront/issues"
+  },
+  "scripts": {
+    "cleanup": "rimraf dist",
+    "prebuild": "rimraf dist",
+    "build": "cross-env NODE_ENV=production rollup -c"
+  },
+  "dependencies": {
+    "@afosto/graphql-client": "^2.0.1",
+    "@afosto/utils": "^1.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "cross-env": "^7.0.3",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.75.7",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
