@@ -1,6 +1,7 @@
 import { GraphQLClient } from '@afosto/graphql-client';
 import {
   addItemToCartMutation,
+  confirmCartMutation,
   createCartMutation,
   removeItemsFromCartMutation,
   updateItemInCartMutation,
@@ -128,6 +129,25 @@ const Client = options => {
     gqlClient.request(query, variables, options);
 
   /**
+   * Confirm the cart and create an order
+   * @returns {object}
+   */
+  const confirmCart = async cartToken => {
+    let currentCartToken = cartToken || storedCartToken;
+
+    if (!currentCartToken) {
+      return Promise.reject(new Error('No cart token provided'));
+    }
+
+    const response = await request(confirmCartMutation, {
+      confirmCartInput: {
+        cartId: currentCartToken,
+      },
+    });
+    return response?.confirmCart?.order || null;
+  };
+
+  /**
    * Create a cart
    * @returns {object}
    */
@@ -235,6 +255,7 @@ const Client = options => {
 
   return {
     addCartItem,
+    confirmCart,
     createCart,
     getCart,
     getCartTokenFromStorage,
