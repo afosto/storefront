@@ -1,10 +1,9 @@
 import { GraphQLClient } from '@afosto/graphql-client';
 import {
-  addItemToCartMutation,
+  addItemsToCartMutation,
   confirmCartMutation,
   createCartMutation,
   removeItemsFromCartMutation,
-  updateItemInCartMutation,
 } from './mutations';
 import { getCartQuery } from './queries';
 import isDefined from './utils/isDefined';
@@ -181,12 +180,12 @@ const Client = options => {
   };
 
   /**
-   * Add an item to the cart
-   * @param {object} item
+   * Add items to the cart
+   * @param {array} items
    * @param {string=} cartToken
    * @returns {object}
    */
-  const addCartItem = async (item, cartToken) => {
+  const addCartItems = async (items, cartToken) => {
     let currentCartToken = cartToken || storedCartToken;
 
     if (!currentCartToken && config.autoCreateCart === true) {
@@ -194,37 +193,13 @@ const Client = options => {
       currentCartToken = createdCart.id;
     }
 
-    const response = await request(addItemToCartMutation, {
-      addItemToCartInput: {
+    const response = await request(addItemsToCartMutation, {
+      addItemsToCartInput: {
         cartId: currentCartToken,
-        item,
+        items,
       },
     });
-    return response?.addItemToCart?.cart || null;
-  };
-
-  /**
-   * Update an item in the cart.
-   * @param {object} item
-   * @param {string=} cartToken
-   * @returns {object}
-   */
-  const updateCartItem = async (item, cartToken = storedCartToken) => {
-    if (!cartToken) {
-      return Promise.reject(new Error('No cart token provided'));
-    }
-
-    const { id, quantity, price, shipment } = item || {};
-    const response = await request(updateItemInCartMutation, {
-      updateItemInCartInput: {
-        cartId: cartToken,
-        id,
-        price,
-        quantity,
-        shipment,
-      },
-    });
-    return response?.updateItemInCart?.cart || null;
+    return response?.addItemsToCart?.cart || null;
   };
 
   /**
@@ -254,7 +229,7 @@ const Client = options => {
   initializeCartTokenFromStorage();
 
   return {
-    addCartItem,
+    addCartItems,
     confirmCart,
     createCart,
     getCart,
@@ -262,7 +237,6 @@ const Client = options => {
     query: request,
     removeCartItems,
     removeCartTokenFromStorage,
-    updateCartItem,
   };
 };
 
