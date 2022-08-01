@@ -3,37 +3,60 @@ import { gql } from '@afosto/graphql-client';
 const CoreCartFragment = gql`
   fragment CoreCartFragment on Cart {
     id
-    total
-    subtotal
-    total_excluding_vat
+    created_at
     currency
     is_including_vat
     is_vat_shifted
-    checkout {
-      url
-    }
+    subtotal
+    total
+    total_excluding_vat
+    updated_at
     adjustments {
       id
       amount
       description
-      is_percentage
       is_discount
+      is_percentage
       outcome {
         amount
       }
     }
+    checkout {
+      url
+    }
+    coupons {
+      code
+    }
     items {
       ids
-      sku
+      brand
+      image
+      gtin
+      label
+      mpn
       quantity
+      sku
       subtotal
       total
-      label
-      image
-    }
-    vat {
-      rate
-      amount
+      adjustments {
+        id
+        amount
+        description
+        is_discount
+        is_percentage
+        outcome {
+          amount
+        }
+      }
+      details {
+        pricing {
+          amount
+        }
+      }
+      vat {
+        amount
+        rate
+      }
     }
     services {
       payment {
@@ -44,6 +67,10 @@ const CoreCartFragment = gql`
         description
         total
       }
+    }
+    vat {
+      amount
+      rate
     }
   }
 `;

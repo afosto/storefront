@@ -60,21 +60,23 @@ const cart = await client.getCart();
 ### Add item to cart
 
 ```js
-// Add an item to the existing cart. 
+// Add one or multiple items to the existing cart. 
 // If the autoCreateCart option is true, it will create a new cart when a cart doesn't exist yet.
 
-const cart = await client.addCartItem({
-  sku: 'sku-123',
-  quantity: 1,
-});
+const cart = await client.addCartItems([
+  {
+    sku: 'sku-123',
+    quantity: 1,
+  },
+]);
 ```
 
 ### Remove items from the cart
 
 ```js
-// Remove items from the cart by id. 
+// Remove items from the cart by item ids. 
 
-const cart = await client.removeCartItems(['id_1', 'id_2']);
+const cart = await client.removeCartItems(['item_id_1', 'item_id_2']);
 ```
 
 ### Create cart manually
@@ -99,6 +101,9 @@ const query = gql`
       subtotal
       total
       items {
+        ids
+        image
+        label
         sku
       }
     }
