@@ -57,7 +57,7 @@ Before using these examples check the **Get started** section how to initialize 
 const cart = await client.getCart();
 ```
 
-### Add item to cart
+### Add items to cart
 
 ```js
 // Add one or multiple items to the existing cart. 
