@@ -82,6 +82,8 @@ const Client = options => {
 
       const storage = storageType === 'sessionStorage' ? sessionStorage : localStorage;
       storage.removeItem(`${storageKeyPrefix}.cartToken`);
+
+      storedCartToken = null;
     } catch (error) {}
   };
 
@@ -117,6 +119,23 @@ const Client = options => {
   };
 
   /**
+   * Check for cart mutations whether the stored cart token is still valid.
+   * @private
+   * @param {object} error
+   * @param {function} callback
+   * @returns {Promise}
+   */
+  const checkStoredCartTokenStillValid = async (error, callback) => {
+    const { errors } = error?.response || {};
+    const cartNotFound = (errors || []).some(error => error.extensions?.status === 404);
+
+    if (cartNotFound) {
+      removeCartTokenFromStorage();
+      return callback();
+    }
+  };
+
+  /**
    * Send a graphQL request.
    *
    * @param {string} query Query/mutation
@@ -132,18 +151,26 @@ const Client = options => {
    * @returns {object}
    */
   const confirmCart = async cartToken => {
-    let currentCartToken = cartToken || storedCartToken;
+    try {
+      const currentCartToken = cartToken || storedCartToken;
 
-    if (!currentCartToken) {
-      return Promise.reject(new Error('No cart token provided'));
+      if (!currentCartToken) {
+        return Promise.reject(new Error('No cart token provided'));
+      }
+
+      const response = await request(confirmCartMutation, {
+        confirmCartInput: {
+          cartId: currentCartToken,
+        },
+      });
+      return response?.confirmCart?.order || null;
+    } catch (error) {
+      if (config.autoCreateCart && storedCartToken && !cartToken) {
+        return checkStoredCartTokenStillValid(error, async () => Promise.reject(error));
+      }
+
+      return Promise.reject(error);
     }
-
-    const response = await request(confirmCartMutation, {
-      confirmCartInput: {
-        cartId: currentCartToken,
-      },
-    });
-    return response?.confirmCart?.order || null;
   };
 
   /**
@@ -168,15 +195,25 @@ const Client = options => {
    * @param {string=} cartToken
    * @returns {Object}
    */
-  const getCart = async (cartToken = storedCartToken) => {
-    if (!cartToken) {
-      return null;
-    }
+  const getCart = async cartToken => {
+    try {
+      const currentCartToken = cartToken || storedCartToken;
 
-    const response = await request(getCartQuery, {
-      id: cartToken,
-    });
-    return response?.cart || null;
+      if (!currentCartToken) {
+        return null;
+      }
+
+      const response = await request(getCartQuery, {
+        id: currentCartToken,
+      });
+      return response?.cart || null;
+    } catch (error) {
+      if (config.autoCreateCart && storedCartToken && !cartToken) {
+        return checkStoredCartTokenStillValid(error, async () => null);
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   /**
@@ -186,20 +223,28 @@ const Client = options => {
    * @returns {object}
    */
   const addCartItems = async (items, cartToken) => {
-    let currentCartToken = cartToken || storedCartToken;
+    try {
+      let currentCartToken = cartToken || storedCartToken;
 
-    if (!currentCartToken && config.autoCreateCart === true) {
-      const createdCart = await createCart();
-      currentCartToken = createdCart.id;
+      if (!currentCartToken && config.autoCreateCart === true) {
+        const createdCart = await createCart();
+        currentCartToken = createdCart.id;
+      }
+
+      const response = await request(addItemsToCartMutation, {
+        addItemsToCartInput: {
+          cartId: currentCartToken,
+          items,
+        },
+      });
+      return response?.addItemsToCart?.cart || null;
+    } catch (error) {
+      if (config.autoCreateCart && storedCartToken && !cartToken) {
+        return checkStoredCartTokenStillValid(error, async () => addCartItems(items));
+      }
+
+      return Promise.reject(error);
     }
-
-    const response = await request(addItemsToCartMutation, {
-      addItemsToCartInput: {
-        cartId: currentCartToken,
-        items,
-      },
-    });
-    return response?.addItemsToCart?.cart || null;
   };
 
   /**
@@ -208,22 +253,32 @@ const Client = options => {
    * @param {string=} cartToken
    * @returns {object}
    */
-  const removeCartItems = async (ids, cartToken = storedCartToken) => {
-    if (!cartToken) {
-      return Promise.reject(new Error('No cart token provided'));
-    }
+  const removeCartItems = async (ids, cartToken) => {
+    try {
+      const currentCartToken = cartToken || storedCartToken;
 
-    if (!isDefined(ids) || ids.length === 0) {
-      return Promise.reject(new Error('Provide at least one cart item id'));
-    }
+      if (!currentCartToken) {
+        return Promise.reject(new Error('No cart token provided'));
+      }
 
-    const response = await request(removeItemsFromCartMutation, {
-      removeItemsFromCartInput: {
-        cartId: cartToken,
-        ids,
-      },
-    });
-    return response?.removeItemsFromCart?.cart || null;
+      if (!isDefined(ids) || ids.length === 0) {
+        return Promise.reject(new Error('Provide at least one cart item id'));
+      }
+
+      const response = await request(removeItemsFromCartMutation, {
+        removeItemsFromCartInput: {
+          cartId: currentCartToken,
+          ids,
+        },
+      });
+      return response?.removeItemsFromCart?.cart || null;
+    } catch (error) {
+      if (config.autoCreateCart && storedCartToken && !cartToken) {
+        return checkStoredCartTokenStillValid(error, async () => Promise.reject(error));
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   initializeCartTokenFromStorage();
