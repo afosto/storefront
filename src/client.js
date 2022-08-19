@@ -23,6 +23,7 @@ const Client = options => {
     storageType: DEFAULT_STORAGE_TYPE,
     ...(options || {}),
   };
+  let sessionID = null;
   let storedCartToken;
 
   if (!isDefined(config?.storefrontToken)) {
@@ -136,6 +137,20 @@ const Client = options => {
   };
 
   /**
+   * Return the session ID used for the storefront.
+   * @returns {string|null}
+   */
+  const getSessionID = () => sessionID;
+
+  /**
+   * Set the session ID used for the storefront.
+   * @param {String|null} id
+   */
+  const setSessionID = id => {
+    sessionID = isDefined(id) ? id : null;
+  };
+
+  /**
    * Send a graphQL request.
    *
    * @param {string} query Query/mutation
@@ -179,7 +194,9 @@ const Client = options => {
    */
   const createCart = async () => {
     const response = await request(createCartMutation, {
-      cartInput: {},
+      cartInput: {
+        sessionId: sessionID,
+      },
     });
     const createdCart = response?.createCart?.cart || null;
 
@@ -289,6 +306,8 @@ const Client = options => {
     createCart,
     getCart,
     getCartTokenFromStorage,
+    getSessionID,
+    setSessionID,
     query: request,
     removeCartItems,
     removeCartTokenFromStorage,
