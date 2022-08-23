@@ -31,6 +31,7 @@ const CoreCartFragment = gql`
       ids
       brand
       image
+      url
       gtin
       label
       mpn
