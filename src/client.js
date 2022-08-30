@@ -311,6 +311,7 @@ const Client = options => {
     query: request,
     removeCartItems,
     removeCartTokenFromStorage,
+    storeCartTokenInStorage,
   };
 };
 
