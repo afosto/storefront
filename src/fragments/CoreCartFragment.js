@@ -39,6 +39,10 @@ const CoreCartFragment = gql`
       sku
       subtotal
       total
+      filters {
+          key
+          values
+      }
       adjustments {
         id
         amount
