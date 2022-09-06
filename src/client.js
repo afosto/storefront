@@ -137,13 +137,13 @@ const Client = options => {
   };
 
   /**
-   * Return the session ID used for the storefront.
+   * Return the session ID used for server side tracking in the storefront.
    * @returns {string|null}
    */
   const getSessionID = () => sessionID;
 
   /**
-   * Set the session ID used for the storefront.
+   * Set the session ID used for server side tracking in the storefront.
    * @param {String|null} id
    */
   const setSessionID = id => {
@@ -210,9 +210,10 @@ const Client = options => {
   /**
    * Get a cart by cart token
    * @param {string=} cartToken
+   * @param {(null|'BEGIN_CHECKOUT'|'VIEW_CART')=} intent Intent for server side tracking
    * @returns {Object}
    */
-  const getCart = async cartToken => {
+  const getCart = async (cartToken, intent) => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -222,6 +223,7 @@ const Client = options => {
 
       const response = await request(getCartQuery, {
         id: currentCartToken,
+        intent,
       });
       return response?.cart || null;
     } catch (error) {

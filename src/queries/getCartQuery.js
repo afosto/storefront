@@ -3,12 +3,11 @@ import { CoreCartFragment } from '../fragments';
 
 const getCartQuery = gql`
   ${CoreCartFragment}
-  query GetCart($id: String!) {
-    cart(id: $id) {
+  query GetCart($id: String!, $intent: TrackingEvent) {
+    cart(id: $id, intent: $intent) {
       ...CoreCartFragment
     }
   }
 `;
 
 export default getCartQuery;
-
