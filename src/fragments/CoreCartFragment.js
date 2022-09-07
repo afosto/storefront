@@ -50,6 +50,10 @@ const CoreCartFragment = gql`
         }
       }
       details {
+        filters {
+          key
+          values
+        }
         pricing {
           amount
         }
