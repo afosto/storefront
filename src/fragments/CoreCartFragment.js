@@ -39,10 +39,6 @@ const CoreCartFragment = gql`
       sku
       subtotal
       total
-      filters {
-          key
-          values
-      }
       adjustments {
         id
         amount
@@ -54,6 +50,10 @@ const CoreCartFragment = gql`
         }
       }
       details {
+        filters {
+          key
+          values
+        }
         pricing {
           amount
         }
