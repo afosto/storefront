@@ -128,7 +128,9 @@ const Client = options => {
    */
   const checkStoredCartTokenStillValid = async (error, callback) => {
     const { errors } = error?.response || {};
-    const cartNotFound = (errors || []).some(error => error.extensions?.status === 404);
+    const cartNotFound = (errors || []).some(
+      responseError => responseError.extensions?.status === 404,
+    );
 
     if (cartNotFound) {
       removeCartTokenFromStorage();
