@@ -18,6 +18,7 @@ import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants';
 const Client = options => {
   const config = {
     autoCreateCart: true,
+    graphQLClientOptions: {},
     storeCartToken: true,
     storageKeyPrefix: DEFAULT_STORAGE_KEY_PREFIX,
     storageType: DEFAULT_STORAGE_TYPE,
@@ -43,7 +44,7 @@ const Client = options => {
     config.storeCartToken = false;
   }
 
-  const gqlClient = new GraphQLClient();
+  const gqlClient = new GraphQLClient(config.graphQLClientOptions);
   gqlClient.setAuthorizationHeader(config.storefrontToken);
 
   /**

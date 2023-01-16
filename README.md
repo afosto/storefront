@@ -36,13 +36,14 @@ const client = StorefrontClient({
 
 If you would like to use the client with other configuration than the default configuration.
 
-| Option                         | Description                                                                                                      | Default                    |
-|--------------------------------|------------------------------------------------------------------------------------------------------------------|----------------------------|
-| storefrontToken (**required**) | This is the token being used for authentication with the Afosto GraphQL storefront.                              |  |
-| autoCreateCart                 | Whether to automatically create a cart when adding an item if there is no cart.                                  | true                       |                      
-| storeCartToken    | Whether to store the cart token in web storage.                                                                  | true |                      |
-| storageKeyPrefix | The prefix used for storing storefront information in web storage.                                               | 'afosto.storefront' |
-| storageType | The type of storage you would like to use for storing storefront information 'localStorage' or 'sessionStorage'. | 'localStorage' |
+| Option                         | Description                                                                                                                                                                                                                         | Default             |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| storefrontToken (**required**) | This is the token being used for authentication with the Afosto GraphQL storefront.                                                                                                                                                 |                     |
+| autoCreateCart | Whether to automatically create a cart when adding an item if there is no cart.                                                                                                                                                     | true                |                      
+| graphQLClientOptions | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>. | {}                  |                      
+| storeCartToken | Whether to store the cart token in web storage.                                                                                                                                                                                     | true                |                      |
+| storageKeyPrefix | The prefix used for storing storefront information in web storage.                                                                                                                                                                  | 'afosto.storefront' |
+| storageType | The type of storage you would like to use for storing storefront information 'localStorage' or 'sessionStorage'.                                                                                                                    | 'localStorage'      |
 
 <br /><br />
 ## Examples
