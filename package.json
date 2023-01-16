@@ -29,7 +29,7 @@
     "build": "cross-env NODE_ENV=production rollup -c"
   },
   "dependencies": {
-    "@afosto/graphql-client": "^2.0.1"
+    "@afosto/graphql-client": "^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
