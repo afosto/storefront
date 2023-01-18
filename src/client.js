@@ -194,12 +194,14 @@ const Client = options => {
 
   /**
    * Create a cart
+   * @param {object=} input
    * @returns {object}
    */
-  const createCart = async () => {
+  const createCart = async (input = {}) => {
     const response = await request(createCartMutation, {
       cartInput: {
         sessionId: sessionID,
+        ...input,
       },
     });
     const createdCart = response?.createCart?.cart || null;
