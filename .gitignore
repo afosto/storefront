@@ -7,8 +7,15 @@
 # production
 /dist
 
+# GQL
+.graphqlconfig
+afosto-schema.graphql
+
 # misc
 .DS_Store
+.env
+.env.local
+.env.production
 .idea
 .npmrc
 
