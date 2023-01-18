@@ -4,8 +4,9 @@ import {
   confirmCartMutation,
   createCartMutation,
   removeItemsFromCartMutation,
+  setCountryCodeOnCartMutation,
 } from './mutations';
-import { getCartQuery } from './queries';
+import { getCartQuery, getOrderQuery } from './queries';
 import isDefined from './utils/isDefined';
 import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants';
 
@@ -303,6 +304,53 @@ const Client = options => {
     }
   };
 
+  /**
+   * Set the country code of the customer on a cart
+   * @param {string} countryCode
+   * @param {string=} cartToken
+   * @returns {object}
+   */
+  const setCountryCodeOnCart = async (countryCode, cartToken) => {
+    try {
+      let currentCartToken = cartToken || storedCartToken;
+
+      if (!currentCartToken && config.autoCreateCart === true) {
+        const createdCart = await createCart();
+        currentCartToken = createdCart.id;
+      }
+
+      if (!isDefined(countryCode)) {
+        return Promise.reject(new Error('Provide a country code'));
+      }
+
+      const response = await request(setCountryCodeOnCartMutation, {
+        setCountryCodeOnCartInput: {
+          cartId: currentCartToken,
+          countryCode,
+        },
+      });
+      return response?.setCountryCodeOnCart?.cart || null;
+    } catch (error) {
+      if (config.autoCreateCart && storedCartToken && !cartToken) {
+        return checkStoredCartTokenStillValid(error, async () => Promise.reject(error));
+      }
+
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Get an order by id
+   * @param {string} id
+   * @returns {Object}
+   */
+  const getOrder = async id => {
+    const response = await request(getOrderQuery, {
+      id,
+    });
+    return response?.order || null;
+  };
+
   initializeCartTokenFromStorage();
 
   return {
@@ -311,11 +359,13 @@ const Client = options => {
     createCart,
     getCart,
     getCartTokenFromStorage,
+    getOrder,
     getSessionID,
-    setSessionID,
     query: request,
     removeCartItems,
     removeCartTokenFromStorage,
+    setCountryCodeOnCart,
+    setSessionID,
     storeCartTokenInStorage,
   };
 };

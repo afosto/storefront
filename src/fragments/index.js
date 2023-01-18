@@ -1,1 +1,12 @@
+export { default as CoreAddressFragment } from './CoreAddressFragment';
+export { default as CoreAdjustmentFragment } from './CoreAdjustmentFragment';
 export { default as CoreCartFragment } from './CoreCartFragment';
+export { default as CoreFeeFragment } from './CoreFeeFragment';
+export { default as CoreItemFilterFragment } from './CoreItemFilterFragment';
+export { default as CoreOrderFragment } from './CoreOrderFragment';
+export { default as CorePaymentIssuerFragment } from './CorePaymentIssuerFragment';
+export { default as CorePaymentMethodSummaryFragment } from './CorePaymentMethodSummaryFragment';
+export { default as CorePhoneNumberFragment } from './CorePhoneNumberFragment';
+export { default as CoreRegistrationFragment } from './CoreRegistrationFragment';
+export { default as CoreShippingMethodSummaryFragment } from './CoreShippingMethodSummaryFragment';
+export { default as CoreVatAmountFragment } from './CoreVatAmountFragment';
