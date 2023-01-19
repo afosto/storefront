@@ -1,6 +1,12 @@
 import { gql } from '@afosto/graphql-client';
+import CoreAdjustmentFragment from './CoreAdjustmentFragment';
+import CoreFeeFragment from './CoreFeeFragment';
+import CoreVatAmountFragment from './CoreVatAmountFragment';
 
 const CoreCartFragment = gql`
+  ${CoreAdjustmentFragment}
+  ${CoreFeeFragment}
+  ${CoreVatAmountFragment}
   fragment CoreCartFragment on Cart {
     id
     created_at
@@ -12,20 +18,16 @@ const CoreCartFragment = gql`
     total_excluding_vat
     updated_at
     adjustments {
-      id
-      amount
-      description
-      is_discount
-      is_percentage
-      outcome {
-        amount
-      }
+      ...CoreAdjustmentFragment
     }
     checkout {
       url
     }
     coupons {
       code
+    }
+    customer {
+      country_code
     }
     items {
       ids
@@ -40,16 +42,12 @@ const CoreCartFragment = gql`
       subtotal
       total
       adjustments {
-        id
-        amount
-        description
-        is_discount
-        is_percentage
-        outcome {
-          amount
-        }
+        ...CoreAdjustmentFragment
       }
       details {
+        ids
+        meta_data
+        parent_id
         filters {
           key
           values
@@ -59,23 +57,24 @@ const CoreCartFragment = gql`
         }
       }
       vat {
-        amount
-        rate
+        ...CoreVatAmountFragment
       }
     }
     services {
       payment {
-        description
-        total
+        ...CoreFeeFragment
       }
       shipping {
-        description
-        total
+        ...CoreFeeFragment
+      }
+    }
+    shipping {
+      address {
+        country_code
       }
     }
     vat {
-      amount
-      rate
+      ...CoreVatAmountFragment
     }
   }
 `;
