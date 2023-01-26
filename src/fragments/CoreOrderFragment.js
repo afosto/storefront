@@ -34,6 +34,7 @@ const CoreOrderFragment = gql`
     total_excluding_vat
     updated_at
     customer {
+      notes
       contact {
         id
         number
