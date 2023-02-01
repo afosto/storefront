@@ -2,14 +2,14 @@
 # yarn lockfile v1
 
 
-"@afosto/graphql-client@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.npmjs.org/@afosto/graphql-client/-/graphql-client-2.0.3.tgz#d3ccceb4dc14ad9aee6320f71dcabd65fd581de1"
-  integrity sha512-2ZfePCrhb3ho8KQjJhmZ6snW1jZekTH7Oe3o/dOypGOtdaJyxqwm/TUwgwi4LDsamq/Y+f2cvGc8vv2yKS0wEg==
+"@afosto/graphql-client@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.npmjs.org/@afosto/graphql-client/-/graphql-client-2.1.4.tgz#42289d99122d120c4a006df170a2207843af6d68"
+  integrity sha512-er+UYdVc8uj67mjxDqCWppETqfYg0Eux2YmwN4P29zWr9CZRbW9w713vnE4iLr9JYZSwdBOy1uUIVi9HMczjvQ==
   dependencies:
     camelcase-keys "^7.0.1"
-    graphql "^16.6.0"
-    graphql-request "^5.0.0"
+    graphql "16.3.0"
+    graphql-request "^3.7.0"
     snakecase-keys "^5.4.2"
 
 "@ampproject/remapping@^2.1.0":
@@ -908,11 +908,6 @@
     "@babel/helper-validator-identifier" "^7.18.6"
     to-fast-properties "^2.0.0"
 
-"@graphql-typed-document-node/core@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.npmjs.org/@graphql-typed-document-node/core/-/core-3.1.1.tgz#076d78ce99822258cf813ecc1e7fa460fa74d052"
-  integrity sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==
-
 "@jridgewell/gen-mapping@^0.1.0":
   version "0.1.1"
   resolved "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.1.1.tgz#e5d2e450306a9491e3bd77e323e38d7aff315996"
@@ -1207,7 +1202,7 @@ cross-env@^7.0.3:
   dependencies:
     cross-spawn "^7.0.1"
 
-cross-fetch@^3.1.5:
+cross-fetch@^3.0.6:
   version "3.1.5"
   resolved "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
   integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
@@ -1346,20 +1341,19 @@ globals@^11.1.0:
   resolved "https://registry.npmjs.org/globals/-/globals-11.12.0.tgz#ab8795338868a0babd8525758018c2a7eb95c42e"
   integrity sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==
 
-graphql-request@^5.0.0:
-  version "5.1.0"
-  resolved "https://registry.npmjs.org/graphql-request/-/graphql-request-5.1.0.tgz#dbc8feee27d21b993cd5da2d3af67821827b240a"
-  integrity sha512-0OeRVYigVwIiXhNmqnPDt+JhMzsjinxHE7TVy3Lm6jUzav0guVcL0lfSbi6jVTRAxcbwgyr6yrZioSHxf9gHzw==
+graphql-request@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.npmjs.org/graphql-request/-/graphql-request-3.7.0.tgz#c7406e537084f8b9788541e3e6704340ca13055b"
+  integrity sha512-dw5PxHCgBneN2DDNqpWu8QkbbJ07oOziy8z+bK/TAXufsOLaETuVO4GkXrbs0WjhdKhBMN3BkpN/RIvUHkmNUQ==
   dependencies:
-    "@graphql-typed-document-node/core" "^3.1.1"
-    cross-fetch "^3.1.5"
+    cross-fetch "^3.0.6"
     extract-files "^9.0.0"
     form-data "^3.0.0"
 
-graphql@^16.6.0:
-  version "16.6.0"
-  resolved "https://registry.npmjs.org/graphql/-/graphql-16.6.0.tgz#c2dcffa4649db149f6282af726c8c83f1c7c5fdb"
-  integrity sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==
+graphql@16.3.0:
+  version "16.3.0"
+  resolved "https://registry.npmjs.org/graphql/-/graphql-16.3.0.tgz#a91e24d10babf9e60c706919bb182b53ccdffc05"
+  integrity sha512-xm+ANmA16BzCT5pLjuXySbQVFwH3oJctUVdy81w1sV0vBU0KgDdBGtxQOUd5zqOBk/JayAFeG8Dlmeq74rjm/A==
 
 has-flag@^3.0.0:
   version "3.0.0"
