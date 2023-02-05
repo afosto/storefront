@@ -1,0 +1,31 @@
+{
+  "files": ["src/index.ts"],
+  "include": ["src/**/*.ts"],
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "es2015",
+    "module": "es2015",
+    "declaration": true,
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "noEmit": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
+}

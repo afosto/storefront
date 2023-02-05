@@ -1803,6 +1803,11 @@ type-fest@^2.5.2:
   resolved "https://registry.npmjs.org/type-fest/-/type-fest-2.15.1.tgz#ad596982d50c157f7e981307c21c3983970e4e77"
   integrity sha512-LYSjcIz3NmoQksXq/3/B7Nfad+T8mkaI628agAAnHCpXPTBRMK2ygt3eABpzII8CbZZM8dLdVQ4Gr8ousjFjMw==
 
+typescript@^4.9.5:
+  version "4.9.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
+  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
+
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-2.0.0.tgz#301acdc525631670d39f6146e0e77ff6bbdebddc"

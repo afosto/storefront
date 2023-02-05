@@ -9,7 +9,9 @@
   "files": [
     "dist/*"
   ],
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "module": "dist/index.esm.js",
   "source": "src/index.js",
   "repository": "git@github.com:afosto/storefront.git",
@@ -26,7 +28,9 @@
   "scripts": {
     "cleanup": "rimraf dist",
     "prebuild": "rimraf dist",
-    "build": "cross-env NODE_ENV=production rollup -c"
+    "build": "cross-env NODE_ENV=production rollup -c",
+    "build-ts": "tsc",
+    "test": "jest"
   },
   "dependencies": {
     "@afosto/graphql-client": "^2.1.4"
@@ -42,7 +46,8 @@
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.75.7",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.9.5"
   },
   "browserslist": [
     ">0.2%",
