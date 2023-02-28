@@ -1,7 +1,7 @@
 import { gql } from '@afosto/graphql-client';
-import CoreAdjustmentFragment from './CoreAdjustmentFragment';
-import CoreFeeFragment from './CoreFeeFragment';
-import CoreVatAmountFragment from './CoreVatAmountFragment';
+import CoreAdjustmentFragment from './CoreAdjustmentFragment.js';
+import CoreFeeFragment from './CoreFeeFragment.js';
+import CoreVatAmountFragment from './CoreVatAmountFragment.js';
 
 const CoreCartFragment = gql`
   ${CoreAdjustmentFragment}

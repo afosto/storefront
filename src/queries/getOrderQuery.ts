@@ -1,5 +1,5 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreOrderFragment } from '../fragments';
+import { CoreOrderFragment } from '../fragments/index.js';
 
 const getOrderQuery = gql`
   ${CoreOrderFragment}

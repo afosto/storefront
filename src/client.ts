@@ -5,10 +5,23 @@ import {
   createCartMutation,
   removeItemsFromCartMutation,
   setCountryCodeOnCartMutation,
-} from './mutations';
-import { getCartQuery, getOrderQuery } from './queries';
-import isDefined from './utils/isDefined';
-import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants';
+} from './mutations/index.js';
+import { getCartQuery, getOrderQuery } from './queries/index.js';
+import isDefined from './utils/isDefined.js';
+import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants.js';
+import {
+  CartIntent,
+  CartItemIds,
+  CartItemsInput,
+  CartResponse,
+  CartToken,
+  CreateCartInput,
+  GraphQLClientError,
+  OptionalString,
+  OrderResponse,
+  StorefrontClient,
+  StorefrontClientOptions,
+} from './types.js';
 
 /**
  * Afosto storefront client
@@ -16,7 +29,7 @@ import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants';
  * @returns {object}
  * @constructor
  */
-const Client = options => {
+const Client = (options: StorefrontClientOptions): StorefrontClient => {
   const config = {
     autoCreateCart: true,
     graphQLClientOptions: {},
@@ -25,15 +38,15 @@ const Client = options => {
     storageType: DEFAULT_STORAGE_TYPE,
     ...(options || {}),
   };
-  let sessionID = null;
-  let storedCartToken;
+  let sessionID: OptionalString = null;
+  let storedCartToken: OptionalString = null;
 
   if (!isDefined(config?.storefrontToken)) {
     throw new Error('The Afosto storefront client requires a storefront token.');
   }
 
   if (
-    config.storeCartToken === true &&
+    config.storeCartToken &&
     !['localStorage', 'sessionStorage'].includes(config.storageType)
   ) {
     throw new Error(
@@ -51,7 +64,7 @@ const Client = options => {
   /**
    * Get cart token from storage if storage enabled in the configuration
    */
-  const getCartTokenFromStorage = () => {
+  const getCartTokenFromStorage = (): OptionalString => {
     try {
       const {
         storeCartToken,
@@ -65,13 +78,15 @@ const Client = options => {
 
       const storage = storageType === 'sessionStorage' ? sessionStorage : localStorage;
       return storage.getItem(`${storageKeyPrefix}.cartToken`);
-    } catch (error) {}
+    } catch (error) {
+      return null;
+    }
   };
 
   /**
    * Remove cart token from storage if storage enabled in the configuration
    */
-  const removeCartTokenFromStorage = () => {
+  const removeCartTokenFromStorage = (): void => {
     try {
       const {
         storeCartToken,
@@ -94,7 +109,7 @@ const Client = options => {
    * Store the cart token in storage if storage enabled in the configuration.
    * @param {string} token The cart token
    */
-  const storeCartTokenInStorage = token => {
+  const storeCartTokenInStorage = (token: string): void => {
     try {
       const {
         storeCartToken,
@@ -115,10 +130,8 @@ const Client = options => {
   /**
    * Initialize cart token from storage.
    */
-  const initializeCartTokenFromStorage = () => {
-    try {
-      storedCartToken = getCartTokenFromStorage();
-    } catch (error) {}
+  const initializeCartTokenFromStorage = (): void => {
+    storedCartToken = getCartTokenFromStorage();
   };
 
   /**
@@ -128,7 +141,7 @@ const Client = options => {
    * @param {function} callback
    * @returns {Promise}
    */
-  const checkStoredCartTokenStillValid = async (error, callback) => {
+  const checkStoredCartTokenStillValid = async (error: GraphQLClientError, callback: Function): Promise<any> => {
     const { errors } = error?.response || {};
     const cartNotFound = (errors || []).some(
       responseError => responseError.extensions?.status === 404,
@@ -144,13 +157,13 @@ const Client = options => {
    * Return the session ID used for server side tracking in the storefront.
    * @returns {string|null}
    */
-  const getSessionID = () => sessionID;
+  const getSessionID = (): OptionalString => sessionID;
 
   /**
    * Set the session ID used for server side tracking in the storefront.
    * @param {String|null} id
    */
-  const setSessionID = id => {
+  const setSessionID = (id: OptionalString): void => {
     sessionID = isDefined(id) ? id : null;
   };
 
@@ -162,14 +175,14 @@ const Client = options => {
    * @param {object} options Request options
    * @returns {object}
    */
-  const request = async (query, variables = {}, options = {}) =>
+  const request = async (query: string, variables: object = {}, options: object = {}): Promise<any> =>
     gqlClient.request(query, variables, options);
 
   /**
    * Confirm the cart and create an order
    * @returns {object}
    */
-  const confirmCart = async cartToken => {
+  const confirmCart = async (cartToken?: CartToken): CartResponse => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -183,9 +196,9 @@ const Client = options => {
         },
       });
       return response?.confirmCart?.order || null;
-    } catch (error) {
+    } catch (error: unknown) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error, async () => Promise.reject(error));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
       }
 
       return Promise.reject(error);
@@ -197,7 +210,7 @@ const Client = options => {
    * @param {object=} input
    * @returns {object}
    */
-  const createCart = async (input = {}) => {
+  const createCart = async (input: CreateCartInput = {}): CartResponse => {
     const response = await request(createCartMutation, {
       cartInput: {
         sessionId: sessionID,
@@ -219,7 +232,7 @@ const Client = options => {
    * @param {(null|'BEGIN_CHECKOUT'|'VIEW_CART')=} intent Intent for server side tracking
    * @returns {Object}
    */
-  const getCart = async (cartToken, intent) => {
+  const getCart = async (cartToken?: CartToken, intent?: CartIntent): CartResponse => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -234,7 +247,7 @@ const Client = options => {
       return response?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error, async () => null);
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => null);
       }
 
       return Promise.reject(error);
@@ -247,13 +260,16 @@ const Client = options => {
    * @param {string=} cartToken
    * @returns {object}
    */
-  const addCartItems = async (items, cartToken) => {
+  const addCartItems = async (items: CartItemsInput, cartToken?: CartToken): CartResponse => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
-      if (!currentCartToken && config.autoCreateCart === true) {
+      if (!currentCartToken && config.autoCreateCart) {
         const createdCart = await createCart();
-        currentCartToken = createdCart.id;
+
+        if (createdCart) {
+          currentCartToken = createdCart.id;
+        }
       }
 
       const response = await request(addItemsToCartMutation, {
@@ -265,7 +281,7 @@ const Client = options => {
       return response?.addItemsToCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error, async () => addCartItems(items));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => addCartItems(items));
       }
 
       return Promise.reject(error);
@@ -278,7 +294,7 @@ const Client = options => {
    * @param {string=} cartToken
    * @returns {object}
    */
-  const removeCartItems = async (ids, cartToken) => {
+  const removeCartItems = async (ids: CartItemIds, cartToken?: CartToken): CartResponse => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -299,7 +315,7 @@ const Client = options => {
       return response?.removeItemsFromCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error, async () => Promise.reject(error));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
       }
 
       return Promise.reject(error);
@@ -312,13 +328,16 @@ const Client = options => {
    * @param {string=} cartToken
    * @returns {object}
    */
-  const setCountryCodeOnCart = async (countryCode, cartToken) => {
+  const setCountryCodeOnCart = async (countryCode: string, cartToken?: CartToken): CartResponse => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
-      if (!currentCartToken && config.autoCreateCart === true) {
+      if (!currentCartToken && config.autoCreateCart) {
         const createdCart = await createCart();
-        currentCartToken = createdCart.id;
+
+        if (createdCart) {
+          currentCartToken = createdCart.id;
+        }
       }
 
       if (!isDefined(countryCode)) {
@@ -334,7 +353,7 @@ const Client = options => {
       return response?.setCountryCodeOnCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error, async () => Promise.reject(error));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
       }
 
       return Promise.reject(error);
@@ -346,7 +365,7 @@ const Client = options => {
    * @param {string} id
    * @returns {Object}
    */
-  const getOrder = async id => {
+  const getOrder = async (id: string): OrderResponse => {
     const response = await request(getOrderQuery, {
       id,
     });
