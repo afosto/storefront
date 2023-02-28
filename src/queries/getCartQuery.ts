@@ -1,5 +1,5 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreCartFragment } from '../fragments';
+import { CoreCartFragment } from '../fragments/index.js';
 
 const getCartQuery = gql`
   ${CoreCartFragment}

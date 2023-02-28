@@ -5,10 +5,10 @@ import {
   createCartMutation,
   removeItemsFromCartMutation,
   setCountryCodeOnCartMutation,
-} from './mutations';
-import { getCartQuery, getOrderQuery } from './queries';
-import isDefined from './utils/isDefined';
-import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants';
+} from './mutations/index.js';
+import { getCartQuery, getOrderQuery } from './queries/index.js';
+import isDefined from './utils/isDefined.js';
+import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants.js';
 import {
   CartIntent,
   CartItemIds,
@@ -21,7 +21,7 @@ import {
   OrderResponse,
   StorefrontClient,
   StorefrontClientOptions,
-} from './types';
+} from './types.js';
 
 /**
  * Afosto storefront client

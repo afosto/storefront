@@ -14,6 +14,8 @@
 
 ## Installation
 
+### Yarn / NPM
+
 ```sh
 # Install with Yarn
 yarn add @afosto/storefront
@@ -22,7 +24,18 @@ yarn add @afosto/storefront
 npm install @afosto/storefront
 ```
 
+### Browser
+
+This library supports the **last two** versions of major browsers (Chrome, Edge, Firefox, Safari).
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@afosto/storefront@latest/dist/umd/afosto-storefront.min.js"></script>
+```
+
+
 ## Get started
+
+### ES6
 
 ```js
 import StorefrontClient from '@afosto/storefront';
@@ -30,6 +43,29 @@ import StorefrontClient from '@afosto/storefront';
 const client = StorefrontClient({
   storefrontToken: 'STOREFRONT_TOKEN',
 });
+```
+
+### CJS
+
+```js
+const StorefrontClient = require('@afosto/storefront');
+
+const client = StorefrontClient({
+  storefrontToken: 'STOREFRONT_TOKEN',
+});
+```
+
+### Browser
+
+```html
+<script>
+    // Make sure you've added the afosto-storefront script (See installation). 
+    // Use the code below to initialize the storefront client after the script has been loaded.
+    
+    const client = afostoStorefront.Client({
+      storefrontToken: 'STOREFRONT_TOKEN'
+    });
+</script>
 ```
 
 ## Configuration
@@ -45,7 +81,6 @@ If you would like to use the client with other configuration than the default co
 | storageKeyPrefix | The prefix used for storing storefront information in web storage.                                                                                                                                                                  | 'afosto.storefront' |
 | storageType | The type of storage you would like to use for storing storefront information 'localStorage' or 'sessionStorage'.                                                                                                                    | 'localStorage'      |
 
-<br /><br />
 ## Examples
 
 Before using these examples check the **Get started** section how to initialize the client.
@@ -93,9 +128,17 @@ const cart = await client.createCart();
 You can also write your own queries and mutations. For the available fields, queries and mutations you can check the <a href="https://afosto.app/graphql">Afosto GraphQL storefront</a>.
 
 ```js
-// Custom GraphQL queries / mutations.
+// ES6 import
 import { gql } from '@afosto/storefront';
 
+// CJS import
+const { gql } = require('@afosto/storefront');
+
+// Browser
+const gql = afostoStorefront.gql;
+
+
+// Write your query / mutation
 const query = gql`
   query getCart($id: String!) {
     cart(id: $id) {
@@ -110,10 +153,13 @@ const query = gql`
     }
   }
 `;
+
+// Define your variables
 const variables = {
   id: 'my_cart_token',
 };
 
+// Execute the query / mutation
 const response = await client.query(query, variables);
 ```
 
