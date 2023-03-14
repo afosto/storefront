@@ -19,6 +19,7 @@ export interface GraphQLClientOptions {
     convertResponseToCamelCase?: boolean;
     convertVariablesToSnakeCase?: boolean;
     excludeConversionKeys?: Array<string>;
+    stopPaths?: Array<string>;
     [key: string]: any;
 }
 
