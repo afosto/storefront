@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@afosto/graphql-client@^2.1.4":
-  version "2.1.4"
-  resolved "https://registry.npmjs.org/@afosto/graphql-client/-/graphql-client-2.1.4.tgz#42289d99122d120c4a006df170a2207843af6d68"
-  integrity sha512-er+UYdVc8uj67mjxDqCWppETqfYg0Eux2YmwN4P29zWr9CZRbW9w713vnE4iLr9JYZSwdBOy1uUIVi9HMczjvQ==
+"@afosto/graphql-client@^2.1.5":
+  version "2.1.5"
+  resolved "https://registry.npmjs.org/@afosto/graphql-client/-/graphql-client-2.1.5.tgz#2842be9c1b7a38047dc917a67c09d3408947b067"
+  integrity sha512-DUSzQYo61+3oq84HrKI9xffZKU+nUF+f/JfaYKXY5ZQwv1bdu+x/G7nSQp0BbYhppl5OG/zLi+rYJes2izhPug==
   dependencies:
     camelcase-keys "^7.0.1"
     graphql "16.3.0"

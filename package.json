@@ -1,6 +1,6 @@
 {
   "name": "@afosto/storefront",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Afosto storefront client",
   "keywords": [
     "afosto",
@@ -53,7 +53,7 @@
     "build:umd": "rollup -c"
   },
   "dependencies": {
-    "@afosto/graphql-client": "^2.1.4"
+    "@afosto/graphql-client": "^2.1.5"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
