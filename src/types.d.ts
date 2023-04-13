@@ -157,6 +157,7 @@ export interface CartItemsInput {
 
 export interface StorefrontClient {
     addCartItems(items: CartItemsInput, cartToken?: CartToken): CartResponse;
+    addCouponToCart(coupon: string, cartToken?: CartToken): CartResponse;
     confirmCart(cartToken?: CartToken): CartResponse;
     createCart(input?: CreateCartInput): CartResponse;
     getCart(cartToken?: CartToken, intent?: CartIntent): CartResponse;
@@ -166,6 +167,7 @@ export interface StorefrontClient {
     query(query: string, variables?: object, options?: object): Promise<any>;
     removeCartItems(ids: CartItemIds, cartToken?: CartToken): CartResponse;
     removeCartTokenFromStorage(): void;
+    removeCouponFromCart(coupon: string, cartToken?: CartToken): CartResponse;
     setCountryCodeOnCart(countryCode: string, cartToken?: CartToken): CartResponse;
     setSessionID(id: OptionalString): void;
     storeCartTokenInStorage(token: string): void;

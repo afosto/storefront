@@ -1,8 +1,10 @@
 import { GraphQLClient } from '@afosto/graphql-client';
 import {
+  addCouponToCartMutation,
   addItemsToCartMutation,
   confirmCartMutation,
   createCartMutation,
+  removeCouponFromCartMutation,
   removeItemsFromCartMutation,
   setCountryCodeOnCartMutation,
 } from './mutations/index.js';
@@ -361,6 +363,78 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   };
 
   /**
+   * Add coupon code to the cart
+   * @param {string} coupon
+   * @param {string=} cartToken
+   * @returns {object}
+   */
+  const addCouponToCart = async (coupon: string, cartToken?: CartToken): CartResponse => {
+    try {
+      let currentCartToken = cartToken || storedCartToken;
+
+      if (!currentCartToken && config.autoCreateCart) {
+        const createdCart = await createCart();
+
+        if (createdCart) {
+          currentCartToken = createdCart.id;
+        }
+      }
+
+      if (!isDefined(coupon)) {
+        return Promise.reject(new Error('Provide a coupon code'));
+      }
+
+      const response = await request(addCouponToCartMutation, {
+        couponInput: {
+          cartId: currentCartToken,
+          coupon,
+        },
+      });
+      return response?.addCouponToCart?.cart || null;
+    } catch (error) {
+      if (config.autoCreateCart && storedCartToken && !cartToken) {
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
+      }
+
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Remove coupon code from cart
+   * @param {string} coupon
+   * @param {string=} cartToken
+   * @returns {object}
+   */
+  const removeCouponFromCart = async (coupon: string, cartToken?: CartToken): CartResponse => {
+    try {
+      const currentCartToken = cartToken || storedCartToken;
+
+      if (!currentCartToken) {
+        return Promise.reject(new Error('No cart token provided'));
+      }
+
+      if (!isDefined(coupon)) {
+        return Promise.reject(new Error('Provide the coupon code that should be removed'));
+      }
+
+      const response = await request(removeCouponFromCartMutation, {
+        couponInput: {
+          cartId: currentCartToken,
+          coupon,
+        },
+      });
+      return response?.removeCouponFromCart?.cart || null;
+    } catch (error) {
+      if (config.autoCreateCart && storedCartToken && !cartToken) {
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
+      }
+
+      return Promise.reject(error);
+    }
+  };
+
+  /**
    * Get an order by id
    * @param {string} id
    * @returns {Object}
@@ -376,6 +450,7 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   return {
     addCartItems,
+    addCouponToCart,
     confirmCart,
     createCart,
     getCart,
@@ -385,6 +460,7 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
     query: request,
     removeCartItems,
     removeCartTokenFromStorage,
+    removeCouponFromCart,
     setCountryCodeOnCart,
     setSessionID,
     storeCartTokenInStorage,
