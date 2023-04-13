@@ -115,12 +115,44 @@ const cart = await client.addCartItems([
 const cart = await client.removeCartItems(['item_id_1', 'item_id_2']);
 ```
 
-### Create cart manually
+### Add coupon code to the cart
 
 ```js
-// Create a new cart manually.
+// Add a coupon code to the cart.
 
-const cart = await client.createCart();
+const cart = await client.addCouponToCart('my-coupon-code');
+```
+
+### Remove coupon code from the cart
+
+```js
+// Add a coupon code to the cart.
+
+const cart = await client.removeCouponFromCart('my-coupon-code');
+```
+
+### Set the alpha-2 country code on the cart
+
+```js
+// Set the alpha-2 country code on the cart.
+
+const cart = await client.setCountryCodeOnCart('US');
+```
+
+### Create an order by confirming the cart
+
+```js
+// Confirm the cart which creates an order.
+
+const order = await client.confirmCart();
+```
+
+### Get order information
+
+```js
+// Fetch order information for an order ID. Returns null when the order doesn't exist.
+
+const order = await client.getOrder('order_id');
 ```
 
 ## Custom queries / mutations
