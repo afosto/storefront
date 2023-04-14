@@ -10,6 +10,7 @@ import {
 } from './mutations/index.js';
 import { getCartQuery, getOrderQuery } from './queries/index.js';
 import isDefined from './utils/isDefined.js';
+import uuid from './utils/uuid.js';
 import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants.js';
 import {
   CartIntent,
@@ -34,13 +35,14 @@ import {
 const Client = (options: StorefrontClientOptions): StorefrontClient => {
   const config = {
     autoCreateCart: true,
+    autoGenerateSessionID: true,
     graphQLClientOptions: {},
     storeCartToken: true,
     storageKeyPrefix: DEFAULT_STORAGE_KEY_PREFIX,
     storageType: DEFAULT_STORAGE_TYPE,
     ...(options || {}),
   };
-  let sessionID: OptionalString = null;
+  let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
   let storedCartToken: OptionalString = null;
 
   if (!isDefined(config?.storefrontToken)) {

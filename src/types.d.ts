@@ -175,6 +175,7 @@ export interface StorefrontClient {
 
 export interface StorefrontClientOptions {
     autoCreateCart?: boolean;
+    autoGenerateSessionID?: boolean;
     graphQLClientOptions?: GraphQLClientOptions;
     storeCartToken?: boolean;
     storageKeyPrefix?: string;
