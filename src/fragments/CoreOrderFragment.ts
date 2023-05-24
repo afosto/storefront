@@ -28,7 +28,7 @@ const CoreOrderFragment = gql`
     created_at
     is_including_vat
     is_vat_shifted
-    progress
+    state
     subtotal
     total
     total_excluding_vat
@@ -92,7 +92,7 @@ const CoreOrderFragment = gql`
     phone_number {
       ...CorePhoneNumberFragment
     }
-    shipping {
+    delivery {
       address {
         ...CoreAddressFragment
       }
@@ -123,7 +123,7 @@ const CoreOrderFragment = gql`
     adjustments {
       ...CoreAdjustmentFragment
     }
-    services {
+    fees {
       shipping {
         ...CoreFeeFragment
       }

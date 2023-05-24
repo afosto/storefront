@@ -125,7 +125,7 @@ export interface CreateCartInput {
     failureReturnUrl?: string;
 }
 
-export interface CartItemShipmentInput {
+export interface CartItemDeliveryInput {
     shippingMethod?: string;
     addressId?: string;
     expectedAt?: number;
@@ -140,7 +140,7 @@ export interface CartItemMetaDataInput {
 export interface CartItemChildInput {
     sku: string;
     quantity: number;
-    shipment?: CartItemShipmentInput;
+    delivery?: CartItemDeliveryInput;
     price?: number;
     metaData?: CartItemMetaDataInput;
 }
@@ -148,7 +148,7 @@ export interface CartItemChildInput {
 export interface CartItemsInput {
     sku: string;
     quantity: number;
-    shipment?: CartItemShipmentInput;
+    delivery?: CartItemDeliveryInput;
     price?: number;
     children?: Array<CartItemChildInput>
     metaData?: CartItemMetaDataInput;
