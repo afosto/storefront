@@ -50,7 +50,7 @@ const CoreCartFragment = gql`
         parent_id
         filters {
           key
-          values
+          value
         }
         pricing {
           amount
@@ -60,7 +60,7 @@ const CoreCartFragment = gql`
         ...CoreVatAmountFragment
       }
     }
-    services {
+    fees {
       payment {
         ...CoreFeeFragment
       }
@@ -68,7 +68,7 @@ const CoreCartFragment = gql`
         ...CoreFeeFragment
       }
     }
-    shipping {
+    delivery {
       address {
         country_code
       }
