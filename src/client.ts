@@ -8,7 +8,7 @@ import {
   removeItemsFromCartMutation,
   setCountryCodeOnCartMutation,
 } from './mutations/index.js';
-import { getCartQuery, getOrderQuery } from './queries/index.js';
+import {getCartQuery, getChannelQuery, getOrderQuery} from './queries/index.js';
 import isDefined from './utils/isDefined.js';
 import uuid from './utils/uuid.js';
 import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants.js';
@@ -18,6 +18,7 @@ import {
   CartItemsInput,
   CartResponse,
   CartToken,
+  ChannelId, ChannelResponse,
   CreateCartInput,
   GraphQLClientError,
   OptionalString,
@@ -448,6 +449,22 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
     return response?.order || null;
   };
 
+  /**
+   * Get channel configuration
+   * @param {string=} id
+   * @returns {Object}
+   */
+  const getChannel = async (id: ChannelId): ChannelResponse => {
+    try {
+      const response = await request(getChannelQuery, {
+        id,
+      });
+      return response?.channel || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   initializeCartTokenFromStorage();
 
   return {
@@ -457,6 +474,7 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
     createCart,
     getCart,
     getCartTokenFromStorage,
+    getChannel,
     getOrder,
     getSessionID,
     query: request,
