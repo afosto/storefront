@@ -168,7 +168,7 @@ export interface StorefrontClient {
     removeCartItems(ids: CartItemIds, cartToken?: CartToken): CartResponse;
     removeCartTokenFromStorage(): void;
     removeCouponFromCart(coupon: string, cartToken?: CartToken): CartResponse;
-    setCountryCodeOnCart(countryCode: string, cartToken?: CartToken): CartResponse;
+    setCountryCodeForCart(countryCode: string, cartToken?: CartToken): CartResponse;
     setSessionID(id: OptionalString): void;
     storeCartTokenInStorage(token: string): void;
 }

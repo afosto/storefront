@@ -4,4 +4,4 @@ export { default as confirmCartMutation } from './confirmCartMutation.js';
 export { default as createCartMutation } from './createCartMutation.js';
 export { default as removeCouponFromCartMutation } from './removeCouponFromCartMutation.js';
 export { default as removeItemsFromCartMutation } from './removeItemsFromCartMutation.js';
-export { default as setCountryCodeOnCartMutation } from './setCountryCodeOnCartMutation.js';
+export { default as setCountryCodeForCartMutation } from './setCountryCodeForCartMutation.js';

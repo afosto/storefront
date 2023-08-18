@@ -6,7 +6,7 @@ import {
   createCartMutation,
   removeCouponFromCartMutation,
   removeItemsFromCartMutation,
-  setCountryCodeOnCartMutation,
+  setCountryCodeForCartMutation,
 } from './mutations/index.js';
 import { getCartQuery, getOrderQuery } from './queries/index.js';
 import isDefined from './utils/isDefined.js';
@@ -327,12 +327,12 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   };
 
   /**
-   * Set the country code of the customer on a cart
+   * Set the country code of the customer for a cart
    * @param {string} countryCode
    * @param {string=} cartToken
    * @returns {object}
    */
-  const setCountryCodeOnCart = async (countryCode: string, cartToken?: CartToken): CartResponse => {
+  const setCountryCodeForCart = async (countryCode: string, cartToken?: CartToken): CartResponse => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
@@ -348,13 +348,13 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
         return Promise.reject(new Error('Provide a country code'));
       }
 
-      const response = await request(setCountryCodeOnCartMutation, {
-        setCountryCodeOnCartInput: {
+      const response = await request(setCountryCodeForCartMutation, {
+        setCountryCodeForCartInput: {
           cartId: currentCartToken,
           countryCode,
         },
       });
-      return response?.setCountryCodeOnCart?.cart || null;
+      return response?.setCountryCodeForCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
         return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
@@ -463,7 +463,7 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
     removeCartItems,
     removeCartTokenFromStorage,
     removeCouponFromCart,
-    setCountryCodeOnCart,
+    setCountryCodeForCart,
     setSessionID,
     storeCartTokenInStorage,
   };
