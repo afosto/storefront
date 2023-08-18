@@ -153,8 +153,9 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
     if (cartNotFound) {
       removeCartTokenFromStorage();
-      return callback();
     }
+
+    return callback(cartNotFound);
   };
 
   /**
@@ -285,7 +286,13 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
       return response?.addItemsToCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => addCartItems(items));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async (cartNotFound: boolean) => {
+          if (cartNotFound) {
+            return addCartItems(items);
+          }
+
+          return Promise.reject(error);
+        });
       }
 
       return Promise.reject(error);
