@@ -18,7 +18,8 @@ import {
   CartItemsInput,
   CartResponse,
   CartToken,
-  ChannelId, ChannelResponse,
+  ChannelId,
+  ChannelResponse,
   CreateCartInput,
   GraphQLClientError,
   OptionalString,
@@ -450,19 +451,15 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   };
 
   /**
-   * Get channel configuration
+   * Get a channel by id
    * @param {string=} id
    * @returns {Object}
    */
   const getChannel = async (id: ChannelId): ChannelResponse => {
-    try {
-      const response = await request(getChannelQuery, {
-        id,
-      });
-      return response?.channel || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    const response = await request(getChannelQuery, {
+      id,
+    });
+    return response?.channel || null;
   };
 
   initializeCartTokenFromStorage();
