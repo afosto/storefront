@@ -135,9 +135,9 @@ const cart = await client.removeCouponFromCart('my-coupon-code');
 ### Set the alpha-2 country code on the cart
 
 ```js
-// Set the alpha-2 country code on the cart.
+// Set the alpha-2 country code for the cart.
 
-const cart = await client.setCountryCodeOnCart('US');
+const cart = await client.setCountryCodeForCart('US');
 ```
 
 ### Create an order by confirming the cart
