@@ -156,6 +156,14 @@ const order = await client.confirmCart();
 const order = await client.getOrder('order_id');
 ```
 
+### Get channel information
+
+```js
+// Fetch channel information. Returns null when the channel doesn't exist.
+
+const channel = await client.getChannel();
+```
+
 ## Custom queries / mutations
 
 You can also write your own queries and mutations. For the available fields, queries and mutations you can check the <a href="https://afosto.app/graphql">Afosto GraphQL storefront</a>.

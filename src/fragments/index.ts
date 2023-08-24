@@ -1,6 +1,7 @@
 export { default as CoreAddressFragment } from './CoreAddressFragment.js';
 export { default as CoreAdjustmentFragment } from './CoreAdjustmentFragment.js';
 export { default as CoreCartFragment } from './CoreCartFragment.js';
+export { default as CoreChannelFragment } from './CoreChannelFragment.js';
 export { default as CoreFeeFragment } from './CoreFeeFragment.js';
 export { default as CoreItemFilterFragment } from './CoreItemFilterFragment.js';
 export { default as CoreOrderFragment } from './CoreOrderFragment.js';

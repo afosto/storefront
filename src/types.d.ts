@@ -11,7 +11,14 @@ export interface Cart {
     [key: string]: any,
 }
 
+export interface Channel {
+    id: string;
+    [key: string]: any,
+}
+
 export type CartResponse = Promise<Cart|null>;
+
+export type ChannelResponse = Promise<Channel|null>;
 
 export type OrderResponse = Promise<object|null>;
 
@@ -155,6 +162,8 @@ export interface CartItemsInput {
     parentItemId?: string;
 }
 
+export type ChannelId = OptionalString;
+
 export interface StorefrontClient {
     addCartItems(items: CartItemsInput, cartToken?: CartToken): CartResponse;
     addCouponToCart(coupon: string, cartToken?: CartToken): CartResponse;
@@ -162,6 +171,7 @@ export interface StorefrontClient {
     createCart(input?: CreateCartInput): CartResponse;
     getCart(cartToken?: CartToken, intent?: CartIntent): CartResponse;
     getCartTokenFromStorage(): OptionalString;
+    getChannel(id: ChannelId): ChannelResponse;
     getOrder(id: string): OrderResponse;
     getSessionID(): OptionalString;
     query(query: string, variables?: object, options?: object): Promise<any>;
