@@ -8,7 +8,7 @@ import {
   removeItemsFromCartMutation,
   setCountryCodeOnCartMutation,
 } from './mutations/index.js';
-import {getCartQuery, getChannelQuery, getOrderQuery} from './queries/index.js';
+import { getCartQuery, getChannelQuery, getOrderQuery } from './queries/index.js';
 import isDefined from './utils/isDefined.js';
 import uuid from './utils/uuid.js';
 import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants.js';

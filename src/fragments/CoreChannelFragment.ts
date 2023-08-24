@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
-import CoreAddressFragment from "./CoreAddressFragment.js";
-import CorePhoneNumberFragment from "./CorePhoneNumberFragment.js";
+import CoreAddressFragment from './CoreAddressFragment.js';
+import CorePhoneNumberFragment from './CorePhoneNumberFragment.js';
 
 const CoreChannelFragment = gql`
   ${CoreAddressFragment}
