@@ -88,6 +88,9 @@ const CoreOrderFragment = gql`
       filters {
         ...CoreItemFilterFragment
       }
+      vat {
+        ...CoreVatAmountFragment
+      }
     }
     phone_number {
       ...CorePhoneNumberFragment
