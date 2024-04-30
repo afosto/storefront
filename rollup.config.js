@@ -44,5 +44,12 @@ module.exports = [
         plugins: [terser()],
       },
     ],
+    onwarn: (warning, handler) => {
+      if (warning.code === 'THIS_IS_UNDEFINED') {
+        return;
+      }
+
+      handler(warning);
+    },
   },
 ];

@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
 
-const CorePaymentMethodSummaryFragment = gql`
+export const CorePaymentMethodSummaryFragment = gql`
   fragment CorePaymentMethodSummaryFragment on PaymentMethodSummary {
     id
     name
@@ -13,5 +13,3 @@ const CorePaymentMethodSummaryFragment = gql`
     }
   }
 `;
-
-export default CorePaymentMethodSummaryFragment;

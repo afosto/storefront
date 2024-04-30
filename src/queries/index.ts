@@ -1,3 +1,3 @@
-export { default as getCartQuery } from './getCartQuery.js';
-export { default as getChannelQuery } from './getChannelQuery.js';
-export { default as getOrderQuery } from './getOrderQuery.js';
+export * from './getCartQuery';
+export * from './getChannelQuery';
+export * from './getOrderQuery';

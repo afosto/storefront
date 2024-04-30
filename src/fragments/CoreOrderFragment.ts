@@ -1,16 +1,16 @@
 import { gql } from '@afosto/graphql-client';
-import CoreAddressFragment from './CoreAddressFragment.js';
-import CoreAdjustmentFragment from './CoreAdjustmentFragment.js';
-import CoreFeeFragment from './CoreFeeFragment.js';
-import CoreItemFilterFragment from './CoreItemFilterFragment.js';
-import CorePaymentIssuerFragment from './CorePaymentIssuerFragment.js';
-import CorePaymentMethodSummaryFragment from './CorePaymentMethodSummaryFragment.js';
-import CorePhoneNumberFragment from './CorePhoneNumberFragment.js';
-import CoreRegistrationFragment from './CoreRegistrationFragment.js';
-import CoreShippingMethodSummaryFragment from './CoreShippingMethodSummaryFragment.js';
-import CoreVatAmountFragment from './CoreVatAmountFragment.js';
+import { CoreAddressFragment } from './CoreAddressFragment';
+import { CoreAdjustmentFragment } from './CoreAdjustmentFragment';
+import { CoreFeeFragment } from './CoreFeeFragment';
+import { CoreItemFilterFragment } from './CoreItemFilterFragment';
+import { CorePaymentIssuerFragment } from './CorePaymentIssuerFragment';
+import { CorePaymentMethodSummaryFragment } from './CorePaymentMethodSummaryFragment';
+import { CorePhoneNumberFragment } from './CorePhoneNumberFragment';
+import { CoreRegistrationFragment } from './CoreRegistrationFragment';
+import { CoreShippingMethodSummaryFragment } from './CoreShippingMethodSummaryFragment';
+import { CoreVatAmountFragment } from './CoreVatAmountFragment';
 
-const CoreOrderFragment = gql`
+export const CoreOrderFragment = gql`
   ${CoreAddressFragment}
   ${CoreAdjustmentFragment}
   ${CoreFeeFragment}
@@ -139,5 +139,3 @@ const CoreOrderFragment = gql`
     }
   }
 `;
-
-export default CoreOrderFragment;

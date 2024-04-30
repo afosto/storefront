@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
 
-const CoreShippingMethodSummaryFragment = gql`
+export const CoreShippingMethodSummaryFragment = gql`
   fragment CoreShippingMethodSummaryFragment on ShippingMethodSummary {
     id
     name
@@ -13,5 +13,3 @@ const CoreShippingMethodSummaryFragment = gql`
     }
   }
 `;
-
-export default CoreShippingMethodSummaryFragment;

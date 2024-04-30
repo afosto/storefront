@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
 
-const confirmCartMutation = gql`
+export const confirmCartMutation = gql`
   mutation ConfirmCart($confirm_cart_input: ConfirmCartInput!) {
     confirmCart(input: $confirm_cart_input) {
       order {
@@ -23,5 +23,3 @@ const confirmCartMutation = gql`
     }
   }
 `;
-
-export default confirmCartMutation;

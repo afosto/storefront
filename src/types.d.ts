@@ -162,33 +162,59 @@ export interface CartItemsInput {
     parentItemId?: string;
 }
 
-export type ChannelId = OptionalString;
-
-export interface StorefrontClient {
-    addCartItems(items: CartItemsInput, cartToken?: CartToken): CartResponse;
-    addCouponToCart(coupon: string, cartToken?: CartToken): CartResponse;
-    confirmCart(cartToken?: CartToken): CartResponse;
-    createCart(input?: CreateCartInput): CartResponse;
-    getCart(cartToken?: CartToken, intent?: CartIntent): CartResponse;
-    getCartTokenFromStorage(): OptionalString;
-    getChannel(id: ChannelId): ChannelResponse;
-    getOrder(id: string): OrderResponse;
-    getSessionID(): OptionalString;
-    query(query: string, variables?: object, options?: object): Promise<any>;
-    removeCartItems(ids: CartItemIds, cartToken?: CartToken): CartResponse;
-    removeCartTokenFromStorage(): void;
-    removeCouponFromCart(coupon: string, cartToken?: CartToken): CartResponse;
-    setCountryCodeForCart(countryCode: string, cartToken?: CartToken): CartResponse;
-    setSessionID(id: OptionalString): void;
-    storeCartTokenInStorage(token: string): void;
+export interface DecodedUserToken {
+  sub: string,
+  email: string,
+  family_name: string,
+  given_name: string,
+  name: string,
 }
 
+export interface RequestPasswordResetInput {
+  email: string;
+}
+
+export interface ResetPasswordInput {
+  token: string;
+  password: string;
+}
+
+export interface SignInInput {
+  email: string;
+  password: string;
+}
+
+export interface SignUpInput {
+  givenName: string;
+  additionalName?: string;
+  familyName: string;
+  email: string;
+  password: string;
+  addressing?: AddressingInput;
+  phoneNumber?: PhoneNumberInput;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  familyName: string;
+  givenName: string;
+  name: string,
+}
+
+export interface VerifyUserInput {
+  token: string;
+}
+
+export type ChannelId = OptionalString;
+
 export interface StorefrontClientOptions {
-    autoCreateCart?: boolean;
-    autoGenerateSessionID?: boolean;
-    graphQLClientOptions?: GraphQLClientOptions;
-    storeCartToken?: boolean;
-    storageKeyPrefix?: string;
-    storageType?: 'localStorage' | 'sessionStorage';
-    storefrontToken: string,
+  autoCreateCart?: boolean;
+  autoGenerateSessionID?: boolean;
+  cartTokenStorageType?: 'localStorage' | 'sessionStorage';
+  graphQLClientOptions?: GraphQLClientOptions;
+  storeCartToken?: boolean;
+  storeUserToken?: boolean;
+  storageKeyPrefix?: string;
+  storefrontToken: string,
 }

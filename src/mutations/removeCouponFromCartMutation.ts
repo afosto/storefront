@@ -1,7 +1,7 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreCartFragment } from '../fragments/index.js';
+import { CoreCartFragment } from '../fragments';
 
-const removeCouponFromCartMutation = gql`
+export const removeCouponFromCartMutation = gql`
     ${CoreCartFragment}
     mutation RemoveCouponFromCart($coupon_input: CouponInput!) {
         removeCouponFromCart(input: $coupon_input) {
@@ -11,5 +11,3 @@ const removeCouponFromCartMutation = gql`
         }
     }
 `;
-
-export default removeCouponFromCartMutation;

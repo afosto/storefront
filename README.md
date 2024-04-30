@@ -29,7 +29,7 @@ npm install @afosto/storefront
 This library supports the **last two** versions of major browsers (Chrome, Edge, Firefox, Safari).
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@afosto/storefront@latest/dist/umd/afosto-storefront.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@afosto/storefront@3/dist/umd/afosto-storefront.min.js"></script>
 ```
 
 
@@ -77,10 +77,12 @@ If you would like to use the client with other configuration than the default co
 | storefrontToken (**required**) | This is the token being used for authentication with the Afosto GraphQL storefront.                                                                                                                                                 |                     |
 | autoCreateCart                 | Whether to automatically create a cart when adding an item if there is no cart.                                                                                                                                                     | true                |                      
 | autoGenerateSessionID          | Whether to automatically generate a session ID for the storefront client.                                                                                                                                                           | true                |                      
+| cartTokenStorageType           | The type of storage you would like to use for storing the cart token 'localStorage' or 'sessionStorage'.                                                                                                                            | 'localStorage'      |
+| graphQLClientOptions           | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>. | {}                  |                      
 | graphQLClientOptions           | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>. | {}                  |                      
 | storeCartToken                 | Whether to store the cart token in web storage.                                                                                                                                                                                     | true                |                      |
+| storeLoginToken                | Whether to store the login token in a cookie.                                                                                                                                                                                       | true                |                      |
 | storageKeyPrefix               | The prefix used for storing storefront information in web storage.                                                                                                                                                                  | 'afosto.storefront' |
-| storageType                    | The type of storage you would like to use for storing storefront information 'localStorage' or 'sessionStorage'.                                                                                                                    | 'localStorage'      |
 
 ## Examples
 
