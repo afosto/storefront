@@ -20,6 +20,9 @@
 # Install with Yarn
 yarn add @afosto/storefront
 
+# Install with PNPM
+pnpm add @afosto/storefront
+
 # Install with NPM
 npm install @afosto/storefront
 ```
@@ -38,9 +41,9 @@ This library supports the **last two** versions of major browsers (Chrome, Edge,
 ### ES6
 
 ```js
-import StorefrontClient from '@afosto/storefront';
+import { createStorefrontClient } from '@afosto/storefront';
 
-const client = StorefrontClient({
+const client = createStorefrontClient({
   storefrontToken: 'STOREFRONT_TOKEN',
 });
 ```
@@ -48,9 +51,9 @@ const client = StorefrontClient({
 ### CJS
 
 ```js
-const StorefrontClient = require('@afosto/storefront');
+const { createStorefrontClient } = require('@afosto/storefront');
 
-const client = StorefrontClient({
+const client = createStorefrontClient({
   storefrontToken: 'STOREFRONT_TOKEN',
 });
 ```
@@ -62,7 +65,7 @@ const client = StorefrontClient({
     // Make sure you've added the afosto-storefront script (See installation). 
     // Use the code below to initialize the storefront client after the script has been loaded.
     
-    const client = afostoStorefront.Client({
+    const client = afostoStorefront.createStorefrontClient({
       storefrontToken: 'STOREFRONT_TOKEN'
     });
 </script>
@@ -81,7 +84,7 @@ If you would like to use the client with other configuration than the default co
 | graphQLClientOptions           | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>. | {}                  |                      
 | graphQLClientOptions           | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>. | {}                  |                      
 | storeCartToken                 | Whether to store the cart token in web storage.                                                                                                                                                                                     | true                |                      |
-| storeLoginToken                | Whether to store the login token in a cookie.                                                                                                                                                                                       | true                |                      |
+| storeUserToken                 | Whether to store the user token in a cookie.                                                                                                                                                                                        | true                |                      |
 | storageKeyPrefix               | The prefix used for storing storefront information in web storage.                                                                                                                                                                  | 'afosto.storefront' |
 
 ## Examples
@@ -170,6 +173,9 @@ const channel = await client.getChannel();
 
 You can also write your own queries and mutations. For the available fields, queries and mutations you can check the <a href="https://afosto.app/graphql">Afosto GraphQL storefront</a>.
 
+### Storefront
+
+For storefront related queries/mutations:
 ```js
 // ES6 import
 import { gql } from '@afosto/storefront';
@@ -181,7 +187,7 @@ const { gql } = require('@afosto/storefront');
 const gql = afostoStorefront.gql;
 
 
-// Write your query / mutation
+// Write your GQL query / mutation
 const query = gql`
   query getCart($id: String!) {
     cart(id: $id) {
@@ -202,9 +208,38 @@ const variables = {
   id: 'my_cart_token',
 };
 
-// Execute the query / mutation
+// Execute the GQL query / mutation
 const response = await client.query(query, variables);
 ```
 
+### Account
+
+For account related queries/mutations:
+```js
+// ES6 import
+import { gql } from '@afosto/storefront';
+
+// CJS import
+const { gql } = require('@afosto/storefront');
+
+// Browser
+const gql = afostoStorefront.gql;
+
+
+// Write your GQL query / mutation
+const query = gql`
+  query getAccount {
+    account {
+      email
+      given_name
+      additional_name
+      family_name
+    }
+  }
+`;
+
+// Execute the GQL query / mutation
+const response = await client.queryAccount(query);
+```
 
 

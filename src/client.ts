@@ -74,6 +74,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const gqlClient = new GraphQLClient(config.graphQLClientOptions);
   gqlClient.setAuthorizationHeader(config.storefrontToken);
 
+  const authenticatedGqlClient = new GraphQLClient(config.graphQLClientOptions);
+
   /**
    * Get cart token from storage if storage enabled in the configuration
    */
@@ -179,8 +181,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
     if (token && validateUserToken(token)) {
       storedUserToken = token;
+      authenticatedGqlClient.setAuthorizationHeader(token);
     } else if (token) {
       removeUserToken();
+      authenticatedGqlClient.setAuthorizationHeader('');
     }
   };
 
@@ -218,6 +222,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     const { storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
 
     storedUserToken = token;
+    authenticatedGqlClient.setAuthorizationHeader(token);
 
     if (storeUserToken) {
       Cookies.set(`${storageKeyPrefix}${DEFAULT_USER_TOKEN_COOKIE_NAME}`, token, { path: '' });
@@ -245,10 +250,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Send an authenticated graphQL request with the user token.
+   */
+  const authenticatedRequest = async (gqlQuery: string, variables: object = {}, options: object = {}): Promise<any> =>
+    authenticatedGqlClient.request(gqlQuery, variables, options);
+
+  /**
    * Send a graphQL request.
    */
-  const request = async (query: string, variables: object = {}, options: object = {}): Promise<any> =>
-    gqlClient.request(query, variables, options);
+  const request = async (gqlQuery: string, variables: object = {}, options: object = {}): Promise<any> =>
+    gqlClient.request(gqlQuery, variables, options);
 
   /**
    * Confirm the cart and create an order
@@ -656,6 +667,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     getUser,
     getUserToken,
     query: request,
+    queryAccount: authenticatedRequest,
     removeCartItems,
     removeCartTokenFromStorage,
     removeCouponFromCart,
