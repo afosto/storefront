@@ -8,19 +8,59 @@ export type CartItemIds = Array<string>;
 
 export interface Cart {
     id: string;
-    [key: string]: any,
+    [key: string]: any;
 }
 
 export interface Channel {
     id: string;
-    [key: string]: any,
+    [key: string]: any;
 }
 
-export type CartResponse = Promise<Cart|null>;
+export interface UserOrderItemDelivery {
+  expectedAt?: number;
+  status?: string;
+  trackTraceCode?: string;
+  trackTraceUrl?: string;
+}
 
-export type ChannelResponse = Promise<Channel|null>;
+export interface UserOrderItem {
+  sku: string;
+  type: string;
+  image?: string;
+  label?: string;
+  brand?: string;
+  mpn?: string;
+  gtin?: string[];
+  url?: string;
+  quantity: number;
+  delivery?: UserOrderItemDelivery;
+}
 
-export type OrderResponse = Promise<object|null>;
+export interface UserOrder {
+  id: string;
+  number: string;
+  createdAt: number;
+  updatedAt: number;
+  items: UserOrderItem[];
+}
+
+export type CartResponse = Cart | null;
+
+export type ChannelResponse = Channel | null;
+
+export type OrderResponse = object | null;
+
+export interface PageInfo {
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+  startCursor: string;
+  endCursor: string;
+}
+
+export interface UserOrdersResponse {
+  orders: UserOrder[];
+  pageInfo: PageInfo;
+}
 
 export interface GraphQLClientOptions {
     convertResponseToCamelCase?: boolean;
@@ -163,11 +203,11 @@ export interface CartItemsInput {
 }
 
 export interface DecodedUserToken {
-  sub: string,
-  email: string,
-  family_name: string,
-  given_name: string,
-  name: string,
+  sub: string;
+  email: string;
+  family_name: string;
+  given_name: string;
+  name: string;
 }
 
 export interface RequestPasswordResetInput {
@@ -199,7 +239,7 @@ export interface User {
   email: string;
   familyName: string;
   givenName: string;
-  name: string,
+  name: string;
 }
 
 export interface VerifyUserInput {
@@ -216,5 +256,5 @@ export interface StorefrontClientOptions {
   storeCartToken?: boolean;
   storeUserToken?: boolean;
   storageKeyPrefix?: string;
-  storefrontToken: string,
+  storefrontToken: string;
 }

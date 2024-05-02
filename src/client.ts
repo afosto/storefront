@@ -14,7 +14,7 @@ import {
   signUpMutation,
   verifyUserMutation,
 } from './mutations';
-import { getCartQuery, getChannelQuery, getOrderQuery } from './queries';
+import { getUserOrdersQuery, getCartQuery, getChannelQuery, getOrderQuery } from './queries';
 import { isDefined } from './utils/isDefined';
 import { parseJwt } from './utils/parseJwt';
 import { uuid } from './utils/uuid';
@@ -32,11 +32,19 @@ import {
   CartToken,
   ChannelId,
   ChannelResponse,
-  CreateCartInput, DecodedUserToken,
+  CreateCartInput,
+  DecodedUserToken,
   GraphQLClientError,
   OptionalString,
-  OrderResponse, RequestPasswordResetInput, ResetPasswordInput, SignInInput, SignUpInput,
-  StorefrontClientOptions, User, VerifyUserInput,
+  OrderResponse,
+  RequestPasswordResetInput,
+  ResetPasswordInput,
+  SignInInput,
+  SignUpInput,
+  StorefrontClientOptions,
+  User,
+  UserOrdersResponse,
+  VerifyUserInput,
 } from './types';
 
 export const createStorefrontClient = (options: StorefrontClientOptions) => {
@@ -632,6 +640,21 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Get the orders for the user that is logged in.
+   */
+  const getUserOrders = async (): Promise<UserOrdersResponse> => {
+    const response = await authenticatedRequest(getUserOrdersQuery);
+    const ordersResponse = response?.account?.orders || {};
+    const orders = ordersResponse.nodes || [];
+    const pageInfo = ordersResponse.pageInfo || {};
+
+    return {
+      orders,
+      pageInfo,
+    };
+  };
+
+  /**
    * Get an order by ID
    */
   const getOrder = async (id: string): Promise<OrderResponse> => {
@@ -665,6 +688,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     getOrder,
     getSessionID,
     getUser,
+    getUserOrders,
     getUserToken,
     query: request,
     queryAccount: authenticatedRequest,
