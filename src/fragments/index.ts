@@ -1,3 +1,4 @@
+export * from './CoreAccountFragment';
 export * from './CoreAddressFragment';
 export * from './CoreAdjustmentFragment';
 export * from './CoreCartFragment';

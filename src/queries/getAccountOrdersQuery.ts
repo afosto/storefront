@@ -1,7 +1,7 @@
 import { gql } from '@afosto/graphql-client';
 
-export const getUserOrdersQuery = gql`
-  query GetUserOrders {
+export const getAccountOrdersQuery = gql`
+  query GetAccountOrders {
     account {
       orders {
         nodes {

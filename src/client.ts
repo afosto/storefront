@@ -3,6 +3,7 @@ import { GraphQLClient } from '@afosto/graphql-client';
 import {
   addCouponToCartMutation,
   addItemsToCartMutation,
+  changePasswordMutation,
   confirmCartMutation,
   createCartMutation,
   removeCouponFromCartMutation,
@@ -12,9 +13,17 @@ import {
   setCountryCodeForCartMutation,
   signInMutation,
   signUpMutation,
+  updateAccountInformationMutation,
   verifyUserMutation,
 } from './mutations';
-import { getUserOrdersQuery, getCartQuery, getChannelQuery, getOrderQuery } from './queries';
+import {
+  getAccountInformationQuery,
+  getAccountOrderQuery,
+  getAccountOrdersQuery,
+  getCartQuery,
+  getChannelQuery,
+  getOrderQuery
+} from './queries';
 import { isDefined } from './utils/isDefined';
 import { parseJwt } from './utils/parseJwt';
 import { uuid } from './utils/uuid';
@@ -25,11 +34,15 @@ import {
   DEFAULT_USER_TOKEN_COOKIE_NAME
 } from './constants';
 import {
+  Account,
+  AccountOrder,
+  AccountOrdersResponse,
   CartIntent,
   CartItemIds,
   CartItemsInput,
   CartResponse,
   CartToken,
+  ChangePasswordInput,
   ChannelId,
   ChannelResponse,
   CreateCartInput,
@@ -42,8 +55,8 @@ import {
   SignInInput,
   SignUpInput,
   StorefrontClientOptions,
+  UpdateAccountInformationInput,
   User,
-  UserOrdersResponse,
   VerifyUserInput,
 } from './types';
 
@@ -509,6 +522,21 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Change your password.
+   */
+  const changePassword = async (input: ChangePasswordInput): Promise<boolean> => {
+    const { newPassword, password } = input || {};
+    const response = await authenticatedRequest(changePasswordMutation, {
+      changePasswordInput: {
+        password,
+        newPassword,
+      },
+    });
+
+    return !!response?.account?.email;
+  };
+
+  /**
    * Request a password reset.
    */
   const requestPasswordReset = async (input: RequestPasswordResetInput): Promise<boolean> => {
@@ -593,6 +621,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     return getUser();
   };
 
+  const updateAccountInformation = async (input: UpdateAccountInformationInput): Promise<Account | null> => {
+    const response = await authenticatedRequest(updateAccountInformationMutation, {
+      updateAccountInformation: input || {},
+    });
+
+    return response?.updateAccount?.account || null;
+  }
+
   const verifyUser = async (input: VerifyUserInput): Promise<User | null> => {
     const { token: verificationToken } = input || {};
     const response = await request(verifyUserMutation, {
@@ -640,10 +676,28 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Get the account information of the user that is logged in.
+   */
+  const getAccountInformation = async (): Promise<Account | null> => {
+    const response = await authenticatedRequest(getAccountInformationQuery);
+    return response?.account || null;
+  };
+
+  /**
+   * Get an order by ID for the user that is logged in.
+   */
+  const getAccountOrder = async (id: string): Promise<AccountOrder | null> => {
+    const response = await authenticatedRequest(getAccountOrderQuery, {
+      id,
+    });
+    return response?.account?.order || null;
+  };
+
+  /**
    * Get the orders for the user that is logged in.
    */
-  const getUserOrders = async (): Promise<UserOrdersResponse> => {
-    const response = await authenticatedRequest(getUserOrdersQuery);
+  const getAccountOrders = async (): Promise<AccountOrdersResponse> => {
+    const response = await authenticatedRequest(getAccountOrdersQuery);
     const ordersResponse = response?.account?.orders || {};
     const orders = ordersResponse.nodes || [];
     const pageInfo = ordersResponse.pageInfo || {};
@@ -680,15 +734,18 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   return {
     addCartItems,
     addCouponToCart,
+    changePassword,
     confirmCart,
     createCart,
+    getAccountInformation,
+    getAccountOrder,
+    getAccountOrders,
     getCart,
     getCartTokenFromStorage,
     getChannel,
     getOrder,
     getSessionID,
     getUser,
-    getUserOrders,
     getUserToken,
     query: request,
     queryAccount: authenticatedRequest,
@@ -703,6 +760,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     signOut,
     signUp,
     storeCartTokenInStorage,
+    updateAccountInformation,
     verifyUser,
   };
 };

@@ -3,10 +3,10 @@ import { gql } from '@afosto/graphql-client';
 export const CorePaymentMethodSummaryFragment = gql`
   fragment CorePaymentMethodSummaryFragment on PaymentMethodSummary {
     id
-    name
+    code
     description
     instruction
-    code
+    name
     pricing {
       fixed
       percentage
