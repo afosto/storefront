@@ -24,9 +24,7 @@ import {
   getChannelQuery,
   getOrderQuery
 } from './queries';
-import { isDefined } from './utils/isDefined';
-import { parseJwt } from './utils/parseJwt';
-import { uuid } from './utils/uuid';
+import { isDefined, parseJwt, uuid } from './utils';
 import {
   DEFAULT_STORAGE_KEY_PREFIX,
   DEFAULT_CART_TOKEN_STORAGE_TYPE,
@@ -623,7 +621,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
   const updateAccountInformation = async (input: UpdateAccountInformationInput): Promise<Account | null> => {
     const response = await authenticatedRequest(updateAccountInformationMutation, {
-      updateAccountInformation: input || {},
+      updateAccountInformationInput: input || {},
     });
 
     return response?.updateAccount?.account || null;

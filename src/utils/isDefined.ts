@@ -1,1 +1,1 @@
-export const isDefined = (value: any) => !!value || value === false || value === 0;
+export const isDefined = (value: unknown): boolean => !!value || value === false || value === 0;
