@@ -496,6 +496,7 @@ export interface StorefrontClientOptions {
   autoCreateCart?: boolean;
   autoGenerateSessionID?: boolean;
   cartTokenStorageType?: 'localStorage' | 'sessionStorage';
+  domain?: string;
   graphQLClientOptions?: GraphQLClientOptions;
   storeCartToken?: boolean;
   storeUserToken?: boolean;

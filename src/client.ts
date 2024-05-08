@@ -69,6 +69,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
     ...(options || {}),
   };
+  const userTokenCookieOptions = {
+    path: '/',
+    secure: true,
+    ...(config.domain ? { domain: config.domain } : {}),
+  };
   let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
   let storedCartToken: OptionalString = null;
   let storedUserToken: OptionalString = null;
@@ -228,9 +233,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
 
     storedUserToken = null;
+    authenticatedGqlClient.setAuthorizationHeader('');
 
     if (storeUserToken) {
-      Cookies.remove(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, { path: '' });
+      Cookies.remove(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, userTokenCookieOptions);
     }
   };
 
@@ -244,7 +250,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     authenticatedGqlClient.setAuthorizationHeader(token);
 
     if (storeUserToken) {
-      Cookies.set(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, token, { path: '' });
+      Cookies.set(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, token, userTokenCookieOptions);
     }
   };
 
