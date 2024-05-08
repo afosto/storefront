@@ -26,10 +26,10 @@ import {
 } from './queries';
 import { isDefined, parseJwt, uuid } from './utils';
 import {
-  DEFAULT_STORAGE_KEY_PREFIX,
-  DEFAULT_CART_TOKEN_STORAGE_TYPE,
-  DEFAULT_CART_TOKEN_STORAGE_NAME,
-  DEFAULT_USER_TOKEN_COOKIE_NAME
+  STOREFRONT_STORAGE_KEY_PREFIX,
+  STOREFRONT_CART_TOKEN_STORAGE_TYPE,
+  STOREFRONT_CART_TOKEN_STORAGE_NAME,
+  STOREFRONT_USER_TOKEN_COOKIE_NAME
 } from './constants';
 import {
   Account,
@@ -65,8 +65,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     graphQLClientOptions: {},
     storeCartToken: true,
     storeUserToken: true,
-    storageKeyPrefix: DEFAULT_STORAGE_KEY_PREFIX,
-    cartTokenStorageType: DEFAULT_CART_TOKEN_STORAGE_TYPE,
+    storageKeyPrefix: STOREFRONT_STORAGE_KEY_PREFIX,
+    cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
     ...(options || {}),
   };
   let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
@@ -102,8 +102,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     try {
       const {
         storeCartToken,
-        storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX,
-        cartTokenStorageType = DEFAULT_CART_TOKEN_STORAGE_TYPE,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
       if (!storeCartToken) {
@@ -111,7 +111,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       }
 
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      return storage.getItem(`${storageKeyPrefix}${DEFAULT_CART_TOKEN_STORAGE_NAME}`);
+      return storage.getItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
     } catch (error) {
       return null;
     }
@@ -124,8 +124,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     try {
       const {
         storeCartToken,
-        storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX,
-        cartTokenStorageType = DEFAULT_CART_TOKEN_STORAGE_TYPE,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
       if (!storeCartToken) {
@@ -133,7 +133,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       }
 
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      storage.removeItem(`${storageKeyPrefix}${DEFAULT_CART_TOKEN_STORAGE_NAME}`);
+      storage.removeItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
 
       storedCartToken = null;
     } catch (error) {}
@@ -147,8 +147,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     try {
       const {
         storeCartToken,
-        storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX,
-        cartTokenStorageType = DEFAULT_CART_TOKEN_STORAGE_TYPE,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
       if (!storeCartToken) {
@@ -156,7 +156,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       }
 
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      storage.setItem(`${storageKeyPrefix}${DEFAULT_CART_TOKEN_STORAGE_NAME}`, token);
+      storage.setItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`, token);
       storedCartToken = token;
     } catch (error) {}
   };
@@ -189,14 +189,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Initialize the user token.
    */
   const initializeUserToken = () => {
-    const { storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
 
     if (!storeUserToken) {
       removeUserToken();
       return;
     }
 
-    const token = Cookies.get(`${storageKeyPrefix}${DEFAULT_USER_TOKEN_COOKIE_NAME}`);
+    const token = Cookies.get(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`);
 
     if (token && validateUserToken(token)) {
       storedUserToken = token;
@@ -225,12 +225,12 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Remove the user token.
    */
   const removeUserToken = () => {
-    const { storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
 
     storedUserToken = null;
 
     if (storeUserToken) {
-      Cookies.remove(`${storageKeyPrefix}${DEFAULT_USER_TOKEN_COOKIE_NAME}`, { path: '' });
+      Cookies.remove(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, { path: '' });
     }
   };
 
@@ -238,13 +238,13 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Store the user token.
    */
   const storeUserToken = (token: string) => {
-    const { storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
 
     storedUserToken = token;
     authenticatedGqlClient.setAuthorizationHeader(token);
 
     if (storeUserToken) {
-      Cookies.set(`${storageKeyPrefix}${DEFAULT_USER_TOKEN_COOKIE_NAME}`, token, { path: '' });
+      Cookies.set(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, token, { path: '' });
     }
   };
 
@@ -765,6 +765,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     signUp,
     storeCartTokenInStorage,
     updateAccountInformation,
+    validateUserToken,
     verifyUser,
   };
 };
