@@ -75,6 +75,7 @@ export enum Carriers {
   dpd = 'DPD',
   fedex = 'FEDEX',
   gls = 'GLS',
+  glsNl = 'GLS_NL',
   postnl = 'POSTNL',
   sendcloud = 'SENDCLOUD',
   ups = 'UPS',
