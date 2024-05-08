@@ -619,6 +619,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     return getUser();
   };
 
+  /**
+   * Update the account information of the user that is logged in.
+   */
   const updateAccountInformation = async (input: UpdateAccountInformationInput): Promise<Account | null> => {
     const response = await authenticatedRequest(updateAccountInformationMutation, {
       updateAccountInformationInput: input || {},
@@ -627,6 +630,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     return response?.updateAccount?.account || null;
   }
 
+  /**
+   * Verify the user.
+   */
   const verifyUser = async (input: VerifyUserInput): Promise<User | null> => {
     const { token: verificationToken } = input || {};
     const response = await request(verifyUserMutation, {
