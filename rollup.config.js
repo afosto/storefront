@@ -1,6 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import { terser } from 'rollup-plugin-terser';
+import replace from '@rollup/plugin-replace';
+import terser from '@rollup/plugin-terser';
 import pkg from './package.json';
 
 const createBanner = () => {
@@ -33,7 +34,11 @@ module.exports = [
         banner: createBanner(),
         exports: 'named',
         name: 'afostoStorefront',
-        plugins: [],
+        plugins: [
+          replace({
+            'process.env.NODE_ENV': JSON.stringify('production'),
+          }),
+        ],
       },
       {
         file: `dist/umd/afosto-storefront.min.js`,
@@ -41,7 +46,12 @@ module.exports = [
         banner: createBanner(),
         exports: 'named',
         name: 'afostoStorefront',
-        plugins: [terser()],
+        plugins: [
+          replace({
+            'process.env.NODE_ENV': JSON.stringify('production'),
+          }),
+          terser(),
+        ],
       },
     ],
     onwarn: (warning, handler) => {

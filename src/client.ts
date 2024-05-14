@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { GraphQLClient } from '@afosto/graphql-client';
+import { createGraphQLClient } from '@afosto/graphql-client';
 import {
   addCouponToCartMutation,
   addItemsToCartMutation,
@@ -95,10 +95,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     config.storeCartToken = false;
   }
 
-  const gqlClient = new GraphQLClient(config.graphQLClientOptions);
-  gqlClient.setAuthorizationHeader(config.storefrontToken);
-
-  const authenticatedGqlClient = new GraphQLClient(config.graphQLClientOptions);
+  const gqlClient = createGraphQLClient(config.graphQLClientOptions);
 
   /**
    * Get cart token from storage if storage enabled in the configuration
@@ -205,10 +202,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
     if (token && validateUserToken(token)) {
       storedUserToken = token;
-      authenticatedGqlClient.setAuthorizationHeader(token);
     } else if (token) {
       removeUserToken();
-      authenticatedGqlClient.setAuthorizationHeader('');
     }
   };
 
@@ -233,7 +228,6 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
 
     storedUserToken = null;
-    authenticatedGqlClient.setAuthorizationHeader('');
 
     if (storeUserToken) {
       Cookies.remove(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, userTokenCookieOptions);
@@ -247,7 +241,6 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
 
     storedUserToken = token;
-    authenticatedGqlClient.setAuthorizationHeader(token);
 
     if (storeUserToken) {
       Cookies.set(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, token, userTokenCookieOptions);
@@ -278,13 +271,19 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Send an authenticated graphQL request with the user token.
    */
   const authenticatedRequest = async (gqlQuery: string, variables: object = {}, options: object = {}): Promise<any> =>
-    authenticatedGqlClient.request(gqlQuery, variables, options);
+    gqlClient.request(gqlQuery, variables, {
+      authorization: `Bearer ${storedUserToken || ''}`,
+      ...options,
+    });
 
   /**
    * Send a graphQL request.
    */
   const request = async (gqlQuery: string, variables: object = {}, options: object = {}): Promise<any> =>
-    gqlClient.request(gqlQuery, variables, options);
+    gqlClient.request(gqlQuery, variables, {
+      authorization: `Bearer ${config.storefrontToken || ''}`,
+      ...options,
+    });
 
   /**
    * Confirm the cart and create an order
