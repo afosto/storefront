@@ -149,6 +149,9 @@ export interface Adjustment {
   description: string;
   isDiscount: boolean;
   isPercentage: boolean;
+  outcome: {
+    amount: number;
+  };
 }
 
 export interface Fee {

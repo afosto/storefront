@@ -2,14 +2,12 @@ import { gql } from '@afosto/graphql-client';
 import {
   CoreAddressFragment,
   CoreFeeFragment,
-  CorePaymentMethodSummaryFragment,
   CoreVatAmountFragment
 } from '../fragments';
 
 export const getAccountOrderQuery = gql`
   ${CoreAddressFragment}
   ${CoreFeeFragment}
-  ${CorePaymentMethodSummaryFragment}
   ${CoreVatAmountFragment}
   query GetAccountOrder($id: String!) {
     account {
@@ -39,7 +37,15 @@ export const getAccountOrderQuery = gql`
           }
         }
         payment_method {
-          ...CorePaymentMethodSummaryFragment
+          id
+          code
+          description
+          instruction
+          name
+          pricing {
+            fixed
+            percentage
+          }
         }
         vat {
           ...CoreVatAmountFragment
@@ -63,6 +69,9 @@ export const getAccountOrderQuery = gql`
           description
           is_percentage
           is_discount
+          outcome {
+            amount
+          }
         }
         items {
           sku
