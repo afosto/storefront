@@ -9,6 +9,7 @@ import {
   removeCouponFromCartMutation,
   removeItemsFromCartMutation,
   requestPasswordResetMutation,
+  requestUserVerificationMutation,
   resetPasswordMutation,
   setCountryCodeForCartMutation,
   signInMutation,
@@ -49,6 +50,7 @@ import {
   OptionalString,
   OrderResponse,
   RequestPasswordResetInput,
+  RequestUserVerificationInput,
   ResetPasswordInput,
   SignInInput,
   SignUpInput,
@@ -554,6 +556,20 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Request an user verification.
+   */
+  const requestUserVerification = async (input: RequestUserVerificationInput): Promise<boolean> => {
+    const { email } = input || {};
+    const response = await request(requestUserVerificationMutation, {
+      requestUserVerificationInput: {
+        email,
+      },
+    });
+
+    return response?.requestCustomerVerificationLink?.isSuccessful || false;
+  };
+
+  /**
    * Reset your password.
    */
   const resetPassword = async (input: ResetPasswordInput): Promise<boolean> => {
@@ -762,6 +778,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     removeCartTokenFromStorage,
     removeCouponFromCart,
     requestPasswordReset,
+    requestUserVerification,
     resetPassword,
     setCountryCodeForCart,
     setSessionID,

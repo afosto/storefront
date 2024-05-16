@@ -6,6 +6,7 @@ export * from './createCartMutation';
 export * from './removeCouponFromCartMutation';
 export * from './removeItemsFromCartMutation';
 export * from './requestPasswordResetMutation';
+export * from './requestUserVerificationMutation';
 export * from './resetPasswordMutation';
 export * from './setCountryCodeForCartMutation';
 export * from './signInMutation';

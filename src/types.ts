@@ -448,6 +448,10 @@ export interface RequestPasswordResetInput {
   email: string;
 }
 
+export interface RequestUserVerificationInput {
+  email: string;
+}
+
 export interface ResetPasswordInput {
   token: string;
   password: string;
