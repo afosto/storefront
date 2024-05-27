@@ -254,7 +254,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const validateUserToken = (token: string) => {
     const decodedToken = decodeUserToken(token);
-    return !(!decodedToken || !decodedToken.sub);
+
+    if (!decodedToken) {
+      return false;
+    }
+
+    const { exp, sub } = decodedToken || {};
+    const currentTime = Date.now() / 1000;
+    const isExpired = !exp || exp < currentTime;
+
+    return sub && !isExpired;
   };
 
   /**
