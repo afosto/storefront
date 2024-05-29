@@ -73,6 +73,13 @@ export const getAccountOrderQuery = gql`
             amount
           }
         }
+        invoices {
+          id
+          created_at
+          number
+          pdf_url
+          total
+        }
         items {
           sku
           type

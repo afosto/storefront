@@ -243,6 +243,14 @@ export interface Vat {
   amount: number;
 }
 
+export interface AccountInvoice {
+  id: string;
+  createdAt: number;
+  number: string;
+  pdfUrl?: string;
+  total: number;
+}
+
 export interface AccountOrder {
   id: string;
   number: string;
@@ -261,6 +269,7 @@ export interface AccountOrder {
     shipping: Fee[];
     payment: Fee[];
   }
+  invoices: AccountInvoice[];
   items: AccountOrderItem[];
   metaData?: object;
   paymentMethod?: PaymentMethod;

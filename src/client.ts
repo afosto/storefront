@@ -72,6 +72,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     ...(options || {}),
   };
   const userTokenCookieOptions = {
+    expires: 1,
     path: '/',
     secure: true,
     ...(config.domain ? { domain: config.domain } : {}),
