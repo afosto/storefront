@@ -34,6 +34,6 @@ jobs:
       - name: Publish package
         run: |
           TAG=$(echo ${{github.ref_name}} | grep -oP '^v\d+\.\d+\.\d+-?\K(\w+)?')
-          echo "Tag: $TAG"
+          pnpm publish --access public --tag ${TAG:-latest} --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
