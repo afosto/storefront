@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
 
-const CoreAddressFragment = gql`
+export const CoreAddressFragment = gql`
   fragment CoreAddressFragment on Address {
     country_code
     administrative_area
@@ -22,5 +22,3 @@ const CoreAddressFragment = gql`
     }
   }
 `;
-
-export default CoreAddressFragment;

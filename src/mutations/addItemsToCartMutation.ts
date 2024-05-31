@@ -1,7 +1,7 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreCartFragment } from '../fragments/index.js';
+import { CoreCartFragment } from '../fragments';
 
-const addItemsToCartMutation = gql`
+export const addItemsToCartMutation = gql`
   ${CoreCartFragment}
   mutation AddItemsToCart($add_items_to_cart_input: AddItemsToCartInput!) {
     addItemsToCart(input: $add_items_to_cart_input) {
@@ -11,5 +11,3 @@ const addItemsToCartMutation = gql`
     }
   }
 `;
-
-export default addItemsToCartMutation;

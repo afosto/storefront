@@ -1,8 +1,8 @@
 import { gql } from '@afosto/graphql-client';
-import CoreAddressFragment from './CoreAddressFragment.js';
-import CorePhoneNumberFragment from './CorePhoneNumberFragment.js';
+import { CoreAddressFragment } from './CoreAddressFragment';
+import { CorePhoneNumberFragment } from './CorePhoneNumberFragment';
 
-const CoreChannelFragment = gql`
+export const CoreChannelFragment = gql`
   ${CoreAddressFragment}
   ${CorePhoneNumberFragment}
   fragment CoreChannelFragment on Channel {
@@ -51,5 +51,3 @@ const CoreChannelFragment = gql`
     }
   }
 `;
-
-export default CoreChannelFragment;

@@ -1,7 +1,7 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreChannelFragment } from '../fragments/index.js';
+import { CoreChannelFragment } from '../fragments';
 
-const getCartQuery = gql`
+export const getChannelQuery = gql`
   ${CoreChannelFragment}
   query GetChannel($id: String) {
     channel(id: $id) {
@@ -9,5 +9,3 @@ const getCartQuery = gql`
     }
   }
 `;
-
-export default getCartQuery;

@@ -1,10 +1,10 @@
 import { gql } from '@afosto/graphql-client';
 
-const CoreFeeFragment = gql`
+export const CoreFeeFragment = gql`
   fragment CoreFeeFragment on Fee {
+    id
     description
+    is_contra
     total
   }
 `;
-
-export default CoreFeeFragment;

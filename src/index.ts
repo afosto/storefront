@@ -1,9 +1,7 @@
-import Client from './client.js';
-
-export * from './fragments/index.js';
-export * from './mutations/index.js';
-export * from './queries/index.js';
 export { gql } from '@afosto/graphql-client';
-export { Client };
-
-export default Client;
+export * from './fragments';
+export * from './mutations';
+export * from './queries';
+export * from './constants';
+export { createStorefrontClient } from './client';
+export type * from './types';

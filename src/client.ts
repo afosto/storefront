@@ -1,51 +1,85 @@
-import { GraphQLClient } from '@afosto/graphql-client';
+import Cookies from 'js-cookie';
+import { createGraphQLClient } from '@afosto/graphql-client';
 import {
   addCouponToCartMutation,
   addItemsToCartMutation,
+  changePasswordMutation,
   confirmCartMutation,
   createCartMutation,
   removeCouponFromCartMutation,
   removeItemsFromCartMutation,
+  requestPasswordResetMutation,
+  requestUserVerificationMutation,
+  resetPasswordMutation,
   setCountryCodeForCartMutation,
-} from './mutations/index.js';
-import { getCartQuery, getChannelQuery, getOrderQuery } from './queries/index.js';
-import isDefined from './utils/isDefined.js';
-import uuid from './utils/uuid.js';
-import { DEFAULT_STORAGE_KEY_PREFIX, DEFAULT_STORAGE_TYPE } from './constants.js';
+  signInMutation,
+  signUpMutation,
+  updateAccountInformationMutation,
+  verifyUserMutation,
+} from './mutations';
 import {
+  getAccountInformationQuery,
+  getAccountOrderQuery,
+  getAccountOrdersQuery,
+  getCartQuery,
+  getChannelQuery,
+  getOrderQuery
+} from './queries';
+import { isDefined, parseJwt, uuid } from './utils';
+import {
+  STOREFRONT_STORAGE_KEY_PREFIX,
+  STOREFRONT_CART_TOKEN_STORAGE_TYPE,
+  STOREFRONT_CART_TOKEN_STORAGE_NAME,
+  STOREFRONT_USER_TOKEN_COOKIE_NAME
+} from './constants';
+import {
+  Account,
+  AccountOrder,
+  AccountOrdersResponse,
   CartIntent,
   CartItemIds,
   CartItemsInput,
   CartResponse,
   CartToken,
+  ChangePasswordInput,
   ChannelId,
   ChannelResponse,
   CreateCartInput,
+  DecodedUserToken,
   GraphQLClientError,
   OptionalString,
   OrderResponse,
-  StorefrontClient,
+  RequestPasswordResetInput,
+  RequestUserVerificationInput,
+  ResetPasswordInput,
+  SignInInput,
+  SignUpInput,
   StorefrontClientOptions,
-} from './types.js';
+  UpdateAccountInformationInput,
+  User,
+  VerifyUserInput,
+} from './types';
 
-/**
- * Afosto storefront client
- * @param {object} options
- * @returns {object}
- * @constructor
- */
-const Client = (options: StorefrontClientOptions): StorefrontClient => {
+export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const config = {
     autoCreateCart: true,
     autoGenerateSessionID: true,
     graphQLClientOptions: {},
     storeCartToken: true,
-    storageKeyPrefix: DEFAULT_STORAGE_KEY_PREFIX,
-    storageType: DEFAULT_STORAGE_TYPE,
+    storeUserToken: true,
+    storageKeyPrefix: STOREFRONT_STORAGE_KEY_PREFIX,
+    cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
     ...(options || {}),
+  };
+  const userTokenCookieOptions = {
+    expires: 1,
+    path: '/',
+    secure: true,
+    ...(config.domain ? { domain: config.domain } : {}),
   };
   let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
   let storedCartToken: OptionalString = null;
+  let storedUserToken: OptionalString = null;
 
   if (!isDefined(config?.storefrontToken)) {
     throw new Error('The Afosto storefront client requires a storefront token.');
@@ -53,7 +87,7 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   if (
     config.storeCartToken &&
-    !['localStorage', 'sessionStorage'].includes(config.storageType)
+    !['localStorage', 'sessionStorage'].includes(config.cartTokenStorageType)
   ) {
     throw new Error(
       'Invalid storage type provided. Must be one of type: localStorage or sessionStorage.',
@@ -64,8 +98,7 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
     config.storeCartToken = false;
   }
 
-  const gqlClient = new GraphQLClient(config.graphQLClientOptions);
-  gqlClient.setAuthorizationHeader(config.storefrontToken);
+  const gqlClient = createGraphQLClient(config.graphQLClientOptions);
 
   /**
    * Get cart token from storage if storage enabled in the configuration
@@ -74,16 +107,16 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
     try {
       const {
         storeCartToken,
-        storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX,
-        storageType = DEFAULT_STORAGE_TYPE,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
       if (!storeCartToken) {
         return null;
       }
 
-      const storage = storageType === 'sessionStorage' ? sessionStorage : localStorage;
-      return storage.getItem(`${storageKeyPrefix}.cartToken`);
+      const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      return storage.getItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
     } catch (error) {
       return null;
     }
@@ -92,20 +125,20 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   /**
    * Remove cart token from storage if storage enabled in the configuration
    */
-  const removeCartTokenFromStorage = (): void => {
+  const removeCartTokenFromStorage = () => {
     try {
       const {
         storeCartToken,
-        storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX,
-        storageType = DEFAULT_STORAGE_TYPE,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
       if (!storeCartToken) {
         return;
       }
 
-      const storage = storageType === 'sessionStorage' ? sessionStorage : localStorage;
-      storage.removeItem(`${storageKeyPrefix}.cartToken`);
+      const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      storage.removeItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
 
       storedCartToken = null;
     } catch (error) {}
@@ -115,20 +148,20 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
    * Store the cart token in storage if storage enabled in the configuration.
    * @param {string} token The cart token
    */
-  const storeCartTokenInStorage = (token: string): void => {
+  const storeCartTokenInStorage = (token: string) => {
     try {
       const {
         storeCartToken,
-        storageKeyPrefix = DEFAULT_STORAGE_KEY_PREFIX,
-        storageType = DEFAULT_STORAGE_TYPE,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
       if (!storeCartToken) {
         return;
       }
 
-      const storage = storageType === 'sessionStorage' ? sessionStorage : localStorage;
-      storage.setItem(`${storageKeyPrefix}.cartToken`, token);
+      const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      storage.setItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`, token);
       storedCartToken = token;
     } catch (error) {}
   };
@@ -136,16 +169,13 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   /**
    * Initialize cart token from storage.
    */
-  const initializeCartTokenFromStorage = (): void => {
+  const initializeCartTokenFromStorage = () => {
     storedCartToken = getCartTokenFromStorage();
   };
 
   /**
    * Check for cart mutations whether the stored cart token is still valid.
    * @private
-   * @param {object} error
-   * @param {function} callback
-   * @returns {Promise}
    */
   const checkStoredCartTokenStillValid = async (error: GraphQLClientError, callback: Function): Promise<any> => {
     const { errors } = error?.response || {};
@@ -161,35 +191,116 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   };
 
   /**
+   * Initialize the user token.
+   */
+  const initializeUserToken = () => {
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+
+    if (!storeUserToken) {
+      removeUserToken();
+      return;
+    }
+
+    const token = Cookies.get(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`);
+
+    if (token && validateUserToken(token)) {
+      storedUserToken = token;
+    } else if (token) {
+      removeUserToken();
+    }
+  };
+
+  /**
+   * Decode the user token.
+   */
+  const decodeUserToken = (token: string) => {
+    return parseJwt(token);
+  };
+
+  /**
+   * Return the user token.
+   */
+  const getUserToken = (): string | null => {
+    return storedUserToken;
+  };
+
+  /**
+   * Remove the user token.
+   */
+  const removeUserToken = () => {
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+
+    storedUserToken = null;
+
+    if (storeUserToken) {
+      Cookies.remove(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, userTokenCookieOptions);
+    }
+  };
+
+  /**
+   * Store the user token.
+   */
+  const storeUserToken = (token: string) => {
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+
+    storedUserToken = token;
+
+    if (storeUserToken) {
+      Cookies.set(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, token, userTokenCookieOptions);
+    }
+  };
+
+  /**
+   * Validate the user token.
+   */
+  const validateUserToken = (token: string) => {
+    const decodedToken = decodeUserToken(token);
+
+    if (!decodedToken) {
+      return false;
+    }
+
+    const { exp, sub } = decodedToken || {};
+    const currentTime = Date.now() / 1000;
+    const isExpired = !exp || exp < currentTime;
+
+    return sub && !isExpired;
+  };
+
+  /**
    * Return the session ID used for server side tracking in the storefront.
-   * @returns {string|null}
    */
   const getSessionID = (): OptionalString => sessionID;
 
   /**
    * Set the session ID used for server side tracking in the storefront.
-   * @param {String|null} id
    */
-  const setSessionID = (id: OptionalString): void => {
+  const setSessionID = (id: OptionalString) => {
     sessionID = isDefined(id) ? id : null;
   };
 
   /**
-   * Send a graphQL request.
-   *
-   * @param {string} query Query/mutation
-   * @param {object} variables Query variables
-   * @param {object} options Request options
-   * @returns {object}
+   * Send an authenticated graphQL request with the user token.
    */
-  const request = async (query: string, variables: object = {}, options: object = {}): Promise<any> =>
-    gqlClient.request(query, variables, options);
+  const authenticatedRequest = async (gqlQuery: string, variables: object = {}, options: object = {}): Promise<any> =>
+    gqlClient.request(gqlQuery, variables, {
+      authorization: `Bearer ${storedUserToken || ''}`,
+      ...options,
+    });
+
+  /**
+   * Send a graphQL request.
+   */
+  const request = async (gqlQuery: string, variables: object = {}, options: object = {}): Promise<any> =>
+    gqlClient.request(gqlQuery, variables, {
+      authorization: `Bearer ${config.storefrontToken || ''}`,
+      ...options,
+    });
 
   /**
    * Confirm the cart and create an order
-   * @returns {object}
    */
-  const confirmCart = async (cartToken?: CartToken): CartResponse => {
+  const confirmCart = async (cartToken?: CartToken): Promise<CartResponse> => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -214,10 +325,8 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   /**
    * Create a cart
-   * @param {object=} input
-   * @returns {object}
    */
-  const createCart = async (input: CreateCartInput = {}): CartResponse => {
+  const createCart = async (input: CreateCartInput = {}): Promise<CartResponse> => {
     const response = await request(createCartMutation, {
       cartInput: {
         sessionId: sessionID,
@@ -235,11 +344,8 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   /**
    * Get a cart by cart token
-   * @param {string=} cartToken
-   * @param {(null|'BEGIN_CHECKOUT'|'VIEW_CART')=} intent Intent for server side tracking
-   * @returns {Object}
    */
-  const getCart = async (cartToken?: CartToken, intent?: CartIntent): CartResponse => {
+  const getCart = async (cartToken?: CartToken, intent?: CartIntent): Promise<CartResponse> => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -263,11 +369,8 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   /**
    * Add items to the cart
-   * @param {array} items
-   * @param {string=} cartToken
-   * @returns {object}
    */
-  const addCartItems = async (items: CartItemsInput, cartToken?: CartToken): CartResponse => {
+  const addCartItems = async (items: CartItemsInput, cartToken?: CartToken): Promise<CartResponse> => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
@@ -303,11 +406,8 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   /**
    * Remove items from cart
-   * @param {array} ids
-   * @param {string=} cartToken
-   * @returns {object}
    */
-  const removeCartItems = async (ids: CartItemIds, cartToken?: CartToken): CartResponse => {
+  const removeCartItems = async (ids: CartItemIds, cartToken?: CartToken): Promise<CartResponse> => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -337,11 +437,8 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   /**
    * Set the country code of the customer for a cart
-   * @param {string} countryCode
-   * @param {string=} cartToken
-   * @returns {object}
    */
-  const setCountryCodeForCart = async (countryCode: string, cartToken?: CartToken): CartResponse => {
+  const setCountryCodeForCart = async (countryCode: string, cartToken?: CartToken): Promise<CartResponse> => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
@@ -375,11 +472,8 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   /**
    * Add coupon code to the cart
-   * @param {string} coupon
-   * @param {string=} cartToken
-   * @returns {object}
    */
-  const addCouponToCart = async (coupon: string, cartToken?: CartToken): CartResponse => {
+  const addCouponToCart = async (coupon: string, cartToken?: CartToken): Promise<CartResponse> => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
@@ -413,11 +507,8 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
 
   /**
    * Remove coupon code from cart
-   * @param {string} coupon
-   * @param {string=} cartToken
-   * @returns {object}
    */
-  const removeCouponFromCart = async (coupon: string, cartToken?: CartToken): CartResponse => {
+  const removeCouponFromCart = async (coupon: string, cartToken?: CartToken): Promise<CartResponse> => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -446,11 +537,216 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   };
 
   /**
-   * Get an order by id
-   * @param {string} id
-   * @returns {Object}
+   * Change your password.
    */
-  const getOrder = async (id: string): OrderResponse => {
+  const changePassword = async (input: ChangePasswordInput): Promise<boolean> => {
+    const { newPassword, password } = input || {};
+    const response = await authenticatedRequest(changePasswordMutation, {
+      changePasswordInput: {
+        password,
+        newPassword,
+      },
+    });
+
+    return !!response?.account?.email;
+  };
+
+  /**
+   * Request a password reset.
+   */
+  const requestPasswordReset = async (input: RequestPasswordResetInput): Promise<boolean> => {
+    const { email } = input || {};
+    const response = await request(requestPasswordResetMutation, {
+      requestPasswordResetInput: {
+        email,
+      },
+    });
+
+    return response?.requestCustomerPasswordReset?.isSuccessful || false;
+  };
+
+  /**
+   * Request an user verification.
+   */
+  const requestUserVerification = async (input: RequestUserVerificationInput): Promise<boolean> => {
+    const { email } = input || {};
+    const response = await request(requestUserVerificationMutation, {
+      requestUserVerificationInput: {
+        email,
+      },
+    });
+
+    return response?.requestCustomerVerificationLink?.isSuccessful || false;
+  };
+
+  /**
+   * Reset your password.
+   */
+  const resetPassword = async (input: ResetPasswordInput): Promise<boolean> => {
+    const { token, password } = input || {};
+    const response = await request(resetPasswordMutation, {
+      resetPasswordInput: {
+        token,
+        password,
+      },
+    });
+
+    return response?.resetCustomerPassword?.isSuccessful || false;
+  };
+
+  /**
+   * Sign in
+   */
+  const signIn = async (input: SignInInput): Promise<User | null> => {
+    const { email, password } = input || {};
+    const response = await request(signInMutation, {
+      signInInput: {
+        email,
+        password,
+      },
+    });
+    const { token } = response?.logInCustomer || {};
+
+    if (!token || !validateUserToken(token)) {
+      return Promise.reject('Invalid user token');
+    }
+
+    storeUserToken(token);
+
+    return getUser();
+  };
+
+  /**
+   * Sign out
+   */
+  const signOut = () => {
+    removeUserToken();
+  };
+
+  /**
+   * Sign up
+   */
+  const signUp = async (input: SignUpInput): Promise<User | null> => {
+    const { givenName, additionalName, familyName, email, password, addressing, phoneNumber } = input || {};
+    const response = await request(signUpMutation, {
+      signUpInput: {
+        givenName,
+        additionalName,
+        familyName,
+        email,
+        password,
+        addressing,
+        phoneNumber,
+      },
+    });
+    const { token } = response?.registerCustomer || {};
+
+    if (!token || !validateUserToken(token)) {
+      return Promise.reject('Invalid user token');
+    }
+
+    storeUserToken(token);
+
+    return getUser();
+  };
+
+  /**
+   * Update the account information of the user that is logged in.
+   */
+  const updateAccountInformation = async (input: UpdateAccountInformationInput): Promise<Account | null> => {
+    const response = await authenticatedRequest(updateAccountInformationMutation, {
+      updateAccountInformationInput: input || {},
+    });
+
+    return response?.updateAccount?.account || null;
+  }
+
+  /**
+   * Verify the user.
+   */
+  const verifyUser = async (input: VerifyUserInput): Promise<User | null> => {
+    const { token: verificationToken } = input || {};
+    const response = await request(verifyUserMutation, {
+      verifyUserInput: {
+        token: verificationToken,
+      },
+    });
+    const { token } = response?.verifyCustomer || {};
+
+    if (!token || !validateUserToken(token)) {
+      return Promise.reject('Invalid user token');
+    }
+
+    storeUserToken(token);
+
+    return getUser();
+  };
+
+  /**
+   * Get the user that is logged in.
+   */
+  const getUser = (): User | null => {
+    try {
+      if (!storedUserToken || !validateUserToken(storedUserToken)) {
+        return null;
+      }
+
+      const decodedToken = decodeUserToken(storedUserToken) as DecodedUserToken | null;
+      const { sub: id, email, family_name: familyName, given_name: givenName, name } = decodedToken || {};
+
+      if (!id) {
+        return null;
+      }
+
+      return {
+        id,
+        email: email || '',
+        familyName: familyName || '',
+        givenName: givenName || '',
+        name: name || '',
+      };
+    } catch(error) {
+      return null;
+    }
+  };
+
+  /**
+   * Get the account information of the user that is logged in.
+   */
+  const getAccountInformation = async (): Promise<Account | null> => {
+    const response = await authenticatedRequest(getAccountInformationQuery);
+    return response?.account || null;
+  };
+
+  /**
+   * Get an order by ID for the user that is logged in.
+   */
+  const getAccountOrder = async (id: string): Promise<AccountOrder | null> => {
+    const response = await authenticatedRequest(getAccountOrderQuery, {
+      id,
+    });
+    return response?.account?.order || null;
+  };
+
+  /**
+   * Get the orders for the user that is logged in.
+   */
+  const getAccountOrders = async (): Promise<AccountOrdersResponse> => {
+    const response = await authenticatedRequest(getAccountOrdersQuery);
+    const ordersResponse = response?.account?.orders || {};
+    const orders = ordersResponse.nodes || [];
+    const pageInfo = ordersResponse.pageInfo || {};
+
+    return {
+      orders,
+      pageInfo,
+    };
+  };
+
+  /**
+   * Get an order by ID
+   */
+  const getOrder = async (id: string): Promise<OrderResponse> => {
     const response = await request(getOrderQuery, {
       id,
     });
@@ -458,11 +754,9 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   };
 
   /**
-   * Get a channel by id
-   * @param {string=} id
-   * @returns {Object}
+   * Get a channel by ID
    */
-  const getChannel = async (id: ChannelId): ChannelResponse => {
+  const getChannel = async (id: ChannelId): Promise<ChannelResponse> => {
     const response = await request(getChannelQuery, {
       id,
     });
@@ -470,25 +764,40 @@ const Client = (options: StorefrontClientOptions): StorefrontClient => {
   };
 
   initializeCartTokenFromStorage();
+  initializeUserToken();
 
   return {
     addCartItems,
     addCouponToCart,
+    changePassword,
     confirmCart,
     createCart,
+    getAccountInformation,
+    getAccountOrder,
+    getAccountOrders,
     getCart,
     getCartTokenFromStorage,
     getChannel,
     getOrder,
     getSessionID,
+    getUser,
+    getUserToken,
     query: request,
+    queryAccount: authenticatedRequest,
     removeCartItems,
     removeCartTokenFromStorage,
     removeCouponFromCart,
+    requestPasswordReset,
+    requestUserVerification,
+    resetPassword,
     setCountryCodeForCart,
     setSessionID,
+    signIn,
+    signOut,
+    signUp,
     storeCartTokenInStorage,
+    updateAccountInformation,
+    validateUserToken,
+    verifyUser,
   };
 };
-
-export default Client;

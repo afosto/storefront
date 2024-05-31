@@ -1,6 +1,6 @@
 {
   "name": "@afosto/storefront",
-  "version": "2.0.1",
+  "version": "3.0.0-alpha.17",
   "description": "Afosto storefront client",
   "keywords": [
     "afosto",
@@ -8,23 +8,16 @@
     "storefront-client"
   ],
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
-  "main": "./dist/cjs/index.js",
-  "types": "./dist/esm/index.d.ts",
-  "type": "module",
-  "source": "./src/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": {
-        "types": "./dist/cjs/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      },
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      }
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "repository": {
@@ -47,31 +40,25 @@
     "dev": "rimraf dist && tsc --watch",
     "format": "prettier --write .",
     "prebuild": "rimraf dist",
-    "build": "yarn cleanup && yarn build:cjs && yarn build:esm && yarn build:umd",
+    "preinstall": "npx only-allow pnpm",
+    "build-ts": "pnpm cleanup && tsup **/*.ts --format esm,cjs --dts",
+    "build": "pnpm cleanup && pnpm build:cjs && pnpm build:esm && pnpm build:umd",
     "build:cjs": "tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "build:esm": "tsc --project tsconfig.esm.json",
     "build:umd": "rollup -c"
   },
   "dependencies": {
-    "@afosto/graphql-client": "^2.1.5",
+    "@afosto/graphql-client": "^3.0.0-alpha.7",
+    "@types/js-cookie": "^3.0.6",
     "@types/uuid": "^9.0.1",
+    "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.20.2",
-    "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@tsconfig/node16": "^1.0.3",
-    "prettier": "^2.7.1",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.75.7",
-    "rollup-plugin-terser": "^7.0.2",
-    "typescript": "^4.9.5"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.7",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  }
 }

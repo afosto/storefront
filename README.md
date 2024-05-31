@@ -20,27 +20,21 @@
 # Install with Yarn
 yarn add @afosto/storefront
 
+# Install with PNPM
+pnpm add @afosto/storefront
+
 # Install with NPM
 npm install @afosto/storefront
 ```
-
-### Browser
-
-This library supports the **last two** versions of major browsers (Chrome, Edge, Firefox, Safari).
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/@afosto/storefront@latest/dist/umd/afosto-storefront.min.js"></script>
-```
-
 
 ## Get started
 
 ### ES6
 
 ```js
-import StorefrontClient from '@afosto/storefront';
+import { createStorefrontClient } from '@afosto/storefront';
 
-const client = StorefrontClient({
+const client = createStorefrontClient({
   storefrontToken: 'STOREFRONT_TOKEN',
 });
 ```
@@ -48,23 +42,24 @@ const client = StorefrontClient({
 ### CJS
 
 ```js
-const StorefrontClient = require('@afosto/storefront');
+const { createStorefrontClient } = require('@afosto/storefront');
 
-const client = StorefrontClient({
+const client = createStorefrontClient({
   storefrontToken: 'STOREFRONT_TOKEN',
 });
 ```
 
 ### Browser
 
+Use an ESM CDN like https://esm.sh
+
 ```html
-<script>
-    // Make sure you've added the afosto-storefront script (See installation). 
-    // Use the code below to initialize the storefront client after the script has been loaded.
+<script type="module">
+  import { createStorefrontClient } from 'https://esm.sh/@afosto/storefront@3';
     
-    const client = afostoStorefront.Client({
-      storefrontToken: 'STOREFRONT_TOKEN'
-    });
+  const client = createStorefrontClient({
+    storefrontToken: 'STOREFRONT_TOKEN'
+  });
 </script>
 ```
 
@@ -72,19 +67,31 @@ const client = StorefrontClient({
 
 If you would like to use the client with other configuration than the default configuration.
 
-| Option                         | Description                                                                                                                                                                                                                         | Default             |
-|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-| storefrontToken (**required**) | This is the token being used for authentication with the Afosto GraphQL storefront.                                                                                                                                                 |                     |
-| autoCreateCart                 | Whether to automatically create a cart when adding an item if there is no cart.                                                                                                                                                     | true                |                      
-| autoGenerateSessionID          | Whether to automatically generate a session ID for the storefront client.                                                                                                                                                           | true                |                      
-| graphQLClientOptions           | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>. | {}                  |                      
-| storeCartToken                 | Whether to store the cart token in web storage.                                                                                                                                                                                     | true                |                      |
-| storageKeyPrefix               | The prefix used for storing storefront information in web storage.                                                                                                                                                                  | 'afosto.storefront' |
-| storageType                    | The type of storage you would like to use for storing storefront information 'localStorage' or 'sessionStorage'.                                                                                                                    | 'localStorage'      |
+| Option                         | Description                                                                                                                                                                                                                         | Default        |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|
+| storefrontToken (**required**) | This is the token being used for authentication with the Afosto GraphQL storefront.                                                                                                                                                 |                |
+| autoCreateCart                 | Whether to automatically create a cart when adding an item if there is no cart.                                                                                                                                                     | true           |                      
+| autoGenerateSessionID          | Whether to automatically generate a session ID for the storefront client.                                                                                                                                                           | true           |                      
+| cartTokenStorageType           | The type of storage you would like to use for storing the cart token 'localStorage' or 'sessionStorage'.                                                                                                                            | 'localStorage' | 
+| domain                         | The domain for which the user token should be stored. Can be used to share the user token across sub domains. Defaults to current domain.                                                                                           |                |
+| graphQLClientOptions           | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>. | {}             |                      
+| storeCartToken                 | Whether to store the cart token in web storage.                                                                                                                                                                                     | true           |                      |
+| storeUserToken                 | Whether to store the user token in a cookie.                                                                                                                                                                                        | true           |                      |
+| storageKeyPrefix               | The prefix used for storing storefront information in web storage.                                                                                                                                                                  | 'af-'          |
 
 ## Examples
 
 Before using these examples check the **Get started** section how to initialize the client.
+
+### Create cart
+
+Use this when you manually want to create a new cart.
+
+```js
+// Fetch the cart information if an cart exists. Returns null when no cart exists.
+
+const cart = await client.getCart();
+```
 
 ### Get cart information
 
@@ -113,7 +120,7 @@ const cart = await client.addCartItems([
 ```js
 // Remove items from the cart by item ids. 
 
-const cart = await client.removeCartItems(['item_id_1', 'item_id_2']);
+const cart = await client.removeCartItems(['item-id-1', 'item-id-2']);
 ```
 
 ### Add coupon code to the cart
@@ -127,7 +134,7 @@ const cart = await client.addCouponToCart('my-coupon-code');
 ### Remove coupon code from the cart
 
 ```js
-// Add a coupon code to the cart.
+// Remove a coupon code from the cart.
 
 const cart = await client.removeCouponFromCart('my-coupon-code');
 ```
@@ -153,7 +160,7 @@ const order = await client.confirmCart();
 ```js
 // Fetch order information for an order ID. Returns null when the order doesn't exist.
 
-const order = await client.getOrder('order_id');
+const order = await client.getOrder('order-id');
 ```
 
 ### Get channel information
@@ -164,10 +171,141 @@ const order = await client.getOrder('order_id');
 const channel = await client.getChannel();
 ```
 
+### Sign in
+
+```js
+const user = await client.signIn({
+  email: 'johndoe@example.com',
+  password: '******',
+});
+```
+
+### Sign out
+
+```js
+client.signOut();
+```
+
+### Sign up
+
+```js
+// You can also optionally provide a phone number, billing address and shipping address.
+
+const user = await client.signUp({
+  givenName: 'John',
+  additionalName: '',
+  familyName: 'Doe',
+  email: 'johndoe@example.com',
+  password: '******',
+});
+```
+
+### Get current user
+
+```js
+// Get the current user information or null when the user isn't signed in.
+
+const user = client.getUser();
+```
+
+### Request password reset
+
+```js
+// This will sent a password reset email to the provided email address.
+
+const isSuccessful = await client.requestPasswordReset({
+  email: 'johndoe@example.com',
+});
+```
+
+### Reset password
+
+```js
+// Provide the reset password token and the new password.
+
+const isSuccessful = await client.resetPassword({
+  token: 'reset-password-token',
+  newPassword: '********',
+});
+```
+
+### Request user verification
+
+```js
+// This will sent a verification email to the provided email address.
+
+const isSuccessful = await client.requestUserVerification({
+  email: 'johndoe@example.com',
+});
+```
+
+### Verify user
+
+```js
+// Verify the user by providing a verification token.
+
+const user = await client.verifyUser({
+  token: 'verification-token',
+});
+```
+
+### Change password
+
+```js
+// Change the password for the user that's signed in.
+// The password field is the current password.
+
+const user = await client.changePassword({
+  password: '******',
+  newPassword: '********',
+});
+```
+
+### Get account information
+
+```js
+// Get the account information for the user that's signed in.
+
+const account = await client.getAccountInformation();
+```
+
+### Update account information
+
+```js
+// Update the account information for the user that's signed in.
+// You only have to provide the information that you would like to update.
+
+const account = await client.updateAccountInformation({
+  email: 'janedoe@example.com',
+  givenName: 'Jane',
+  additionalName: '',
+  familyName: 'Doe',
+});
+```
+
+### List account orders
+
+```js
+// Get all account orders from the user that's signed in.
+
+const { orders, pageInfo } = await client.getAccountOrders();
+```
+
+### Get account order
+
+```js
+// Get a specific account order by ID.
+
+const order = await client.getAccountOrder('order-id');
+```
+
 ## Custom queries / mutations
 
 You can also write your own queries and mutations. For the available fields, queries and mutations you can check the <a href="https://afosto.app/graphql">Afosto GraphQL storefront</a>.
 
+### Storefront
+
+For storefront related queries/mutations:
 ```js
 // ES6 import
 import { gql } from '@afosto/storefront';
@@ -179,7 +317,7 @@ const { gql } = require('@afosto/storefront');
 const gql = afostoStorefront.gql;
 
 
-// Write your query / mutation
+// Write your GQL query / mutation
 const query = gql`
   query getCart($id: String!) {
     cart(id: $id) {
@@ -200,9 +338,38 @@ const variables = {
   id: 'my_cart_token',
 };
 
-// Execute the query / mutation
+// Execute the GQL query / mutation
 const response = await client.query(query, variables);
 ```
 
+### Account
+
+For account related queries/mutations:
+```js
+// ES6 import
+import { gql } from '@afosto/storefront';
+
+// CJS import
+const { gql } = require('@afosto/storefront');
+
+// Browser
+const gql = afostoStorefront.gql;
+
+
+// Write your GQL query / mutation
+const query = gql`
+  query getAccount {
+    account {
+      email
+      given_name
+      additional_name
+      family_name
+    }
+  }
+`;
+
+// Execute the GQL query / mutation
+const response = await client.queryAccount(query);
+```
 
 

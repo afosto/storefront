@@ -1,7 +1,7 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreOrderFragment } from '../fragments/index.js';
+import { CoreOrderFragment } from '../fragments';
 
-const getOrderQuery = gql`
+export const getOrderQuery = gql`
   ${CoreOrderFragment}
   query GetOrder($id: String!) {
     order(id: $id) {
@@ -9,5 +9,3 @@ const getOrderQuery = gql`
     }
   }
 `;
-
-export default getOrderQuery;

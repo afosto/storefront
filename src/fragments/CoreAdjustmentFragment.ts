@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
 
-const CoreAdjustmentFragment = gql`
+export const CoreAdjustmentFragment = gql`
   fragment CoreAdjustmentFragment on Adjustment {
     id
     description
@@ -12,5 +12,3 @@ const CoreAdjustmentFragment = gql`
     }
   }
 `;
-
-export default CoreAdjustmentFragment;
