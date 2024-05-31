@@ -1,6 +1,6 @@
 {
   "name": "@afosto/storefront",
-  "version": "3.0.0-alpha.17",
+  "version": "3.0.0-beta.1",
   "description": "Afosto storefront client",
   "keywords": [
     "afosto",
@@ -41,11 +41,7 @@
     "format": "prettier --write .",
     "prebuild": "rimraf dist",
     "preinstall": "npx only-allow pnpm",
-    "build-ts": "pnpm cleanup && tsup **/*.ts --format esm,cjs --dts",
-    "build": "pnpm cleanup && pnpm build:cjs && pnpm build:esm && pnpm build:umd",
-    "build:cjs": "tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
-    "build:esm": "tsc --project tsconfig.esm.json",
-    "build:umd": "rollup -c"
+    "build": "pnpm cleanup && tsup **/*.ts --format esm,cjs --dts"
   },
   "dependencies": {
     "@afosto/graphql-client": "^3.0.0-alpha.7",
