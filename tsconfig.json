@@ -5,7 +5,7 @@
   "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "declaration": true,
     "declarationMap": true,
     "lib": ["es2021", "DOM"],
@@ -13,6 +13,7 @@
     "outDir": "./dist",
     "strict": true,
     "strictNullChecks": true,
+    "isolatedModules": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "forceConsistentCasingInFileNames": true,
