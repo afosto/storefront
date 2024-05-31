@@ -32,6 +32,8 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Publish package
-        run: pnpm publish --access public
+        run: |
+          TAG=$(echo $GITHUB_REF_NAME | grep -oP '^v\d+\.\d+\.\d+-?\K(\w+)?')
+          pnpm publish --access public --tag ${TAG:-latest}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
