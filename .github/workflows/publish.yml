@@ -3,7 +3,7 @@ on:
   release:
     types: [published]
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,7 +33,7 @@ jobs:
         run: pnpm build
       - name: Publish package
         run: |
-          TAG=$(echo $GITHUB_REF_NAME | grep -oP '^v\d+\.\d+\.\d+-?\K(\w+)?')
+          TAG=$(echo ${{github.ref_name}} | grep -oP '^v\d+\.\d+\.\d+-?\K(\w+)?')
           pnpm publish --access public --tag ${TAG:-latest}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
