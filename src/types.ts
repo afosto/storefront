@@ -573,14 +573,6 @@ export interface CreateStockUpdateSubscriptionInput {
   sku: string;
 }
 
-export interface ApproveStockUpdateSubscriptionInput {
-  token: string;
-}
-
-export interface RemoveStockUpdateSubscriptionInput {
-  token: string;
-}
-
 export type ChannelId = OptionalString;
 
 export interface StorefrontClientOptions {
