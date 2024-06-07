@@ -299,6 +299,33 @@ const { orders, pageInfo } = await client.getAccountOrders();
 const order = await client.getAccountOrder('order-id');
 ```
 
+### Subscribe to stock updates
+
+```js
+// Get stock updates for the given SKU on the given email address.
+
+const order = await client.createStockUpdateSubscription({
+  email: 'janedoe@example.com',
+  sku: 'sku-123',
+});
+```
+
+### Approve stock updates subscription
+
+```js
+// Approve a requested stock update subscription with a token.
+
+const order = await client.approveStockUpdateSubscription('87ff9149-dcca-4cd7-a154-b03c5cbf62c3');
+```
+
+### Remove stock updates subscriptions
+
+```js
+// Remove all stock update subscriptions for an email address with a token.
+
+const order = await client.removeStockUpdateSubscription('ef34c272-b1ee-41b3-9e07-01e792405747');
+```
+
 ## Custom queries / mutations
 
 You can also write your own queries and mutations. For the available fields, queries and mutations you can check the <a href="https://afosto.app/graphql">Afosto GraphQL storefront</a>.

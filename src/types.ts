@@ -296,6 +296,67 @@ export type ChannelResponse = Channel | null;
 
 export type OrderResponse = object | null;
 
+export type CreateStockUpdateSubscriptionResponse = {
+  email: string;
+  products: {
+    sku: string;
+    label: string;
+    gtin: string[];
+    slug: string;
+    mpn: string;
+    brand: string;
+    images: string[];
+    filters: {
+      key: string;
+      value: string;
+    }[];
+    i18n: {
+      locale: string;
+      label: string;
+      slug: string;
+      filters: {
+        key: string;
+        value: string;
+      }[];
+    }[];
+    prices: {
+      id: string;
+      sku: string;
+      amount: number;
+      originalAmount: number;
+      scheduled: {
+        id: string;
+        amount: number;
+        originalAmount: number;
+        activeAt: number;
+        createdAt: number;
+      }[];
+      vat: {
+        rate: number;
+        countryCode: string;
+        administrativeArea: string;
+      }[];
+      activeSince: number;
+      createdAt: number;
+      updatedAt: number;
+    }[];
+    createdAt: number;
+    updatedAt: number;
+  }[];
+  channel: Channel;
+  expiresAt: number;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export type ApproveStockUpdateSubscriptionResponse = {
+  isSuccessful: boolean;
+}
+
+export type RemoveStockUpdateSubscriptionResponse = {
+  isSuccessful: boolean;
+}
+
 export interface PageInfo {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
@@ -504,6 +565,12 @@ export interface User {
 
 export interface VerifyUserInput {
   token: string;
+}
+
+export interface CreateStockUpdateSubscriptionInput {
+  channelId?: string;
+  email: string;
+  sku: string;
 }
 
 export type ChannelId = OptionalString;

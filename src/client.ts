@@ -3,11 +3,14 @@ import { createGraphQLClient } from '@afosto/graphql-client';
 import {
   addCouponToCartMutation,
   addItemsToCartMutation,
+  approveStockUpdateSubscriptionMutation,
   changePasswordMutation,
   confirmCartMutation,
   createCartMutation,
+  createStockUpdateSubscriptionMutation,
   removeCouponFromCartMutation,
   removeItemsFromCartMutation,
+  removeStockUpdateSubscriptionMutation,
   requestPasswordResetMutation,
   requestUserVerificationMutation,
   resetPasswordMutation,
@@ -23,19 +26,20 @@ import {
   getAccountOrdersQuery,
   getCartQuery,
   getChannelQuery,
-  getOrderQuery
+  getOrderQuery,
 } from './queries';
 import { isDefined, parseJwt, uuid } from './utils';
 import {
   STOREFRONT_STORAGE_KEY_PREFIX,
   STOREFRONT_CART_TOKEN_STORAGE_TYPE,
   STOREFRONT_CART_TOKEN_STORAGE_NAME,
-  STOREFRONT_USER_TOKEN_COOKIE_NAME
+  STOREFRONT_USER_TOKEN_COOKIE_NAME,
 } from './constants';
 import {
   Account,
   AccountOrder,
   AccountOrdersResponse,
+  ApproveStockUpdateSubscriptionResponse,
   CartIntent,
   CartItemIds,
   CartItemsInput,
@@ -45,10 +49,13 @@ import {
   ChannelId,
   ChannelResponse,
   CreateCartInput,
+  CreateStockUpdateSubscriptionInput,
+  CreateStockUpdateSubscriptionResponse,
   DecodedUserToken,
   GraphQLClientError,
   OptionalString,
   OrderResponse,
+  RemoveStockUpdateSubscriptionResponse,
   RequestPasswordResetInput,
   RequestUserVerificationInput,
   ResetPasswordInput,
@@ -177,7 +184,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Check for cart mutations whether the stored cart token is still valid.
    * @private
    */
-  const checkStoredCartTokenStillValid = async (error: GraphQLClientError, callback: Function): Promise<any> => {
+  const checkStoredCartTokenStillValid = async (
+    error: GraphQLClientError,
+    callback: Function,
+  ): Promise<any> => {
     const { errors } = error?.response || {};
     const cartNotFound = (errors || []).some(
       responseError => responseError.extensions?.status === 404,
@@ -233,7 +243,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     storedUserToken = null;
 
     if (storeUserToken) {
-      Cookies.remove(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, userTokenCookieOptions);
+      Cookies.remove(
+        `${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`,
+        userTokenCookieOptions,
+      );
     }
   };
 
@@ -246,7 +259,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     storedUserToken = token;
 
     if (storeUserToken) {
-      Cookies.set(`${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`, token, userTokenCookieOptions);
+      Cookies.set(
+        `${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`,
+        token,
+        userTokenCookieOptions,
+      );
     }
   };
 
@@ -282,7 +299,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Send an authenticated graphQL request with the user token.
    */
-  const authenticatedRequest = async (gqlQuery: string, variables: object = {}, options: object = {}): Promise<any> =>
+  const authenticatedRequest = async (
+    gqlQuery: string,
+    variables: object = {},
+    options: object = {},
+  ): Promise<any> =>
     gqlClient.request(gqlQuery, variables, {
       authorization: `Bearer ${storedUserToken || ''}`,
       ...options,
@@ -291,7 +312,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Send a graphQL request.
    */
-  const request = async (gqlQuery: string, variables: object = {}, options: object = {}): Promise<any> =>
+  const request = async (
+    gqlQuery: string,
+    variables: object = {},
+    options: object = {},
+  ): Promise<any> =>
     gqlClient.request(gqlQuery, variables, {
       authorization: `Bearer ${config.storefrontToken || ''}`,
       ...options,
@@ -316,7 +341,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       return response?.confirmCart?.order || null;
     } catch (error: unknown) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () =>
+          Promise.reject(error),
+        );
       }
 
       return Promise.reject(error);
@@ -370,7 +397,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Add items to the cart
    */
-  const addCartItems = async (items: CartItemsInput, cartToken?: CartToken): Promise<CartResponse> => {
+  const addCartItems = async (
+    items: CartItemsInput,
+    cartToken?: CartToken,
+  ): Promise<CartResponse> => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
@@ -391,13 +421,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       return response?.addItemsToCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error as GraphQLClientError, async (cartNotFound: boolean) => {
-          if (cartNotFound) {
-            return addCartItems(items);
-          }
+        return checkStoredCartTokenStillValid(
+          error as GraphQLClientError,
+          async (cartNotFound: boolean) => {
+            if (cartNotFound) {
+              return addCartItems(items);
+            }
 
-          return Promise.reject(error);
-        });
+            return Promise.reject(error);
+          },
+        );
       }
 
       return Promise.reject(error);
@@ -407,7 +440,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Remove items from cart
    */
-  const removeCartItems = async (ids: CartItemIds, cartToken?: CartToken): Promise<CartResponse> => {
+  const removeCartItems = async (
+    ids: CartItemIds,
+    cartToken?: CartToken,
+  ): Promise<CartResponse> => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -428,7 +464,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       return response?.removeItemsFromCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () =>
+          Promise.reject(error),
+        );
       }
 
       return Promise.reject(error);
@@ -438,7 +476,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Set the country code of the customer for a cart
    */
-  const setCountryCodeForCart = async (countryCode: string, cartToken?: CartToken): Promise<CartResponse> => {
+  const setCountryCodeForCart = async (
+    countryCode: string,
+    cartToken?: CartToken,
+  ): Promise<CartResponse> => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
@@ -463,7 +504,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       return response?.setCountryCodeForCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () =>
+          Promise.reject(error),
+        );
       }
 
       return Promise.reject(error);
@@ -498,7 +541,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       return response?.addCouponToCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () =>
+          Promise.reject(error),
+        );
       }
 
       return Promise.reject(error);
@@ -508,7 +553,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Remove coupon code from cart
    */
-  const removeCouponFromCart = async (coupon: string, cartToken?: CartToken): Promise<CartResponse> => {
+  const removeCouponFromCart = async (
+    coupon: string,
+    cartToken?: CartToken,
+  ): Promise<CartResponse> => {
     try {
       const currentCartToken = cartToken || storedCartToken;
 
@@ -529,7 +577,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       return response?.removeCouponFromCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
-        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () => Promise.reject(error));
+        return checkStoredCartTokenStillValid(error as GraphQLClientError, async () =>
+          Promise.reject(error),
+        );
       }
 
       return Promise.reject(error);
@@ -627,7 +677,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Sign up
    */
   const signUp = async (input: SignUpInput): Promise<User | null> => {
-    const { givenName, additionalName, familyName, email, password, addressing, phoneNumber } = input || {};
+    const { givenName, additionalName, familyName, email, password, addressing, phoneNumber } =
+      input || {};
     const response = await request(signUpMutation, {
       signUpInput: {
         givenName,
@@ -653,13 +704,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Update the account information of the user that is logged in.
    */
-  const updateAccountInformation = async (input: UpdateAccountInformationInput): Promise<Account | null> => {
+  const updateAccountInformation = async (
+    input: UpdateAccountInformationInput,
+  ): Promise<Account | null> => {
     const response = await authenticatedRequest(updateAccountInformationMutation, {
       updateAccountInformationInput: input || {},
     });
 
     return response?.updateAccount?.account || null;
-  }
+  };
 
   /**
    * Verify the user.
@@ -692,7 +745,13 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       }
 
       const decodedToken = decodeUserToken(storedUserToken) as DecodedUserToken | null;
-      const { sub: id, email, family_name: familyName, given_name: givenName, name } = decodedToken || {};
+      const {
+        sub: id,
+        email,
+        family_name: familyName,
+        given_name: givenName,
+        name,
+      } = decodedToken || {};
 
       if (!id) {
         return null;
@@ -705,7 +764,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         givenName: givenName || '',
         name: name || '',
       };
-    } catch(error) {
+    } catch (error) {
       return null;
     }
   };
@@ -763,15 +822,57 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     return response?.channel || null;
   };
 
+  /**
+   * Subscribe to stock updates for the given SKU
+   */
+  const createStockUpdateSubscription = async (
+    input: CreateStockUpdateSubscriptionInput,
+  ): Promise<CreateStockUpdateSubscriptionResponse> => {
+    const response = await request(createStockUpdateSubscriptionMutation, {
+      createStockUpdateSubscriptionInput: input,
+    });
+    return response?.createStockUpdateSubscription || null;
+  };
+
+  /**
+   * Approve a requested stock update subscription
+   */
+  const approveStockUpdateSubscription = async (
+    token: string,
+  ): Promise<ApproveStockUpdateSubscriptionResponse> => {
+    const response = await request(approveStockUpdateSubscriptionMutation, {
+      approveStockUpdateSubscriptionInput: {
+        token,
+      },
+    });
+    return response?.approveStockUpdateSubscription || null;
+  };
+
+  /**
+   * Unsubscribe from stock updates
+   */
+  const removeStockUpdateSubscription = async (
+    token: string,
+  ): Promise<RemoveStockUpdateSubscriptionResponse> => {
+    const response = await request(removeStockUpdateSubscriptionMutation, {
+      removeStockUpdateSubscriptionInput: {
+        token,
+      },
+    });
+    return response?.removeStockUpdateSubscription || null;
+  };
+
   initializeCartTokenFromStorage();
   initializeUserToken();
 
   return {
     addCartItems,
     addCouponToCart,
+    approveStockUpdateSubscription,
     changePassword,
     confirmCart,
     createCart,
+    createStockUpdateSubscription,
     getAccountInformation,
     getAccountOrder,
     getAccountOrders,
@@ -787,6 +888,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     removeCartItems,
     removeCartTokenFromStorage,
     removeCouponFromCart,
+    removeStockUpdateSubscription,
     requestPasswordReset,
     requestUserVerification,
     resetPassword,
