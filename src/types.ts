@@ -26,8 +26,8 @@ export interface Address {
   options?: {
     format?: {
       address?: string;
-    },
-  },
+    };
+  };
   isValid?: boolean;
   errors?: string[];
 }
@@ -84,13 +84,13 @@ export enum Carriers {
 export type CarrierKey = keyof typeof Carriers;
 
 export interface Cart {
-    id: string;
-    [key: string]: any;
+  id: string;
+  [key: string]: any;
 }
 
 export interface Channel {
-    id: string;
-    [key: string]: any;
+  id: string;
+  [key: string]: any;
 }
 
 export interface DeliveryMethod {
@@ -251,6 +251,13 @@ export interface AccountInvoice {
   total: number;
 }
 
+export enum AccountOrderProcessing {
+  invoice = 'INVOICE',
+  cover = 'COVER',
+}
+
+export type AccountOrderProcessKey = keyof typeof AccountOrderProcessing;
+
 export interface AccountOrder {
   id: string;
   number: string;
@@ -263,12 +270,13 @@ export interface AccountOrder {
   total: number;
   totalExcludingVat: number;
   currency: string;
-  adjustments: Adjustment[]
+  adjustments: Adjustment[];
   billingAddress?: Address;
+  processing: AccountOrderProcessing[];
   fees: {
     shipping: Fee[];
     payment: Fee[];
-  }
+  };
   invoices: AccountInvoice[];
   items: AccountOrderItem[];
   metaData?: object;
@@ -277,11 +285,19 @@ export interface AccountOrder {
   vat: Vat[];
 }
 
-export interface AccountOrdersResponseOrderItem extends Pick<AccountOrderItem, 'sku' | 'type' | 'image' | 'label' | 'brand' | 'mpn' | 'gtin' | 'url' | 'quantity'> {
-  delivery?: Pick<AccountOrderItemDelivery, 'expectedAt' | 'status' | 'trackTraceCode' | 'trackTraceUrl'>;
+export interface AccountOrdersResponseOrderItem
+  extends Pick<
+    AccountOrderItem,
+    'sku' | 'type' | 'image' | 'label' | 'brand' | 'mpn' | 'gtin' | 'url' | 'quantity'
+  > {
+  delivery?: Pick<
+    AccountOrderItemDelivery,
+    'expectedAt' | 'status' | 'trackTraceCode' | 'trackTraceUrl'
+  >;
 }
 
-export interface AccountOrdersResponseOrder extends Pick<AccountOrder, 'id' | 'number' | 'createdAt' | 'updatedAt'> {
+export interface AccountOrdersResponseOrder
+  extends Pick<AccountOrder, 'id' | 'number' | 'createdAt' | 'updatedAt'> {
   items: AccountOrdersResponseOrderItem[];
 }
 
@@ -347,15 +363,15 @@ export type CreateStockUpdateSubscriptionResponse = {
   expiresAt: number;
   createdAt: number;
   updatedAt: number;
-}
+};
 
 export type ApproveStockUpdateSubscriptionResponse = {
   isSuccessful: boolean;
-}
+};
 
 export type RemoveStockUpdateSubscriptionResponse = {
   isSuccessful: boolean;
-}
+};
 
 export interface PageInfo {
   hasPreviousPage: boolean;
@@ -365,143 +381,143 @@ export interface PageInfo {
 }
 
 export interface GraphQLClientOptions {
-    convertResponseToCamelCase?: boolean;
-    convertVariablesToSnakeCase?: boolean;
-    excludeConversionKeys?: Array<string>;
-    stopPaths?: Array<string>;
-    [key: string]: any;
+  convertResponseToCamelCase?: boolean;
+  convertVariablesToSnakeCase?: boolean;
+  excludeConversionKeys?: Array<string>;
+  stopPaths?: Array<string>;
+  [key: string]: any;
 }
 
 export interface GraphQLExtensions {
-    status?: number;
-    [key: string]: any;
+  status?: number;
+  [key: string]: any;
 }
 
 export interface GraphQLError {
-    extensions?: GraphQLExtensions;
-    message?: OptionalString;
-    path?: Array<string>;
-    [key: string]: any;
+  extensions?: GraphQLExtensions;
+  message?: OptionalString;
+  path?: Array<string>;
+  [key: string]: any;
 }
 
 export interface GraphQLResponse {
-    data?: object | null;
-    errors?: Array<GraphQLError>;
-    extensions?: GraphQLExtensions;
-    [key: string]: any;
+  data?: object | null;
+  errors?: Array<GraphQLError>;
+  extensions?: GraphQLExtensions;
+  [key: string]: any;
 }
 
 export interface GraphQLClientError extends Error {
-    response: GraphQLResponse;
+  response: GraphQLResponse;
 }
 
 export interface AddressInput {
-    countryCode: string;
-    administrativeArea?: string;
-    locality: string;
-    dependentLocality?: string;
-    postalCode: string;
-    sortingCode?: string;
-    addressLine1: string;
-    addressLine2?: string;
-    thoroughfare: string;
-    premiseNumber: number;
-    premiseNumberSuffix?: string;
-    organisation?: string;
-    givenName?: string;
-    additionalName?: string;
-    familyName?: string;
+  countryCode: string;
+  administrativeArea?: string;
+  locality: string;
+  dependentLocality?: string;
+  postalCode: string;
+  sortingCode?: string;
+  addressLine1: string;
+  addressLine2?: string;
+  thoroughfare: string;
+  premiseNumber: number;
+  premiseNumberSuffix?: string;
+  organisation?: string;
+  givenName?: string;
+  additionalName?: string;
+  familyName?: string;
 }
 
 export interface AddressingInput {
-    billing?: AddressInput;
-    shipping?: AddressInput;
+  billing?: AddressInput;
+  shipping?: AddressInput;
 }
 
 export interface PhoneNumberInput {
-    countryCode: string;
-    number: string;
+  countryCode: string;
+  number: string;
 }
 
 export interface ContactInput {
-    id?: string;
-    email: string;
-    password?: string;
-    isGuest: boolean;
-    givenName: string;
-    additionalName?: string;
-    familyName: string;
-    addressing?: AddressingInput;
-    phoneNumber?: PhoneNumberInput;
-    channelId?: string;
+  id?: string;
+  email: string;
+  password?: string;
+  isGuest: boolean;
+  givenName: string;
+  additionalName?: string;
+  familyName: string;
+  addressing?: AddressingInput;
+  phoneNumber?: PhoneNumberInput;
+  channelId?: string;
 }
 
 export interface AdministrationInput {
-    email: string;
+  email: string;
 }
 
 export interface RegistrationInput {
-    countryCode: string;
-    number: string;
+  countryCode: string;
+  number: string;
 }
 
 export interface OrganisationInput {
-    id?: string;
-    name: string;
-    isGuest: boolean;
-    administration: AdministrationInput;
-    addressing?: AddressingInput;
-    phoneNumber?: PhoneNumberInput;
-    registration?: RegistrationInput;
-    cocNumber?: string;
-    channelId?: string;
+  id?: string;
+  name: string;
+  isGuest: boolean;
+  administration: AdministrationInput;
+  addressing?: AddressingInput;
+  phoneNumber?: PhoneNumberInput;
+  registration?: RegistrationInput;
+  cocNumber?: string;
+  channelId?: string;
 }
 
 export interface CustomerInput {
-    contact?: ContactInput;
-    organisation?: OrganisationInput;
+  contact?: ContactInput;
+  organisation?: OrganisationInput;
 }
 
 export interface CreateCartInput {
-    id?: string;
-    customer?: CustomerInput;
-    coupons?: Array<string>;
-    channelId?: string;
-    countryCode?: string;
-    currency?: string;
-    sessionId?: string;
-    successReturnUrl?: string;
-    failureReturnUrl?: string;
+  id?: string;
+  customer?: CustomerInput;
+  coupons?: Array<string>;
+  channelId?: string;
+  countryCode?: string;
+  currency?: string;
+  sessionId?: string;
+  successReturnUrl?: string;
+  failureReturnUrl?: string;
 }
 
 export interface CartItemDeliveryInput {
-    shippingMethod?: string;
-    addressId?: string;
-    expectedAt?: number;
-    windowStartAt?: number;
-    windowEndAt?: number;
+  shippingMethod?: string;
+  addressId?: string;
+  expectedAt?: number;
+  windowStartAt?: number;
+  windowEndAt?: number;
 }
 
 export interface CartItemMetaDataInput {
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export interface CartItemChildInput {
-    sku: string;
-    quantity: number;
-    delivery?: CartItemDeliveryInput;
-    price?: number;
-    metaData?: CartItemMetaDataInput;
+  sku: string;
+  quantity: number;
+  delivery?: CartItemDeliveryInput;
+  price?: number;
+  metaData?: CartItemMetaDataInput;
 }
 
 export interface CartItemsInput {
-    sku: string;
-    quantity: number;
-    delivery?: CartItemDeliveryInput;
-    price?: number;
-    children?: Array<CartItemChildInput>
-    metaData?: CartItemMetaDataInput;
-    parentItemId?: string;
+  sku: string;
+  quantity: number;
+  delivery?: CartItemDeliveryInput;
+  price?: number;
+  children?: Array<CartItemChildInput>;
+  metaData?: CartItemMetaDataInput;
+  parentItemId?: string;
 }
 
 export interface ChangePasswordInput {
