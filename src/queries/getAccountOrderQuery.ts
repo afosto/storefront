@@ -1,9 +1,5 @@
 import { gql } from '@afosto/graphql-client';
-import {
-  CoreAddressFragment,
-  CoreFeeFragment,
-  CoreVatAmountFragment
-} from '../fragments';
+import { CoreAddressFragment, CoreFeeFragment, CoreVatAmountFragment } from '../fragments';
 
 export const getAccountOrderQuery = gql`
   ${CoreAddressFragment}
@@ -24,6 +20,7 @@ export const getAccountOrderQuery = gql`
         total_excluding_vat
         coupons
         currency
+        processing
         billing_address {
           id
           ...CoreAddressFragment

@@ -9,6 +9,7 @@
 
 # GQL
 .graphqlconfig
+graphql.config.yml
 afosto-schema.graphql
 
 # misc
