@@ -35,6 +35,7 @@ export const CoreOrderFragment = gql`
     updated_at
     customer {
       notes
+      reference
       contact {
         id
         number
