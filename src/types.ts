@@ -52,6 +52,40 @@ export interface PhoneNumber {
   number: string;
 }
 
+export interface Registration {
+  id?: string;
+  countryCode: string;
+  number: string;
+}
+
+export interface Organisation {
+  id: string;
+  avatar?: string;
+  cocNumber?: string;
+  createdAt?: number;
+  updatedAt?: number;
+  name: string;
+  number?: string;
+  administration?: {
+    email?: string;
+  };
+  addressing?: {
+    billing?: {
+      primary?: Address;
+      secondary?: Address[];
+    };
+    shipping?: {
+      primary?: Address;
+      secondary?: Address[];
+    };
+  };
+  phoneNumbers?: {
+    primary?: PhoneNumber;
+    secondary?: PhoneNumber[];
+  };
+  registration?: Registration;
+}
+
 export interface Account {
   email: string;
   givenName: string;
@@ -61,6 +95,7 @@ export interface Account {
   updatedAt?: number;
   billing: Address[];
   shipping: Address[];
+  organisations: Organisation[];
   phoneNumbers: PhoneNumber[];
 }
 
