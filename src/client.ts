@@ -811,7 +811,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     const response = await request(reorderMutation, {
       reorderInput: input,
     });
-    return response?.cart || null;
+    return response?.reorder?.cart || null;
   };
 
   /**
