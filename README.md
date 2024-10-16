@@ -299,13 +299,13 @@ Get a specific account order by ID.
 const order = await client.getAccountOrder('order-id');
 ```
 
-### Reorder a previous order
+### Reorder a previous account order
 
-Create a new cart from an existing order.
+Create a new cart from an existing order in an account.
 Optionally you can pass in an ID to create the new cart with. 
 
 ```js
-const order = await client.reorderOrder({
+const order = await client.reorderAccountOrder({
   orderId: 'order-id',
   cartId: 'cart-id',
 });

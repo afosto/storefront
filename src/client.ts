@@ -805,10 +805,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
-   * Reorder a previous order by ID
+   * Reorder a previous order of the account by ID
    */
-  const reorderOrder = async (input: ReorderInput): Promise<CartResponse> => {
-    const response = await request(reorderMutation, {
+  const reorderAccountOrder = async (input: ReorderInput): Promise<CartResponse> => {
+    const response = await authenticatedRequest(reorderMutation, {
       reorderInput: input,
     });
     return response?.reorder?.cart || null;
@@ -901,7 +901,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     removeCartTokenFromStorage,
     removeCouponFromCart,
     removeStockUpdateSubscription,
-    reorderOrder,
+    reorderAccountOrder,
     requestPasswordReset,
     requestUserVerification,
     resetPassword,
