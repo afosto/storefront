@@ -8,6 +8,7 @@ export * from './createStockUpdateSubscriptionMutation';
 export * from './removeCouponFromCartMutation';
 export * from './removeItemsFromCartMutation';
 export * from './removeStockUpdateSubscriptionMutation';
+export * from './reorderMutation';
 export * from './requestPasswordResetMutation';
 export * from './requestUserVerificationMutation';
 export * from './resetPasswordMutation';

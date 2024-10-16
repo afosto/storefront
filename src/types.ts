@@ -347,6 +347,11 @@ export type ChannelResponse = Channel | null;
 
 export type OrderResponse = object | null;
 
+export interface ReorderInput {
+  orderId: string;
+  cartId?: string;
+}
+
 export type CreateStockUpdateSubscriptionResponse = {
   email: string;
   products: {
