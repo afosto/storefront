@@ -11,6 +11,7 @@ import {
   removeCouponFromCartMutation,
   removeItemsFromCartMutation,
   removeStockUpdateSubscriptionMutation,
+  reorderMutation,
   requestPasswordResetMutation,
   requestUserVerificationMutation,
   resetPasswordMutation,
@@ -56,6 +57,7 @@ import {
   OptionalString,
   OrderResponse,
   RemoveStockUpdateSubscriptionResponse,
+  ReorderInput,
   RequestPasswordResetInput,
   RequestUserVerificationInput,
   ResetPasswordInput,
@@ -803,6 +805,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Reorder a previous order of the account by ID
+   */
+  const reorderAccountOrder = async (input: ReorderInput): Promise<CartResponse> => {
+    const response = await authenticatedRequest(reorderMutation, {
+      reorderInput: input,
+    });
+    return response?.reorder?.cart || null;
+  };
+
+  /**
    * Get an order by ID
    */
   const getOrder = async (id: string): Promise<OrderResponse> => {
@@ -889,6 +901,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     removeCartTokenFromStorage,
     removeCouponFromCart,
     removeStockUpdateSubscription,
+    reorderAccountOrder,
     requestPasswordReset,
     requestUserVerification,
     resetPassword,
