@@ -16,14 +16,16 @@
 
 ### Yarn / NPM
 
+Install with Yarn
 ```sh
-# Install with Yarn
 yarn add @afosto/storefront
-
-# Install with PNPM
+```
+Install with PNPM
+```sh
 pnpm add @afosto/storefront
-
-# Install with NPM
+```
+Install with NPM
+```sh
 npm install @afosto/storefront
 ```
 
@@ -87,26 +89,24 @@ Before using these examples check the **Get started** section how to initialize 
 
 Use this when you manually want to create a new cart.
 
+Fetch the cart information if a cart exists. Returns null when no cart exists.
 ```js
-// Fetch the cart information if an cart exists. Returns null when no cart exists.
-
 const cart = await client.getCart();
 ```
 
 ### Get cart information
 
-```js
-// Fetch the cart information if an cart exists. Returns null when no cart exists.
+ Fetch the cart information if a cart exists. Returns null when no cart exists.
 
+```js
 const cart = await client.getCart();
 ```
 
 ### Add items to cart
+Add one or multiple items to the existing cart. 
+If the autoCreateCart option is true, it will create a new cart when a cart doesn't exist yet.
 
 ```js
-// Add one or multiple items to the existing cart. 
-// If the autoCreateCart option is true, it will create a new cart when a cart doesn't exist yet.
-
 const cart = await client.addCartItems([
   {
     sku: 'sku-123',
@@ -117,57 +117,57 @@ const cart = await client.addCartItems([
 
 ### Remove items from the cart
 
-```js
-// Remove items from the cart by item ids. 
+Remove items from the cart by item ids. 
 
+```js
 const cart = await client.removeCartItems(['item-id-1', 'item-id-2']);
 ```
 
 ### Add coupon code to the cart
 
-```js
-// Add a coupon code to the cart.
+Add a coupon code to the cart.
 
+```js
 const cart = await client.addCouponToCart('my-coupon-code');
 ```
 
 ### Remove coupon code from the cart
 
-```js
-// Remove a coupon code from the cart.
+Remove a coupon code from the cart.
 
+```js
 const cart = await client.removeCouponFromCart('my-coupon-code');
 ```
 
 ### Set the alpha-2 country code on the cart
 
-```js
-// Set the alpha-2 country code for the cart.
+Set the alpha-2 country code for the cart.
 
+```js
 const cart = await client.setCountryCodeForCart('US');
 ```
 
 ### Create an order by confirming the cart
 
-```js
-// Confirm the cart which creates an order.
+Confirm the cart which creates an order.
 
+```js
 const order = await client.confirmCart();
 ```
 
 ### Get order information
 
-```js
-// Fetch order information for an order ID. Returns null when the order doesn't exist.
+Fetch order information for an order ID. Returns null when the order doesn't exist.
 
+```js
 const order = await client.getOrder('order-id');
 ```
 
 ### Get channel information
 
-```js
-// Fetch channel information. Returns null when the channel doesn't exist.
+Fetch channel information. Returns null when the channel doesn't exist.
 
+```js
 const channel = await client.getChannel();
 ```
 
@@ -188,9 +188,9 @@ client.signOut();
 
 ### Sign up
 
-```js
-// You can also optionally provide a phone number, billing address and shipping address.
+You can also optionally provide a phone number, billing address and shipping address.
 
+```js
 const user = await client.signUp({
   givenName: 'John',
   additionalName: '',
@@ -202,17 +202,17 @@ const user = await client.signUp({
 
 ### Get current user
 
-```js
-// Get the current user information or null when the user isn't signed in.
+Get the current user information or null when the user isn't signed in.
 
+```js
 const user = client.getUser();
 ```
 
 ### Request password reset
 
-```js
-// This will sent a password reset email to the provided email address.
+This will send a password reset email to the provided email address.
 
+```js
 const isSuccessful = await client.requestPasswordReset({
   email: 'johndoe@example.com',
 });
@@ -220,9 +220,9 @@ const isSuccessful = await client.requestPasswordReset({
 
 ### Reset password
 
-```js
-// Provide the reset password token and the new password.
+Provide the reset password token and the new password.
 
+```js
 const isSuccessful = await client.resetPassword({
   token: 'reset-password-token',
   newPassword: '********',
@@ -231,9 +231,9 @@ const isSuccessful = await client.resetPassword({
 
 ### Request user verification
 
-```js
-// This will sent a verification email to the provided email address.
+This will send a verification email to the provided email address.
 
+```js
 const isSuccessful = await client.requestUserVerification({
   email: 'johndoe@example.com',
 });
@@ -241,9 +241,9 @@ const isSuccessful = await client.requestUserVerification({
 
 ### Verify user
 
-```js
-// Verify the user by providing a verification token.
+Verify the user by providing a verification token.
 
+```js
 const user = await client.verifyUser({
   token: 'verification-token',
 });
@@ -251,10 +251,10 @@ const user = await client.verifyUser({
 
 ### Change password
 
-```js
-// Change the password for the user that's signed in.
-// The password field is the current password.
+Change the password for the user that's signed in.
+The password field is the current password.
 
+```js
 const user = await client.changePassword({
   password: '******',
   newPassword: '********',
@@ -263,18 +263,18 @@ const user = await client.changePassword({
 
 ### Get account information
 
-```js
-// Get the account information for the user that's signed in.
+Get the account information for the user that's signed in.
 
+```js
 const account = await client.getAccountInformation();
 ```
 
 ### Update account information
 
-```js
-// Update the account information for the user that's signed in.
-// You only have to provide the information that you would like to update.
+Update the account information for the user that's signed in.
+You only have to provide the information that you would like to update.
 
+```js
 const account = await client.updateAccountInformation({
   email: 'janedoe@example.com',
   givenName: 'Jane',
@@ -285,25 +285,37 @@ const account = await client.updateAccountInformation({
 
 ### List account orders
 
-```js
-// Get all account orders from the user that's signed in.
+Get all account orders from the user that's signed in.
 
+```js
 const { orders, pageInfo } = await client.getAccountOrders();
 ```
 
 ### Get account order
 
-```js
-// Get a specific account order by ID.
+Get a specific account order by ID.
 
+```js
 const order = await client.getAccountOrder('order-id');
+```
+
+### Reorder a previous order
+
+Create a new cart from an existing order.
+Optionally you can pass in an ID to create the new cart with. 
+
+```js
+const order = await client.reorderOrder({
+  orderId: 'order-id',
+  cartId: 'cart-id',
+});
 ```
 
 ### Subscribe to stock updates
 
-```js
-// Get stock updates for the given SKU on the given email address.
+Get stock updates for the given SKU on the given email address.
 
+```js
 const order = await client.createStockUpdateSubscription({
   email: 'janedoe@example.com',
   sku: 'sku-123',
@@ -312,17 +324,17 @@ const order = await client.createStockUpdateSubscription({
 
 ### Approve stock updates subscription
 
-```js
-// Approve a requested stock update subscription with a token.
+Approve a requested stock update subscription with a token.
 
+```js
 const order = await client.approveStockUpdateSubscription('87ff9149-dcca-4cd7-a154-b03c5cbf62c3');
 ```
 
 ### Remove stock updates subscriptions
 
-```js
-// Remove all stock update subscriptions for an email address with a token.
+Remove all stock update subscriptions for an email address with a token.
 
+```js
 const order = await client.removeStockUpdateSubscription('ef34c272-b1ee-41b3-9e07-01e792405747');
 ```
 
