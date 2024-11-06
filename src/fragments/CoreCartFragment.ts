@@ -43,32 +43,6 @@ export const CoreCartFragment = gql`
           key
           value
         }
-        prices {
-          amount
-          original_amount
-        }
-        bundle {
-          parts {
-            quantity
-            product {
-              sku
-              label
-              gtin
-              slug
-              mpn
-              brand
-              images
-              filters {
-                key
-                value
-              }
-              prices {
-                amount
-                original_amount
-              }
-            }
-          }
-        }
       }
     }
     items {
