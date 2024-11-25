@@ -28,6 +28,7 @@ export const CoreAccountFragment = gql`
     }
     organisations {
       id
+      type
       avatar
       coc_number
       created_at
@@ -70,6 +71,7 @@ export const CoreAccountFragment = gql`
     }
     shared_organisations {
       id
+      type
       avatar
       coc_number
       created_at

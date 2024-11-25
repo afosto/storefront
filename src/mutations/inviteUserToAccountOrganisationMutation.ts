@@ -15,6 +15,7 @@ export const inviteUserToAccountOrganisationMutation = gql`
     addContactToAccountOrganisation(input: $invite_user_to_account_organisation_input) {
       organisation {
         id
+        type
         avatar
         coc_number
         created_at

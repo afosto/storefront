@@ -8,6 +8,7 @@ export const getAccountOrganisationUsersQuery = gql`
     account {
       shared_organisations {
         id
+        type
         shared_contacts {
           is_admin
           contact {

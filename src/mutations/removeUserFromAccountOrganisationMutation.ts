@@ -15,6 +15,7 @@ export const removeUserFromAccountOrganisationMutation = gql`
     removeContactFromAccountOrganisation(input: $remove_user_from_account_organisation_input) {
       organisation {
         id
+        type
         avatar
         coc_number
         created_at

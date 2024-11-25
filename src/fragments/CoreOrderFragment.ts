@@ -51,6 +51,7 @@ export const CoreOrderFragment = gql`
       }
       organisation {
         id
+        type
         name
         number
         coc_number
