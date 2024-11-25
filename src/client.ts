@@ -828,7 +828,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       },
     });
 
-    return response?.inviteUserToAccountOrganisation?.organisation || null;
+    return response?.addContactToAccountOrganisation?.organisation || null;
   };
 
   /**
@@ -845,7 +845,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       },
     });
 
-    return response?.inviteUserToAccountOrganisation?.organisation || null;
+    return response?.removeContactFromAccountOrganisation?.organisation || null;
   };
 
   /**
