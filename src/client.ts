@@ -784,8 +784,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         family_name: familyName,
         given_name: givenName,
         name,
-        organisationId,
-        organisationName,
+        organisation_id: organisationId,
+        organisation_name: organisationName,
       } = decodedToken || {};
 
       if (!id) {

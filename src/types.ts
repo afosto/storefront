@@ -604,8 +604,8 @@ export interface DecodedUserToken {
   family_name: string;
   given_name: string;
   name: string;
-  organisationId?: string;
-  organisationName?: string;
+  organisation_id?: string;
+  organisation_name?: string;
 }
 
 export interface RequestPasswordResetInput {
