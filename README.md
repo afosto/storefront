@@ -180,6 +180,16 @@ const user = await client.signIn({
 });
 ```
 
+### Sign in as organisation
+
+Sign in as an organisation that has been shared with your account. This requires a default sign in first.
+
+```js
+const user = await client.signInAsOrganisation({
+  organisationId: 'organisation-id'
+});
+```
+
 ### Sign out
 
 ```js
@@ -309,6 +319,39 @@ const order = await client.reorderAccountOrder({
   orderId: 'order-id',
   cartId: 'cart-id',
 });
+```
+
+### Invite user to account organisation
+
+Invite a user to get account access to your organisation.
+
+```js
+const organisation = await client.inviteUserToAccountOrganisation({
+  organisationId: 'organisation-id',
+  user: {
+    email: 'johndoe@example.com',
+    isAdmin: false,
+  },
+});
+```
+
+### Remove user from account organisation
+
+Remove a user with account access from your organisation.
+
+```js
+const organisation = await client.removeUserFromAccountOrganisation({
+  organisationId: 'organisation-id',
+  userId: 'user-id'
+});
+```
+
+### List account organisation users
+
+Get the users that have account access to your organisation.
+
+```js
+const { users } = await client.getAccountOrganisationUsers();
 ```
 
 ### Subscribe to stock updates
