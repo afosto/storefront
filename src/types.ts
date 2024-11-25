@@ -58,6 +58,23 @@ export interface Registration {
   number: string;
 }
 
+export interface Contact {
+  id: string;
+  number: string;
+  email: string;
+  givenName: string;
+  additionalName?: string;
+  familyName: string;
+  phoneNumbers?: {
+    primary?: PhoneNumber;
+  };
+}
+
+export interface AccountOrganisationUser {
+  isAdmin: boolean;
+  contact: Contact;
+}
+
 export interface Organisation {
   id: string;
   avatar?: string;
@@ -84,6 +101,7 @@ export interface Organisation {
     secondary?: PhoneNumber[];
   };
   registration?: Registration;
+  sharedContacts?: AccountOrganisationUser[];
 }
 
 export interface Account {
@@ -94,6 +112,7 @@ export interface Account {
   createdAt?: number;
   updatedAt?: number;
   billing: Address[];
+  sharedOrganisations: Organisation[];
   shipping: Address[];
   organisations: Organisation[];
   phoneNumbers: PhoneNumber[];
@@ -347,6 +366,20 @@ export type ChannelResponse = Channel | null;
 
 export type OrderResponse = object | null;
 
+export interface InviteUserToAccountOrganisationInput {
+  organisationId: string;
+  user: {
+    id?: string;
+    email?: string;
+    isAdmin: boolean;
+  };
+}
+
+export interface RemoveUserFromAccountOrganisationInput {
+  organisationId: string;
+  userId: string;
+}
+
 export interface ReorderInput {
   orderId: string;
   cartId?: string;
@@ -571,6 +604,8 @@ export interface DecodedUserToken {
   family_name: string;
   given_name: string;
   name: string;
+  organisationId?: string;
+  organisationName?: string;
 }
 
 export interface RequestPasswordResetInput {
@@ -584,6 +619,10 @@ export interface RequestUserVerificationInput {
 export interface ResetPasswordInput {
   token: string;
   password: string;
+}
+
+export interface SignInAsOrganisationInput {
+  organisationId: string;
 }
 
 export interface SignInInput {
@@ -617,6 +656,10 @@ export interface User {
   familyName: string;
   givenName: string;
   name: string;
+  organisation: {
+    id: string;
+    name: string;
+  } | null;
 }
 
 export interface VerifyUserInput {

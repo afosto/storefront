@@ -1,10 +1,12 @@
 import { gql } from '@afosto/graphql-client';
 import { CoreAddressFragment } from './CoreAddressFragment';
+import { CoreOrganisationFragment } from './CoreOrganisationFragment';
 import { CorePhoneNumberFragment } from './CorePhoneNumberFragment';
 import { CoreRegistrationFragment } from './CoreRegistrationFragment';
 
 export const CoreAccountFragment = gql`
   ${CoreAddressFragment}
+  ${CoreOrganisationFragment}
   ${CorePhoneNumberFragment}
   ${CoreRegistrationFragment}
   fragment CoreAccountFragment on Account {
@@ -28,45 +30,15 @@ export const CoreAccountFragment = gql`
     }
     organisations {
       id
-      avatar
-      coc_number
-      created_at
-      updated_at
-      name
-      number
-      addressing {
-        billing {
-          primary {
-            id
-            ...CoreAddressFragment
-          }
-          secondary {
-            id
-            ...CoreAddressFragment
-          }
-        }
-      }
-      administration {
-        email
-      }
-      phone_numbers {
-        primary {
-          id
-          ...CorePhoneNumberFragment
-        }
-        secondary {
-          id
-          ...CorePhoneNumberFragment
-        }
-      }
-      registration {
-        id
-        ...CoreRegistrationFragment
-      }
+      ...CoreOrganisationFragment
     }
     phone_numbers {
       id
       ...CorePhoneNumberFragment
+    }
+    shared_organisations {
+      id
+      ...CoreOrganisationFragment
     }
   }
 `;

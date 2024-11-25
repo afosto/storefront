@@ -6,6 +6,7 @@ export * from './CoreChannelFragment';
 export * from './CoreFeeFragment';
 export * from './CoreItemFilterFragment';
 export * from './CoreOrderFragment';
+export * from './CoreOrganisationFragment';
 export * from './CorePaymentIssuerFragment';
 export * from './CorePaymentMethodSummaryFragment';
 export * from './CorePhoneNumberFragment';

@@ -8,14 +8,17 @@ import {
   confirmCartMutation,
   createCartMutation,
   createStockUpdateSubscriptionMutation,
+  inviteUserToAccountOrganisationMutation,
   removeCouponFromCartMutation,
   removeItemsFromCartMutation,
   removeStockUpdateSubscriptionMutation,
+  removeUserFromAccountOrganisationMutation,
   reorderMutation,
   requestPasswordResetMutation,
   requestUserVerificationMutation,
   resetPasswordMutation,
   setCountryCodeForCartMutation,
+  signInAsOrganisationMutation,
   signInMutation,
   signUpMutation,
   updateAccountInformationMutation,
@@ -25,6 +28,7 @@ import {
   getAccountInformationQuery,
   getAccountOrderQuery,
   getAccountOrdersQuery,
+  getAccountOrganisationUsersQuery,
   getCartQuery,
   getChannelQuery,
   getOrderQuery,
@@ -40,6 +44,7 @@ import {
   Account,
   AccountOrder,
   AccountOrdersResponse,
+  AccountOrganisationUser,
   ApproveStockUpdateSubscriptionResponse,
   CartIntent,
   CartItemIds,
@@ -54,13 +59,17 @@ import {
   CreateStockUpdateSubscriptionResponse,
   DecodedUserToken,
   GraphQLClientError,
+  InviteUserToAccountOrganisationInput,
   OptionalString,
   OrderResponse,
+  Organisation,
   RemoveStockUpdateSubscriptionResponse,
+  RemoveUserFromAccountOrganisationInput,
   ReorderInput,
   RequestPasswordResetInput,
   RequestUserVerificationInput,
   ResetPasswordInput,
+  SignInAsOrganisationInput,
   SignInInput,
   SignUpInput,
   StorefrontClientOptions,
@@ -669,6 +678,28 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Sign in as organisation
+   * Requires a default signIn first
+   */
+  const signInAsOrganisation = async (input: SignInAsOrganisationInput): Promise<User | null> => {
+    const { organisationId } = input || {};
+    const response = await authenticatedRequest(signInAsOrganisationMutation, {
+      signInAsOrganisationInput: {
+        organisationId,
+      },
+    });
+    const { token } = response?.logInAsOrganisation || {};
+
+    if (!token || !validateUserToken(token)) {
+      return Promise.reject('Invalid user token');
+    }
+
+    storeUserToken(token);
+
+    return getUser();
+  };
+
+  /**
    * Sign out
    */
   const signOut = () => {
@@ -753,6 +784,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         family_name: familyName,
         given_name: givenName,
         name,
+        organisationId,
+        organisationName,
       } = decodedToken || {};
 
       if (!id) {
@@ -765,10 +798,54 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         familyName: familyName || '',
         givenName: givenName || '',
         name: name || '',
+        organisation: organisationId
+          ? {
+              id: organisationId,
+              name: organisationName || '',
+            }
+          : null,
       };
     } catch (error) {
       return null;
     }
+  };
+
+  /**
+   * Invite a user to get account access to your organisation
+   */
+  const inviteUserToAccountOrganisation = async (
+    input: InviteUserToAccountOrganisationInput,
+  ): Promise<Organisation | null> => {
+    const { organisationId, user } = input || {};
+    const response = await authenticatedRequest(inviteUserToAccountOrganisationMutation, {
+      inviteUserToAccountOrganisationInput: {
+        organisationId,
+        contact: {
+          contactId: user?.id,
+          email: user?.email,
+          isAdmin: user?.isAdmin,
+        },
+      },
+    });
+
+    return response?.addContactToAccountOrganisation?.organisation || null;
+  };
+
+  /**
+   * Remove a user with account access from your organisation
+   */
+  const removeUserFromAccountOrganisation = async (
+    input: RemoveUserFromAccountOrganisationInput,
+  ): Promise<Organisation | null> => {
+    const { organisationId, userId } = input || {};
+    const response = await authenticatedRequest(removeUserFromAccountOrganisationMutation, {
+      removeUserFromAccountOrganisationInput: {
+        organisationId,
+        contactId: userId,
+      },
+    });
+
+    return response?.removeContactFromAccountOrganisation?.organisation || null;
   };
 
   /**
@@ -802,6 +879,27 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       orders,
       pageInfo,
     };
+  };
+
+  /**
+   * Get the users that have account access to your organisation.
+   */
+  const getAccountOrganisationUsers = async (): Promise<{ users: AccountOrganisationUser[] }> => {
+    const response = await authenticatedRequest(getAccountOrganisationUsersQuery);
+    const accountOrganisations: Organisation[] = response?.account?.sharedOrganisations || [];
+
+    const user = getUser();
+    const userOrganisationId = user?.organisation?.id;
+
+    if (!userOrganisationId) {
+      return { users: [] };
+    }
+
+    const organisation = accountOrganisations.find(
+      organisation => organisation.id === userOrganisationId,
+    );
+
+    return { users: organisation?.sharedContacts || [] };
   };
 
   /**
@@ -888,6 +986,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     getAccountInformation,
     getAccountOrder,
     getAccountOrders,
+    getAccountOrganisationUsers,
     getCart,
     getCartTokenFromStorage,
     getChannel,
@@ -895,12 +994,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     getSessionID,
     getUser,
     getUserToken,
+    inviteUserToAccountOrganisation,
     query: request,
     queryAccount: authenticatedRequest,
     removeCartItems,
     removeCartTokenFromStorage,
     removeCouponFromCart,
     removeStockUpdateSubscription,
+    removeUserFromAccountOrganisation,
     reorderAccountOrder,
     requestPasswordReset,
     requestUserVerification,
@@ -908,6 +1009,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     setCountryCodeForCart,
     setSessionID,
     signIn,
+    signInAsOrganisation,
     signOut,
     signUp,
     storeCartTokenInStorage,
