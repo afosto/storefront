@@ -77,6 +77,7 @@ export interface AccountOrganisationUser {
 
 export interface Organisation {
   id: string;
+  type: string;
   avatar?: string;
   cocNumber?: string;
   createdAt?: number;
