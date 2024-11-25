@@ -1,15 +1,55 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreOrganisationFragment } from '../fragments';
+import {
+  CoreAddressFragment,
+  CorePhoneNumberFragment,
+  CoreRegistrationFragment,
+} from '../fragments';
 
 export const removeUserFromAccountOrganisationMutation = gql`
-  ${CoreOrganisationFragment}
+  ${CoreAddressFragment}
+  ${CorePhoneNumberFragment}
+  ${CoreRegistrationFragment}
   mutation RemoveUserFromAccountOrganisation(
     $remove_user_from_account_organisation_input: RemoveContactFromAccountOrganisationInput!
   ) {
     removeContactFromAccountOrganisation(input: $remove_user_from_account_organisation_input) {
       organisation {
         id
-        ...CoreOrganisationFragment
+        avatar
+        coc_number
+        created_at
+        updated_at
+        name
+        number
+        addressing {
+          billing {
+            primary {
+              id
+              ...CoreAddressFragment
+            }
+            secondary {
+              id
+              ...CoreAddressFragment
+            }
+          }
+        }
+        administration {
+          email
+        }
+        phone_numbers {
+          primary {
+            id
+            ...CorePhoneNumberFragment
+          }
+          secondary {
+            id
+            ...CorePhoneNumberFragment
+          }
+        }
+        registration {
+          id
+          ...CoreRegistrationFragment
+        }
       }
     }
   }
