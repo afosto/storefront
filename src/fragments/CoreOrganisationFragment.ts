@@ -1,6 +1,12 @@
 import { gql } from '@afosto/graphql-client';
+import { CoreAddressFragment } from './CoreAddressFragment';
+import { CorePhoneNumberFragment } from './CorePhoneNumberFragment';
+import { CoreRegistrationFragment } from './CoreRegistrationFragment';
 
 export const CoreOrganisationFragment = gql`
+  ${CoreAddressFragment}
+  ${CorePhoneNumberFragment}
+  ${CoreRegistrationFragment}
   fragment CoreOrganisationFragment on Organisation {
     avatar
     coc_number

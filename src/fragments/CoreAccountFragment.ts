@@ -2,13 +2,11 @@ import { gql } from '@afosto/graphql-client';
 import { CoreAddressFragment } from './CoreAddressFragment';
 import { CoreOrganisationFragment } from './CoreOrganisationFragment';
 import { CorePhoneNumberFragment } from './CorePhoneNumberFragment';
-import { CoreRegistrationFragment } from './CoreRegistrationFragment';
 
 export const CoreAccountFragment = gql`
   ${CoreAddressFragment}
   ${CoreOrganisationFragment}
   ${CorePhoneNumberFragment}
-  ${CoreRegistrationFragment}
   fragment CoreAccountFragment on Account {
     email
     given_name
