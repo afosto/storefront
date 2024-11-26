@@ -786,6 +786,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         name,
         organisation_id: organisationId,
         organisation_name: organisationName,
+        is_admin: isAdmin,
       } = decodedToken || {};
 
       if (!id) {
@@ -802,6 +803,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
           ? {
               id: organisationId,
               name: organisationName || '',
+              role: isAdmin ? 'admin' : 'user',
             }
           : null,
       };
