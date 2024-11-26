@@ -24,6 +24,7 @@ import {
   updateAccountInformationMutation,
   verifyUserMutation,
 } from './mutations';
+import { updateOrganisationOnAccountMutation } from './mutations/updateOrganisationOnAccountMutation';
 import {
   getAccountInformationQuery,
   getAccountOrderQuery,
@@ -74,6 +75,7 @@ import {
   SignUpInput,
   StorefrontClientOptions,
   UpdateAccountInformationInput,
+  UpdateOrganisationOnAccountInput,
   User,
   VerifyUserInput,
 } from './types';
@@ -907,6 +909,19 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Update the information of the organisation the user is signed in to.
+   */
+  const updateOrganisationOnAccount = async (
+    input: UpdateOrganisationOnAccountInput,
+  ): Promise<Account | null> => {
+    const response = await authenticatedRequest(updateOrganisationOnAccountMutation, {
+      updateOrganisationOnAccount: input || {},
+    });
+
+    return response?.updateAccount?.account || null;
+  };
+
+  /**
    * Reorder a previous order of the account by ID
    */
   const reorderAccountOrder = async (input: ReorderInput): Promise<CartResponse> => {
@@ -1018,6 +1033,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     signUp,
     storeCartTokenInStorage,
     updateAccountInformation,
+    updateOrganisationOnAccount,
     validateUserToken,
     verifyUser,
   };

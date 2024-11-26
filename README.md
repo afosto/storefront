@@ -354,6 +354,20 @@ Get the users that have account access to your organisation.
 const { users } = await client.getAccountOrganisationUsers();
 ```
 
+
+### Update information of account organisation 
+
+Update the information of the organisation the user is signed in to.
+
+```js
+const account = await client.updateOrganisationOnAccount({
+  id: 'organisation-id',
+  name: 'My organisation',
+});
+```
+
+
+
 ### Subscribe to stock updates
 
 Get stock updates for the given SKU on the given email address.
