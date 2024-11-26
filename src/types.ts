@@ -504,8 +504,8 @@ export interface AddressInput {
 }
 
 export interface AddressingInput {
-  billing?: AddressInput;
-  shipping?: AddressInput;
+  billing?: AddressInput[];
+  shipping?: AddressInput[];
 }
 
 export interface PhoneNumberInput {
@@ -522,7 +522,7 @@ export interface ContactInput {
   additionalName?: string;
   familyName: string;
   addressing?: AddressingInput;
-  phoneNumber?: PhoneNumberInput;
+  phoneNumber?: PhoneNumberInput[];
   channelId?: string;
 }
 
@@ -541,7 +541,7 @@ export interface OrganisationInput {
   isGuest: boolean;
   administration: AdministrationInput;
   addressing?: AddressingInput;
-  phoneNumber?: PhoneNumberInput;
+  phoneNumber?: PhoneNumberInput[];
   registration?: RegistrationInput;
   cocNumber?: string;
   channelId?: string;
@@ -647,9 +647,9 @@ export interface UpdateAccountInformationInput {
   givenName?: string;
   additionalName?: string;
   familyName?: string;
-  billing?: AddressingInput[];
-  shipping?: AddressingInput[];
-  phoneNumber?: PhoneNumberInput[];
+  billing?: AddressInput[];
+  shipping?: AddressInput[];
+  phoneNumbers?: PhoneNumberInput[];
 }
 
 export interface UpdateOrganisationOnAccountInput {
