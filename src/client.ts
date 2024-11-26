@@ -915,10 +915,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     input: UpdateOrganisationOnAccountInput,
   ): Promise<Account | null> => {
     const response = await authenticatedRequest(updateOrganisationOnAccountMutation, {
-      updateOrganisationOnAccount: input || {},
+      updateOrganisationOnAccountInput: input || {},
     });
 
-    return response?.updateAccount?.account || null;
+    return response?.updateOrganisationOnAccount?.account || null;
   };
 
   /**

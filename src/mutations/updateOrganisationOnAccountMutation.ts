@@ -4,9 +4,9 @@ import { CoreAccountFragment } from '../fragments';
 export const updateOrganisationOnAccountMutation = gql`
   ${CoreAccountFragment}
   mutation UpdateOrganisationOnAccountMutation(
-    $update_organisation_on_acount_input: UpdateOrganisationOnAccountInput!
+    $update_organisation_on_account_input: UpdateOrganisationOnAccountInput!
   ) {
-    updateOrganisationOnAccount(input: $update_organisation_on_acount_input) {
+    updateOrganisationOnAccount(input: $update_organisation_on_account_input) {
       account {
         ...CoreAccountFragment
       }
