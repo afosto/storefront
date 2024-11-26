@@ -360,7 +360,7 @@ const { users } = await client.getAccountOrganisationUsers();
 Update the information of the organisation the user is signed in to.
 
 ```js
-const { users } = await client.updateOrganisationOnAccount({
+const account = await client.updateOrganisationOnAccount({
   id: 'organisation-id',
   name: 'My organisation',
 });
