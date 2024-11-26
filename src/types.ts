@@ -652,6 +652,16 @@ export interface UpdateAccountInformationInput {
   phoneNumber?: PhoneNumberInput[];
 }
 
+export interface UpdateOrganisationOnAccountInput {
+  id: string;
+  name?: string;
+  administration?: AdministrationInput;
+  addressing?: AddressingInput;
+  phoneNumber?: PhoneNumberInput[];
+  registration?: RegistrationInput;
+  cocNumber?: string;
+}
+
 export interface User {
   id: string;
   email: string;
