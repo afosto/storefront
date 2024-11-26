@@ -607,6 +607,7 @@ export interface DecodedUserToken {
   name: string;
   organisation_id?: string;
   organisation_name?: string;
+  is_admin?: boolean;
 }
 
 export interface RequestPasswordResetInput {
@@ -660,6 +661,7 @@ export interface User {
   organisation: {
     id: string;
     name: string;
+    role: string;
   } | null;
 }
 
