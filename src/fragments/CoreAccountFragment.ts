@@ -89,6 +89,16 @@ export const CoreAccountFragment = gql`
             ...CoreAddressFragment
           }
         }
+        shipping {
+          primary {
+            id
+            ...CoreAddressFragment
+          }
+          secondary {
+            id
+            ...CoreAddressFragment
+          }
+        }
       }
       administration {
         email
