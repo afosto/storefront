@@ -909,7 +909,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
-   * Update the organisation information of the organisation the user is logged in to.
+   * Update the organisation information of the organisation the user is signed in to.
    */
   const updateOrganisationOnAccount = async (
     input: UpdateOrganisationOnAccountInput,
