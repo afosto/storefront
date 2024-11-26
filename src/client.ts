@@ -817,7 +817,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const inviteUserToAccountOrganisation = async (
     input: InviteUserToAccountOrganisationInput,
-  ): Promise<Organisation | null> => {
+  ): Promise<{ users: AccountOrganisationUser[] }> => {
     const { organisationId, user } = input || {};
     const response = await authenticatedRequest(inviteUserToAccountOrganisationMutation, {
       inviteUserToAccountOrganisationInput: {
@@ -830,7 +830,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       },
     });
 
-    return response?.addContactToAccountOrganisation?.organisation || null;
+    return { users: response?.addContactToAccountOrganisation?.organisation?.sharedContacts || [] };
   };
 
   /**
@@ -838,7 +838,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const removeUserFromAccountOrganisation = async (
     input: RemoveUserFromAccountOrganisationInput,
-  ): Promise<Organisation | null> => {
+  ): Promise<{ users: AccountOrganisationUser[] }> => {
     const { organisationId, userId } = input || {};
     const response = await authenticatedRequest(removeUserFromAccountOrganisationMutation, {
       removeUserFromAccountOrganisationInput: {
@@ -847,7 +847,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       },
     });
 
-    return response?.removeContactFromAccountOrganisation?.organisation || null;
+    return {
+      users: response?.removeContactFromAccountOrganisation?.organisation?.sharedContacts || [],
+    };
   };
 
   /**

@@ -1,14 +1,8 @@
 import { gql } from '@afosto/graphql-client';
-import {
-  CoreAddressFragment,
-  CorePhoneNumberFragment,
-  CoreRegistrationFragment,
-} from '../fragments';
+import { CorePhoneNumberFragment } from '../fragments';
 
 export const inviteUserToAccountOrganisationMutation = gql`
-  ${CoreAddressFragment}
   ${CorePhoneNumberFragment}
-  ${CoreRegistrationFragment}
   mutation InviteUserToAccountOrganisation(
     $invite_user_to_account_organisation_input: AddContactToAccountOrganisationInput!
   ) {
@@ -16,40 +10,21 @@ export const inviteUserToAccountOrganisationMutation = gql`
       organisation {
         id
         type
-        avatar
-        coc_number
-        created_at
-        updated_at
-        name
-        number
-        addressing {
-          billing {
-            primary {
-              id
-              ...CoreAddressFragment
-            }
-            secondary {
-              id
-              ...CoreAddressFragment
+        shared_contacts {
+          is_admin
+          contact {
+            id
+            number
+            email
+            given_name
+            additional_name
+            family_name
+            phone_numbers {
+              primary {
+                ...CorePhoneNumberFragment
+              }
             }
           }
-        }
-        administration {
-          email
-        }
-        phone_numbers {
-          primary {
-            id
-            ...CorePhoneNumberFragment
-          }
-          secondary {
-            id
-            ...CorePhoneNumberFragment
-          }
-        }
-        registration {
-          id
-          ...CoreRegistrationFragment
         }
       }
     }
