@@ -326,7 +326,7 @@ const order = await client.reorderAccountOrder({
 Invite a user to get account access to your organisation.
 
 ```js
-const organisation = await client.inviteUserToAccountOrganisation({
+const { users } = await client.inviteUserToAccountOrganisation({
   organisationId: 'organisation-id',
   user: {
     email: 'johndoe@example.com',
@@ -340,7 +340,7 @@ const organisation = await client.inviteUserToAccountOrganisation({
 Remove a user with account access from your organisation.
 
 ```js
-const organisation = await client.removeUserFromAccountOrganisation({
+const { users } = await client.removeUserFromAccountOrganisation({
   organisationId: 'organisation-id',
   userId: 'user-id'
 });
