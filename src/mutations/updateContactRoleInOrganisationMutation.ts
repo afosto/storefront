@@ -3,7 +3,7 @@ import { CorePhoneNumberFragment } from '../fragments';
 
 export const updateContactRoleInOrganisationMutation = gql`
   ${CorePhoneNumberFragment}
-  mutation UpdateAccountInformationMutation(
+  mutation UpdateContactRoleInOrganisationMutation(
     $update_contact_role_in_organisation_input: UpdateContactRoleInOrganisationInput!
   ) {
     updateContactRoleInOrganisation(input: $update_contact_role_in_organisation_input) {

@@ -379,7 +379,7 @@ export interface InviteUserToAccountOrganisationInput {
 export interface UpdateUserRoleInAccountOrganisationInput {
   organisationId: string;
   userId: string;
-  isAdmin: boolean;
+  role: string;
 }
 
 export interface RemoveUserFromAccountOrganisationInput {

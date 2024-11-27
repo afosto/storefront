@@ -860,12 +860,12 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const updateUserRoleInAccountOrganisation = async (
     input: UpdateUserRoleInAccountOrganisationInput,
   ): Promise<{ users: AccountOrganisationUser[] }> => {
-    const { organisationId, userId, isAdmin } = input || {};
+    const { organisationId, userId, role } = input || {};
     const response = await authenticatedRequest(updateContactRoleInOrganisationMutation, {
       updateContactRoleInOrganisationInput: {
         organisationId,
         contactId: userId,
-        isAdmin,
+        isAdmin: role === 'admin',
       },
     });
 

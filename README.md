@@ -351,7 +351,7 @@ Update the role a user has for an account organisation.
 const { users } = await client.updateUserRoleInAccountOrganisation({
   organisationId: 'organisation-id',
   userId: 'user-id',
-  isAdmin: true,
+  role: 'admin',
 });
 ```
 
