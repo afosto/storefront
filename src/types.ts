@@ -376,6 +376,12 @@ export interface InviteUserToAccountOrganisationInput {
   };
 }
 
+export interface UpdateUserRoleInAccountOrganisationInput {
+  organisationId: string;
+  userId: string;
+  role: string;
+}
+
 export interface RemoveUserFromAccountOrganisationInput {
   organisationId: string;
   userId: string;
