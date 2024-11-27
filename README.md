@@ -196,6 +196,14 @@ const user = await client.signInAsOrganisation({
 client.signOut();
 ```
 
+### Sign out as organisation
+
+Sign out as an organisation to go back to the users account.
+
+```js
+const user = client.signOutAsOrganisation();
+```
+
 ### Sign up
 
 You can also optionally provide a phone number, billing address and shipping address.

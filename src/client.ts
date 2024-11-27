@@ -24,6 +24,7 @@ import {
   updateAccountInformationMutation,
   verifyUserMutation,
 } from './mutations';
+import { signOutAsOrganisationMutation } from './mutations/signOutAsOrganisationMutation';
 import { updateOrganisationOnAccountMutation } from './mutations/updateOrganisationOnAccountMutation';
 import {
   getAccountInformationQuery,
@@ -702,6 +703,22 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Sign out as organisation
+   */
+  const signOutAsOrganisation = async (): Promise<User | null> => {
+    const response = await authenticatedRequest(signOutAsOrganisationMutation);
+    const { token } = response?.logOutAsOrganisation || {};
+
+    if (!token || !validateUserToken(token)) {
+      return Promise.reject('Invalid user token');
+    }
+
+    storeUserToken(token);
+
+    return getUser();
+  };
+
+  /**
    * Sign out
    */
   const signOut = () => {
@@ -1030,6 +1047,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     signIn,
     signInAsOrganisation,
     signOut,
+    signOutAsOrganisation,
     signUp,
     storeCartTokenInStorage,
     updateAccountInformation,
