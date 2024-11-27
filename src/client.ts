@@ -25,6 +25,7 @@ import {
   verifyUserMutation,
 } from './mutations';
 import { signOutOfOrganisationMutation } from './mutations/signOutOfOrganisationMutation';
+import { updateContactRoleInOrganisationMutation } from './mutations/updateContactRoleInOrganisationMutation';
 import { updateOrganisationOnAccountMutation } from './mutations/updateOrganisationOnAccountMutation';
 import {
   getAccountInformationQuery,
@@ -77,6 +78,7 @@ import {
   StorefrontClientOptions,
   UpdateAccountInformationInput,
   UpdateOrganisationOnAccountInput,
+  UpdateUserRoleInAccountOrganisationInput,
   User,
   VerifyUserInput,
 } from './types';
@@ -853,6 +855,24 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Update the role of a user in an organisation
+   */
+  const updateUserRoleInAccountOrganisation = async (
+    input: UpdateUserRoleInAccountOrganisationInput,
+  ): Promise<{ users: AccountOrganisationUser[] }> => {
+    const { organisationId, userId, isAdmin } = input || {};
+    const response = await authenticatedRequest(updateContactRoleInOrganisationMutation, {
+      updateContactRoleInOrganisationInput: {
+        organisationId,
+        contactId: userId,
+        isAdmin,
+      },
+    });
+
+    return { users: response?.updateContactRoleInOrganisation?.organisation?.sharedContacts || [] };
+  };
+
+  /**
    * Remove a user with account access from your organisation
    */
   const removeUserFromAccountOrganisation = async (
@@ -1052,6 +1072,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     storeCartTokenInStorage,
     updateAccountInformation,
     updateOrganisationOnAccount,
+    updateUserRoleInAccountOrganisation,
     validateUserToken,
     verifyUser,
   };

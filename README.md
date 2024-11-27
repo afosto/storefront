@@ -343,6 +343,18 @@ const { users } = await client.inviteUserToAccountOrganisation({
 });
 ```
 
+### Update a users role for account organisation
+
+Update the role a user has for an account organisation.
+
+```js
+const { users } = await client.updateUserRoleInAccountOrganisation({
+  organisationId: 'organisation-id',
+  userId: 'user-id',
+  isAdmin: true,
+});
+```
+
 ### Remove user from account organisation
 
 Remove a user with account access from your organisation.
