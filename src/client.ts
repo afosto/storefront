@@ -24,7 +24,7 @@ import {
   updateAccountInformationMutation,
   verifyUserMutation,
 } from './mutations';
-import { signOutAsOrganisationMutation } from './mutations/signOutAsOrganisationMutation';
+import { signOutOfOrganisationMutation } from './mutations/signOutOfOrganisationMutation';
 import { updateOrganisationOnAccountMutation } from './mutations/updateOrganisationOnAccountMutation';
 import {
   getAccountInformationQuery,
@@ -705,8 +705,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Sign out as organisation
    */
-  const signOutAsOrganisation = async (): Promise<User | null> => {
-    const response = await authenticatedRequest(signOutAsOrganisationMutation);
+  const signOutOfOrganisation = async (): Promise<User | null> => {
+    const response = await authenticatedRequest(signOutOfOrganisationMutation);
     const { token } = response?.logOutAsOrganisation || {};
 
     if (!token || !validateUserToken(token)) {
@@ -1047,7 +1047,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     signIn,
     signInAsOrganisation,
     signOut,
-    signOutAsOrganisation,
+    signOutOfOrganisation,
     signUp,
     storeCartTokenInStorage,
     updateAccountInformation,

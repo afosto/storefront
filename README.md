@@ -196,12 +196,12 @@ const user = await client.signInAsOrganisation({
 client.signOut();
 ```
 
-### Sign out as organisation
+### Sign out of organisation
 
-Sign out as an organisation to go back to the users account.
+Sign out of an organisation to go back to the users account.
 
 ```js
-const user = client.signOutAsOrganisation();
+const user = await client.signOutOfOrganisation();
 ```
 
 ### Sign up
