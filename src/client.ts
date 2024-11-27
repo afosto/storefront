@@ -703,7 +703,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
-   * Sign out as organisation
+   * Sign out of an organisation to go back to the users account
    */
   const signOutOfOrganisation = async (): Promise<User | null> => {
     const response = await authenticatedRequest(signOutOfOrganisationMutation);
