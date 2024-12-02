@@ -71,8 +71,8 @@ export interface Contact {
 }
 
 export interface AccountOrganisationUser {
-  isAdmin: boolean;
   contact: Contact;
+  role: string;
 }
 
 export interface Organisation {
@@ -372,7 +372,7 @@ export interface InviteUserToAccountOrganisationInput {
   user: {
     id?: string;
     email?: string;
-    isAdmin: boolean;
+    role: string;
   };
 }
 
@@ -613,7 +613,7 @@ export interface DecodedUserToken {
   name: string;
   organisation_id?: string;
   organisation_name?: string;
-  is_admin?: boolean;
+  role?: string;
 }
 
 export interface RequestPasswordResetInput {

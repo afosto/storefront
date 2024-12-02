@@ -807,7 +807,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         name,
         organisation_id: organisationId,
         organisation_name: organisationName,
-        is_admin: isAdmin,
+        role,
       } = decodedToken || {};
 
       if (!id) {
@@ -824,7 +824,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
           ? {
               id: organisationId,
               name: organisationName || '',
-              role: isAdmin ? 'admin' : 'user',
+              role: role?.toLowerCase() || 'user',
             }
           : null,
       };
@@ -846,7 +846,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         contact: {
           contactId: user?.id,
           email: user?.email,
-          isAdmin: user?.isAdmin,
+          role: user?.role?.toUpperCase() || 'USER',
         },
       },
     });
@@ -865,7 +865,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       updateContactRoleInOrganisationInput: {
         organisationId,
         contactId: userId,
-        isAdmin: role === 'admin',
+        role: role?.toUpperCase(),
       },
     });
 
