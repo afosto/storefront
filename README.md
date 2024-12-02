@@ -338,7 +338,7 @@ const { users } = await client.inviteUserToAccountOrganisation({
   organisationId: 'organisation-id',
   user: {
     email: 'johndoe@example.com',
-    isAdmin: false,
+    role: 'user',
   },
 });
 ```

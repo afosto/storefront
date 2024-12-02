@@ -11,7 +11,7 @@ export const inviteUserToAccountOrganisationMutation = gql`
         id
         type
         shared_contacts {
-          is_admin
+          role
           contact {
             id
             number
