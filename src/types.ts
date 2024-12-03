@@ -613,7 +613,7 @@ export interface DecodedUserToken {
   name: string;
   organisation_id?: string;
   organisation_name?: string;
-  role?: string;
+  contact_role?: string;
 }
 
 export interface RequestPasswordResetInput {
