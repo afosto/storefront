@@ -600,6 +600,13 @@ export interface CartItemsInput {
   parentItemId?: string;
 }
 
+export interface ConfirmCartInput {
+  checkout?: {
+    successReturnUrl?: string;
+    failureReturnUrl?: string;
+  };
+}
+
 export interface ChangePasswordInput {
   newPassword: string;
   password: string;
