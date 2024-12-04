@@ -57,6 +57,7 @@ import {
   ChangePasswordInput,
   ChannelId,
   ChannelResponse,
+  ConfirmCartInput,
   CreateCartInput,
   CreateStockUpdateSubscriptionInput,
   CreateStockUpdateSubscriptionResponse,
@@ -341,9 +342,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Confirm the cart and create an order
    */
-  const confirmCart = async (cartToken?: CartToken): Promise<CartResponse> => {
+  const confirmCart = async (
+    cartToken?: CartToken,
+    input?: ConfirmCartInput,
+  ): Promise<CartResponse> => {
     try {
       const currentCartToken = cartToken || storedCartToken;
+      const { checkout } = input || {};
+      const { successReturnUrl, failureReturnUrl } = checkout || {};
 
       if (!currentCartToken) {
         return Promise.reject(new Error('No cart token provided'));
@@ -352,6 +358,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const response = await request(confirmCartMutation, {
         confirmCartInput: {
           cartId: currentCartToken,
+          checkout: {
+            ...(successReturnUrl ? { successReturnUrl } : {}),
+            ...(failureReturnUrl ? { failureReturnUrl } : {}),
+          },
         },
       });
       return response?.confirmCart?.order || null;
