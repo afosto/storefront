@@ -256,6 +256,7 @@ export enum PaymentMethodCodes {
   fashioncheque = 'FASHIONCHEQUE',
   giropay = 'GIROPAY',
   givacard = 'GIVACARD',
+  googleWallet = 'GOOGLE_WALLET',
   ideal = 'IDEAL',
   in3 = 'IN3',
   klarna = 'KLARNA',
