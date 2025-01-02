@@ -424,7 +424,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Add items to the cart
    */
   const addCartItems = async (
-    items: CartItemsInput,
+    items: CartItemsInput[],
     cartToken?: CartToken,
   ): Promise<CartResponse> => {
     try {
