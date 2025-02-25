@@ -140,6 +140,15 @@ export type CarrierKey = keyof typeof Carriers;
 
 export interface Cart {
   id: string;
+  customer: {
+    countryCode: string;
+    contact?: {
+      id: string;
+    };
+    organisation?: {
+      id: string;
+    };
+  };
   [key: string]: any;
 }
 
