@@ -28,6 +28,12 @@ export const CoreCartFragment = gql`
     }
     customer {
       country_code
+      contact {
+        id
+      }
+      organisation {
+        id
+      }
     }
     incentives {
       quantity

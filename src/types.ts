@@ -138,8 +138,23 @@ export enum Carriers {
 
 export type CarrierKey = keyof typeof Carriers;
 
+export interface CartCustomerContact {
+  id: string;
+}
+
+export interface CartCustomerOrganisation {
+  id: string;
+}
+
+export interface CartCustomer {
+  countryCode: string;
+  contact: CartCustomerContact | null;
+  organisation: CartCustomerOrganisation | null;
+}
+
 export interface Cart {
   id: string;
+  customer: CartCustomer;
   [key: string]: any;
 }
 
