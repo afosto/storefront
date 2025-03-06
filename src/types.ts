@@ -571,7 +571,11 @@ export interface OrganisationInput {
 
 export interface CustomerInput {
   contact?: ContactInput;
+  contactId?: string;
   organisation?: OrganisationInput;
+  organisationId?: string;
+  notes?: string;
+  reference?: string;
 }
 
 export interface CreateCartInput {
