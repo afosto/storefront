@@ -16,8 +16,21 @@ export const CoreChannelFragment = gql`
       type
       value
     }
+    messaging {
+      from {
+        email
+        name
+      }
+    }
     business {
       name
+      messaging {
+        type
+        sender {
+          address
+          name
+        }
+      }
       addressing {
         billing {
           ...CoreAddressFragment
