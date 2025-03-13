@@ -158,8 +158,81 @@ export interface Cart {
   [key: string]: any;
 }
 
+export interface ChannelSender {
+  name: string;
+  email: string;
+  replyTo: string;
+}
+
+export interface ChannelMessaging {
+  from: ChannelSender;
+  bcc: ChannelSender[];
+}
+
+export enum LinkType {
+  checkout = 'CHECKOUT',
+  privacyAgreement = 'PRIVACY_AGREEMENT',
+  termsConditions = 'TERMS_CONDITIONS',
+  vendor = 'VENDOR',
+  myAccount = 'MY_ACCOUNT',
+}
+
+export interface ChannelLink {
+  type: LinkType;
+  value: string;
+}
+
+export enum BrandingStyle {
+  straight = 'STRAIGHT',
+  rounded = 'ROUNDED',
+}
+
+export interface BrandingColors {
+  primary: string;
+  secondary: string;
+  text: string;
+  info: string;
+  warning: string;
+  error: string;
+  success: string;
+}
+
+export interface Branding {
+  colors: BrandingColors;
+  style: BrandingStyle;
+}
+
+export interface Window {
+  start: string;
+  end: string;
+}
+
+export interface Opening {
+  dayOfWeek: number;
+  windows: Window[];
+}
+
+export interface BusinessAddressing {
+  billing: Address;
+  visiting: Address;
+}
+
 export interface Channel {
   id: string;
+  name: string;
+  description: string;
+  logo: string;
+  locale: string;
+  favicon: string;
+  links: ChannelLink[];
+  messaging: ChannelMessaging;
+  business: {
+    name: string;
+    addressing: BusinessAddressing;
+    phoneNumber: PhoneNumber;
+    openings: Opening[];
+  };
+  branding: Branding;
   [key: string]: any;
 }
 
