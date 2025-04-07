@@ -32,6 +32,7 @@ import {
   getAccountOrderQuery,
   getAccountOrdersQuery,
   getAccountOrganisationUsersQuery,
+  getAccountProjectsQuery,
   getCartQuery,
   getChannelQuery,
   getOrderQuery,
@@ -48,6 +49,7 @@ import {
   AccountOrder,
   AccountOrdersResponse,
   AccountOrganisationUser,
+  AccountProjectsResponse,
   ApproveStockUpdateSubscriptionResponse,
   CartIntent,
   CartItemIds,
@@ -1038,6 +1040,21 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     return response?.removeStockUpdateSubscription || null;
   };
 
+  /**
+   * Get the projects for the user that is logged in.
+   */
+  const getAccountProjects = async (): Promise<AccountProjectsResponse> => {
+    const response = await authenticatedRequest(getAccountProjectsQuery);
+    const projectsResponse = response?.account?.projects || {};
+    const projects = projectsResponse.nodes || [];
+    const pageInfo = projectsResponse.pageInfo || {};
+
+    return {
+      projects,
+      pageInfo,
+    };
+  };
+
   initializeCartTokenFromStorage();
   initializeUserToken();
 
@@ -1053,6 +1070,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     getAccountOrder,
     getAccountOrders,
     getAccountOrganisationUsers,
+    getAccountProjects,
     getCart,
     getCartTokenFromStorage,
     getChannel,

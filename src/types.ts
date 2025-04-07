@@ -150,6 +150,10 @@ export interface CartCustomer {
   countryCode: string;
   contact: CartCustomerContact | null;
   organisation: CartCustomerOrganisation | null;
+  project: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface Cart {
@@ -447,6 +451,24 @@ export interface AccountOrdersResponseOrder
 
 export interface AccountOrdersResponse {
   orders: AccountOrdersResponseOrder[];
+  pageInfo: PageInfo;
+}
+
+export interface AccountProjectsResponseProject {
+  id: string;
+  name: string;
+  number: string;
+  description: string;
+  metaData?: object;
+  startsAt: number;
+  endsAt: number;
+  organisation: {
+    id: string;
+  };
+}
+
+export interface AccountProjectsResponse {
+  projects: AccountProjectsResponseProject[];
   pageInfo: PageInfo;
 }
 
