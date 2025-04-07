@@ -11,6 +11,10 @@ export const getAccountProjectsQuery = gql`
         meta_data
         starts_at
         ends_at
+        organisation {
+          id
+          name
+        }
       }
     }
   }

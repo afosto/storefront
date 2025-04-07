@@ -458,6 +458,10 @@ export interface AccountProjectsResponseProject {
   metaData?: object;
   startsAt: number;
   endsAt: number;
+  organisation: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface AccountProjectsResponse {
