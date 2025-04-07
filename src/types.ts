@@ -150,6 +150,10 @@ export interface CartCustomer {
   countryCode: string;
   contact: CartCustomerContact | null;
   organisation: CartCustomerOrganisation | null;
+  project: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface Cart {
