@@ -329,6 +329,14 @@ const order = await client.reorderAccountOrder({
 });
 ```
 
+### List account projects
+
+Get all account projects from the user that's signed in.
+
+```js
+const { projects, pageInfo } = await client.getAccountProjects();
+```
+
 ### Invite user to account organisation
 
 Invite a user to get account access to your organisation.

@@ -450,6 +450,21 @@ export interface AccountOrdersResponse {
   pageInfo: PageInfo;
 }
 
+export interface AccountProjectsResponseProject {
+  id: string;
+  name: string;
+  number: string;
+  description: string;
+  metaData?: object;
+  startsAt: number;
+  endsAt: number;
+}
+
+export interface AccountProjectsResponse {
+  projects: AccountProjectsResponseProject[];
+  pageInfo: PageInfo;
+}
+
 export type CartResponse = Cart | null;
 
 export type ChannelResponse = Channel | null;
