@@ -13,7 +13,6 @@ export const getAccountProjectsQuery = gql`
         ends_at
         organisation {
           id
-          name
         }
       }
     }

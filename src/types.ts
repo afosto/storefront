@@ -460,7 +460,6 @@ export interface AccountProjectsResponseProject {
   endsAt: number;
   organisation: {
     id: string;
-    name: string;
   };
 }
 
