@@ -37,6 +37,7 @@ export const CoreCartFragment = gql`
       project {
         id
         name
+        number
       }
     }
     incentives {

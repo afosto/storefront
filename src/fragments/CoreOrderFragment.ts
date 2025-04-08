@@ -67,6 +67,11 @@ export const CoreOrderFragment = gql`
           ...CoreRegistrationFragment
         }
       }
+      project {
+        id
+        name
+        number
+      }
     }
     items {
       ids
