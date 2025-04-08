@@ -1046,11 +1046,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const getAccountProjects = async (): Promise<AccountProjectsResponse> => {
     const response = await authenticatedRequest(getAccountProjectsQuery);
     const projects = response?.account?.projects || {};
-    const pageInfo = response.pageInfo || {};
 
     return {
       projects,
-      pageInfo,
     };
   };
 

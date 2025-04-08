@@ -469,7 +469,6 @@ export interface AccountProjectsResponseProject {
 
 export interface AccountProjectsResponse {
   projects: AccountProjectsResponseProject[];
-  pageInfo: PageInfo;
 }
 
 export type CartResponse = Cart | null;
