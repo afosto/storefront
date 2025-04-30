@@ -768,7 +768,18 @@ export interface AccountRmaItemFiltersInput {
 
 export interface AccountRmaItem {
   id: string;
-  sku: string;
+  product: {
+    sku: string;
+    label?: string;
+    brand?: string;
+    gtin?: string[];
+    mpn?: string;
+    images?: string[];
+    filters?: {
+      key: string;
+      value: string;
+    }[];
+  };
   status: AccountRmaItemStatus;
   isReceived: boolean;
   reason: AccountRmaItemReason;
