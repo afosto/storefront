@@ -6,8 +6,12 @@ import {
   approveStockUpdateSubscriptionMutation,
   changePasswordMutation,
   confirmCartMutation,
+  createAccountRmaItemsMutation,
+  createAccountRmaMutation,
   createCartMutation,
   createStockUpdateSubscriptionMutation,
+  deleteAccountRmaItemsMutation,
+  deleteAccountRmaMutation,
   inviteUserToAccountOrganisationMutation,
   removeCouponFromCartMutation,
   removeItemsFromCartMutation,
@@ -22,6 +26,8 @@ import {
   signInMutation,
   signUpMutation,
   updateAccountInformationMutation,
+  updateAccountRmaItemsMutation,
+  updateAccountRmaMutation,
   verifyUserMutation,
 } from './mutations';
 import { signOutOfOrganisationMutation } from './mutations/signOutOfOrganisationMutation';
@@ -33,9 +39,12 @@ import {
   getAccountOrdersQuery,
   getAccountOrganisationUsersQuery,
   getAccountProjectsQuery,
+  getAccountRmaQuery,
+  getAccountRmasQuery,
   getCartQuery,
   getChannelQuery,
   getOrderQuery,
+  searchAccountRmaItemsQuery,
 } from './queries';
 import { isDefined, parseJwt, uuid } from './utils';
 import {
@@ -50,6 +59,8 @@ import {
   AccountOrdersResponse,
   AccountOrganisationUser,
   AccountProjectsResponse,
+  AccountRma,
+  AccountRmasResponse,
   ApproveStockUpdateSubscriptionResponse,
   CartIntent,
   CartItemIds,
@@ -60,10 +71,14 @@ import {
   ChannelId,
   ChannelResponse,
   ConfirmCartInput,
+  CreateAccountRmaInput,
+  CreateAccountRmaItemsInput,
   CreateCartInput,
   CreateStockUpdateSubscriptionInput,
   CreateStockUpdateSubscriptionResponse,
   DecodedUserToken,
+  DeleteAccountRmaItemsInput,
+  GetAccountRmasQuery,
   GraphQLClientError,
   InviteUserToAccountOrganisationInput,
   OptionalString,
@@ -75,11 +90,15 @@ import {
   RequestPasswordResetInput,
   RequestUserVerificationInput,
   ResetPasswordInput,
+  SearchAccountRmaItemsQuery,
+  SearchAccountRmaItemsResponse,
   SignInAsOrganisationInput,
   SignInInput,
   SignUpInput,
   StorefrontClientOptions,
   UpdateAccountInformationInput,
+  UpdateAccountRmaInput,
+  UpdateAccountRmaItemsInput,
   UpdateOrganisationOnAccountInput,
   UpdateUserRoleInAccountOrganisationInput,
   User,
@@ -1052,6 +1071,119 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     };
   };
 
+  /**
+   * Create a Return Merchandise Authorization (RMA) for the user that is logged in.
+   */
+  const createAccountRma = async (
+    input: CreateAccountRmaInput = {},
+  ): Promise<AccountRma | null> => {
+    const response = await authenticatedRequest(createAccountRmaMutation, {
+      input,
+    });
+    return response?.createRma?.rma || null;
+  };
+
+  /**
+   * Delete a Return Merchandise Authorization (RMA) for the user that is logged in.
+   */
+  const deleteAccountRma = async (id: string): Promise<boolean> => {
+    const response = await authenticatedRequest(deleteAccountRmaMutation, {
+      input: {
+        id,
+      },
+    });
+    return response?.deleteRma?.isSuccessful || false;
+  };
+
+  /**
+   * Get the Return Merchandise Authorizations (RMAs) for the user that is logged in.
+   */
+  const getAccountRmas = async (query: GetAccountRmasQuery = {}): Promise<AccountRmasResponse> => {
+    const response = await authenticatedRequest(getAccountRmasQuery, query);
+    const rmasResponse = response?.rmas || {};
+    const rmas = rmasResponse.nodes || [];
+    const pageInfo = rmasResponse.pageInfo || {};
+
+    return {
+      rmas,
+      pageInfo,
+    };
+  };
+
+  /**
+   * Get a Return Merchandise Authorization (RMA) by ID for the user that is logged in.
+   */
+  const getAccountRma = async (id: string): Promise<AccountRma | null> => {
+    const response = await authenticatedRequest(getAccountRmaQuery, {
+      id,
+    });
+    return response?.rma || null;
+  };
+
+  /**
+   * Update a Return Merchandise Authorization (RMA) for the user that is logged in.
+   */
+  const updateAccountRma = async (input: UpdateAccountRmaInput): Promise<AccountRma | null> => {
+    const response = await authenticatedRequest(updateAccountRmaMutation, {
+      input: input || {},
+    });
+
+    return response?.updateRma?.rma || null;
+  };
+
+  /**
+   * Create items for a Return Merchandise Authorization (RMA) for the user that is logged in.
+   */
+  const createAccountRmaItems = async (
+    input: CreateAccountRmaItemsInput,
+  ): Promise<AccountRma | null> => {
+    const response = await authenticatedRequest(createAccountRmaItemsMutation, {
+      input: input || {},
+    });
+    return response?.createRmaItems?.rma || null;
+  };
+
+  /**
+   * Delete items of a Return Merchandise Authorization (RMA) for the user that is logged in.
+   */
+  const deleteAccountRmaItems = async (
+    input: DeleteAccountRmaItemsInput,
+  ): Promise<AccountRma | null> => {
+    const response = await authenticatedRequest(deleteAccountRmaItemsMutation, {
+      input: input || {},
+    });
+    return response?.deleteRmaItems?.rma || null;
+  };
+
+  /**
+   * Search for available items that can be added to a Return Merchandise Authorization (RMA) for the user that is logged in.
+   */
+  const searchAccountRmaItems = async (
+    query: SearchAccountRmaItemsQuery = {},
+  ): Promise<SearchAccountRmaItemsResponse> => {
+    const response = await authenticatedRequest(searchAccountRmaItemsQuery, query);
+    const searchRmaItemsResponse = response?.searchRmaItems || {};
+    const items = searchRmaItemsResponse.nodes || [];
+    const pageInfo = searchRmaItemsResponse.pageInfo || {};
+
+    return {
+      items,
+      pageInfo,
+    };
+  };
+
+  /**
+   * Update items for a Return Merchandise Authorization (RMA) for the user that is logged in.
+   */
+  const updateAccountRmaItems = async (
+    input: UpdateAccountRmaItemsInput,
+  ): Promise<AccountRma | null> => {
+    const response = await authenticatedRequest(updateAccountRmaItemsMutation, {
+      input: input || {},
+    });
+    return response?.updateRmaItems?.rma || null;
+  };
+
   initializeCartTokenFromStorage();
   initializeUserToken();
 
@@ -1061,13 +1193,19 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     approveStockUpdateSubscription,
     changePassword,
     confirmCart,
+    createAccountRma,
+    createAccountRmaItems,
     createCart,
     createStockUpdateSubscription,
+    deleteAccountRma,
+    deleteAccountRmaItems,
     getAccountInformation,
     getAccountOrder,
     getAccountOrders,
     getAccountOrganisationUsers,
     getAccountProjects,
+    getAccountRma,
+    getAccountRmas,
     getCart,
     getCartTokenFromStorage,
     getChannel,
@@ -1087,6 +1225,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     requestPasswordReset,
     requestUserVerification,
     resetPassword,
+    searchAccountRmaItems,
     setCountryCodeForCart,
     setSessionID,
     signIn,
@@ -1096,6 +1235,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     signUp,
     storeCartTokenInStorage,
     updateAccountInformation,
+    updateAccountRma,
+    updateAccountRmaItems,
     updateOrganisationOnAccount,
     updateUserRoleInAccountOrganisation,
     validateUserToken,
