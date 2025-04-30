@@ -737,6 +737,164 @@ export interface DecodedUserToken {
   contact_role?: string;
 }
 
+export type AccountRmaStatus = 'CONCEPT' | 'OPEN' | 'CLOSED';
+
+export type AccountRmaItemStatus = 'PENDING' | 'AUTHORIZED' | 'REJECTED';
+
+export type AccountSearchRmaItemStatus = 'CONCEPT' | 'OPEN' | 'CLOSED';
+
+export type AccountRmaItemReason =
+  | 'INCORRECT_PRODUCT'
+  | 'UNSUITABLE'
+  | 'DELIVERY_ISSUES'
+  | 'DAMAGED'
+  | 'DEFECTIVE'
+  | 'SIZE_TOO_SMALL'
+  | 'SIZE_TOO_LARGE'
+  | 'IMAGE_DOES_NOT_MATCH'
+  | 'ALLERGIC_REACTION'
+  | 'UNCOMPETITIVE_PRICING'
+  | 'ORDER_ERROR'
+  | 'ORDERED_MULTIPLE_SIZES';
+
+export interface AccountRmaFiltersInput {
+  status?: AccountRmaStatus;
+}
+
+export interface AccountRmaItemFiltersInput {
+  orderId?: string;
+  sku?: string;
+}
+
+export interface AccountRmaItem {
+  id: string;
+  sku: string;
+  status: AccountRmaItemStatus;
+  isReceived: boolean;
+  reason: AccountRmaItemReason;
+  order: Pick<AccountOrder, 'id' | 'number' | 'currency'>;
+  contactNote?: string;
+  vendorNote?: string;
+  createdAt?: number;
+  updatedAt?: number;
+}
+
+export interface AccountSearchRmaItem {
+  id: string;
+  product: {
+    sku: string;
+    label?: string;
+    brand?: string;
+    gtin?: string[];
+    mpn?: string;
+    images?: string[];
+    filters?: {
+      key: string;
+      value: string;
+    }[];
+  };
+  image?: string;
+  status: AccountSearchRmaItemStatus;
+  order: {
+    id: string;
+    number: string;
+    currency: string;
+  };
+  url?: string;
+  warrantyExpiresAt?: number;
+  withdrawalExpiresAt?: number;
+  createdAt?: number;
+}
+
+export interface AccountRma {
+  id: string;
+  number: string;
+  status: AccountRmaStatus;
+  contact?: Pick<
+    Contact,
+    'id' | 'number' | 'email' | 'givenName' | 'additionalName' | 'familyName'
+  > & {
+    phoneNumbers?: {
+      primary?: PhoneNumber;
+    };
+  };
+  organisation?: Pick<Organisation, 'id' | 'number' | 'name'> & {
+    administration?: {
+      email: string;
+    };
+    phoneNumbers?: {
+      primary?: PhoneNumber;
+    };
+  };
+  address?: Omit<Address, 'errors' | 'isValid'>;
+  items: AccountRmaItem[];
+  createdAt?: number;
+  dueAt?: number;
+  updatedAt?: number;
+}
+
+export interface AccountRmasResponse {
+  rmas: AccountRma[];
+  pageInfo?: PageInfo;
+}
+
+export interface SearchAccountRmaItemsResponse {
+  items: AccountSearchRmaItem[];
+  pageInfo?: PageInfo;
+}
+
+export interface CreateAccountRmaInput {
+  id?: string;
+}
+
+export interface CreateAccountRmaItemInput {
+  id?: string;
+  sku: string;
+  orderId: string;
+  reason?: AccountRmaItemReason;
+  contactNote?: string;
+}
+
+export interface CreateAccountRmaItemsInput {
+  rmaId: string;
+  items: CreateAccountRmaItemInput[];
+}
+
+export interface DeleteAccountRmaItemsInput {
+  rmaId: string;
+  items: string[];
+}
+
+export interface UpdateAccountRmaItemInput {
+  id: string;
+  reason?: AccountRmaItemReason;
+  contactNote?: string;
+}
+
+export interface UpdateAccountRmaItemsInput {
+  rmaId: string;
+  items: UpdateAccountRmaItemInput[];
+}
+
+export interface UpdateAccountRmaInput {
+  id: string;
+  status?: AccountRmaStatus;
+  addressId?: string;
+  dueAt?: number;
+}
+
+export interface GetAccountRmasQuery {
+  first?: number;
+  after?: string;
+  filters?: AccountRmaFiltersInput;
+}
+
+export interface SearchAccountRmaItemsQuery {
+  first?: number;
+  after?: string;
+  filters?: AccountRmaItemFiltersInput;
+}
+
 export interface RequestPasswordResetInput {
   email: string;
 }

@@ -14,7 +14,7 @@
 
 ## Installation
 
-### Yarn / NPM
+### Yarn / PNPM / NPM
 
 Install with Yarn
 ```sh
@@ -382,7 +382,6 @@ Get the users that have account access to your organisation.
 const { users } = await client.getAccountOrganisationUsers();
 ```
 
-
 ### Update information of account organisation 
 
 Update the information of the organisation the user is signed in to.
@@ -394,6 +393,112 @@ const account = await client.updateOrganisationOnAccount({
 });
 ```
 
+### List Return Merchandise Authorizations (RMAS)
+
+Get all Return Merchandise Authorizations (RMAS) for the user that's signed in.
+
+```js
+const { rmas, pageInfo } = await client.getAccountRmas();
+```
+
+### Get Return Merchandise Authorization (RMA)
+
+Get a Return Merchandise Authorizations (RMA) for the user that's signed in.
+
+```js
+const rma = await client.getAccountRma('rma-id');
+```
+
+### Create a Return Merchandise Authorization (RMA)
+
+Create a Return Merchandise Authorization (RMA) for the user that's signed in.
+
+```js
+const rma = await client.createAccountRma({
+  channelId: 'channel-id',
+});
+```
+
+### Delete a Return Merchandise Authorization (RMA)
+
+Delete a Return Merchandise Authorization (RMA) for the user that's signed in.
+
+```js
+const isSuccessfull = await client.deleteAccountRma('rma-id');
+```
+
+### Update a Return Merchandise Authorization (RMA)
+
+Update a Return Merchandise Authorization (RMA) for the user that's signed in.
+
+```js
+const rma = await client.updateAccountRma({
+  id: 'rma-id',
+  status: 'OPEN',
+});
+```
+
+### Add items to a Return Merchandise Authorization (RMA)
+
+Add items to a Return Merchandise Authorization (RMA) for the user that's signed in.
+
+```js
+const rma = await client.createAccountRmaItems({
+  rmaId: 'rma-id',
+  items: [
+    {
+      sku: 'sku-123',
+      orderId: 'order-id',
+      reason: 'DAMAGED',
+      contactNote: 'There are scratches on it'
+    }
+  ],
+});
+```
+
+### Delete items from a Return Merchandise Authorization (RMA)
+
+Delete items from a Return Merchandise Authorization (RMA) for the user that's signed in.
+
+```js
+const rma = await client.deleteAccountRmaItems({
+  rmaId: 'rma-id',
+  items: ['rma-item-id-1', 'rma-item-id-2'],
+});
+```
+
+### Update items on a Return Merchandise Authorization (RMA)
+
+Update items on a Return Merchandise Authorization (RMA) for the user that's signed in.
+
+```js
+const rma = await client.updateAccountRmaItems({
+  rmaId: 'rma-id',
+  items: [
+    {
+      id: 'rma-item-id-1',
+      reason: 'DAMAGED',
+      contactNote: 'There are scratches on it'
+    }
+  ],
+});
+```
+
+### Search for available Return Merchandise Authorization (RMA) items
+
+Search for available items that can be added to a Return Merchandise Authorization (RMA) for the user that's signed in.
+
+```js
+const { items, pageInfo } = await client.searchAccountRmaItems({
+  first: 20,
+  after: 'next-page-token', // Can be empty for first page
+  // If you need filters
+  filters: {
+    orderId: 'order-id',
+    sku: 'sku-123',
+  },
+});
+```
 
 
 ### Subscribe to stock updates
