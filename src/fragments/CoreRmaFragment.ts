@@ -59,7 +59,18 @@ export const CoreRmaFragment = gql`
     }
     items {
       id
-      sku
+      product {
+        sku
+        label
+        brand
+        gtin
+        images
+        mpn
+        filters {
+          key
+          value
+        }
+      }
       status
       is_received
       reason
