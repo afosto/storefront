@@ -1099,7 +1099,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Get the Return Merchandise Authorizations (RMAs) for the user that is logged in.
    */
   const getAccountRmas = async (query: GetAccountRmasQuery = {}): Promise<AccountRmasResponse> => {
-    const response = await authenticatedRequest(getAccountRmasQuery, query);
+    const response = await authenticatedRequest(getAccountRmasQuery, {
+      ...(query ?? {}),
+      filters: query?.filters ?? {},
+    });
     const rmasResponse = response?.rmas || {};
     const rmas = rmasResponse.nodes || [];
     const pageInfo = rmasResponse.pageInfo || {};
@@ -1161,7 +1164,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const searchAccountRmaItems = async (
     query: SearchAccountRmaItemsQuery = {},
   ): Promise<SearchAccountRmaItemsResponse> => {
-    const response = await authenticatedRequest(searchAccountRmaItemsQuery, query);
+    const response = await authenticatedRequest(searchAccountRmaItemsQuery, {
+      ...(query ?? {}),
+      filters: query?.filters ?? {},
+    });
     const searchRmaItemsResponse = response?.searchRmaItems || {};
     const items = searchRmaItemsResponse.nodes || [];
     const pageInfo = searchRmaItemsResponse.pageInfo || {};
