@@ -151,12 +151,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return null;
       }
 
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+
       if (cartTokenStorageType === 'cookie') {
-        return Cookies.get(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`) || null;
+        return Cookies.get(storagePath) || null;
       }
 
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      return storage.getItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
+      return storage.getItem(storagePath);
     } catch (error) {
       return null;
     }
@@ -177,15 +179,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return;
       }
 
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+
       if (cartTokenStorageType === 'cookie') {
-        return Cookies.remove(
-          `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`,
-          cartTokenCookieOptions,
-        );
+        Cookies.remove(storagePath, cartTokenCookieOptions);
+        storedCartToken = null;
+        return;
       }
 
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      storage.removeItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
+      storage.removeItem(storagePath);
 
       storedCartToken = null;
     } catch (error) {}
@@ -207,15 +210,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return;
       }
 
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+
       if (cartTokenStorageType === 'cookie') {
-        return Cookies.remove(
-          `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`,
-          cartTokenCookieOptions,
-        );
+        Cookies.set(storagePath, token, cartTokenCookieOptions);
+        storedCartToken = token;
+        return;
       }
 
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      storage.setItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`, token);
+      storage.setItem(storagePath, token);
       storedCartToken = token;
     } catch (error) {}
   };
