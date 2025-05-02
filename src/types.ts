@@ -986,7 +986,9 @@ export type ChannelId = OptionalString;
 export interface StorefrontClientOptions {
   autoCreateCart?: boolean;
   autoGenerateSessionID?: boolean;
-  cartTokenStorageType?: 'localStorage' | 'sessionStorage';
+  cartTokenStorageType?: 'localStorage' | 'sessionStorage' | 'cookie';
+  cartTokenCookieOptions?: Cookies.CookieAttributes;
+  userTokenCookieOptions?: Cookies.CookieAttributes;
   domain?: string;
   graphQLClientOptions?: GraphQLClientOptions;
   storeCartToken?: boolean;

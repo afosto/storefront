@@ -114,13 +114,23 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     storeUserToken: true,
     storageKeyPrefix: STOREFRONT_STORAGE_KEY_PREFIX,
     cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
+    cartTokenCookieOptions: {},
+    userTokenCookieOptions: {},
     ...(options || {}),
   };
+  const cartTokenCookieOptions = {
+    path: '/',
+    secure: true,
+    ...(config.domain ? { domain: config.domain } : {}),
+    ...config.cartTokenCookieOptions,
+  };
+
   const userTokenCookieOptions = {
     expires: 1,
     path: '/',
     secure: true,
     ...(config.domain ? { domain: config.domain } : {}),
+    ...config.userTokenCookieOptions,
   };
   let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
   let storedCartToken: OptionalString = null;
@@ -132,10 +142,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
   if (
     config.storeCartToken &&
-    !['localStorage', 'sessionStorage'].includes(config.cartTokenStorageType)
+    !['localStorage', 'sessionStorage', 'cookie'].includes(config.cartTokenStorageType)
   ) {
     throw new Error(
-      'Invalid storage type provided. Must be one of type: localStorage or sessionStorage.',
+      'Invalid storage type provided. Must be one of type: localStorage, sessionStorage or cookie.',
     );
   }
 
@@ -160,8 +170,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return null;
       }
 
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+
+      if (cartTokenStorageType === 'cookie') {
+        return Cookies.get(storagePath) || null;
+      }
+
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      return storage.getItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
+      return storage.getItem(storagePath);
     } catch (error) {
       return null;
     }
@@ -182,8 +198,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return;
       }
 
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+
+      if (cartTokenStorageType === 'cookie') {
+        Cookies.remove(storagePath, cartTokenCookieOptions);
+        storedCartToken = null;
+        return;
+      }
+
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      storage.removeItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
+      storage.removeItem(storagePath);
 
       storedCartToken = null;
     } catch (error) {}
@@ -205,8 +229,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return;
       }
 
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+
+      if (cartTokenStorageType === 'cookie') {
+        Cookies.set(storagePath, token, cartTokenCookieOptions);
+        storedCartToken = token;
+        return;
+      }
+
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
-      storage.setItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`, token);
+      storage.setItem(storagePath, token);
       storedCartToken = token;
     } catch (error) {}
   };
