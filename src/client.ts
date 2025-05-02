@@ -95,13 +95,23 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     storeUserToken: true,
     storageKeyPrefix: STOREFRONT_STORAGE_KEY_PREFIX,
     cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
+    cartTokenCookieOptions: {},
+    userTokenCookieOptions: {},
     ...(options || {}),
   };
+  const cartTokenCookieOptions = {
+    path: '/',
+    secure: true,
+    ...(config.domain ? { domain: config.domain } : {}),
+    ...config.cartTokenCookieOptions,
+  };
+
   const userTokenCookieOptions = {
     expires: 1,
     path: '/',
     secure: true,
     ...(config.domain ? { domain: config.domain } : {}),
+    ...config.userTokenCookieOptions,
   };
   let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
   let storedCartToken: OptionalString = null;
@@ -113,10 +123,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
   if (
     config.storeCartToken &&
-    !['localStorage', 'sessionStorage'].includes(config.cartTokenStorageType)
+    !['localStorage', 'sessionStorage', 'cookie'].includes(config.cartTokenStorageType)
   ) {
     throw new Error(
-      'Invalid storage type provided. Must be one of type: localStorage or sessionStorage.',
+      'Invalid storage type provided. Must be one of type: localStorage, sessionStorage or cookie.',
     );
   }
 
@@ -141,6 +151,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return null;
       }
 
+      if (cartTokenStorageType === 'cookie') {
+        return Cookies.get(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`) || null;
+      }
+
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
       return storage.getItem(`${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`);
     } catch (error) {
@@ -161,6 +175,13 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
       if (!storeCartToken) {
         return;
+      }
+
+      if (cartTokenStorageType === 'cookie') {
+        return Cookies.remove(
+          `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`,
+          cartTokenCookieOptions,
+        );
       }
 
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
@@ -184,6 +205,13 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
       if (!storeCartToken) {
         return;
+      }
+
+      if (cartTokenStorageType === 'cookie') {
+        return Cookies.remove(
+          `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`,
+          cartTokenCookieOptions,
+        );
       }
 
       const storage = cartTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
