@@ -894,6 +894,11 @@ export interface UpdateAccountRmaInput {
   dueAt?: number;
 }
 
+export interface GetAccountOrdersQuery {
+  first?: number;
+  after?: string;
+}
+
 export interface GetAccountRmasQuery {
   first?: number;
   after?: string;
