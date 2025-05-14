@@ -78,6 +78,7 @@ import {
   CreateStockUpdateSubscriptionResponse,
   DecodedUserToken,
   DeleteAccountRmaItemsInput,
+  GetAccountOrdersQuery,
   GetAccountRmasQuery,
   GraphQLClientError,
   InviteUserToAccountOrganisationInput,
@@ -975,8 +976,13 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Get the orders for the user that is logged in.
    */
-  const getAccountOrders = async (): Promise<AccountOrdersResponse> => {
-    const response = await authenticatedRequest(getAccountOrdersQuery);
+  const getAccountOrders = async (
+    query: GetAccountOrdersQuery = {},
+  ): Promise<AccountOrdersResponse> => {
+    const response = await authenticatedRequest(getAccountOrdersQuery, {
+      first: query?.first,
+      after: query?.after,
+    });
     const ordersResponse = response?.account?.orders || {};
     const orders = ordersResponse.nodes || [];
     const pageInfo = ordersResponse.pageInfo || {};

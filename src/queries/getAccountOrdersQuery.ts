@@ -1,9 +1,9 @@
 import { gql } from '@afosto/graphql-client';
 
 export const getAccountOrdersQuery = gql`
-  query GetAccountOrders {
+  query GetAccountOrders($first: Int, $after: String) {
     account {
-      orders {
+      orders(first: $first, after: $after) {
         nodes {
           id
           number
@@ -26,6 +26,12 @@ export const getAccountOrdersQuery = gql`
               track_trace_url
             }
           }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
         }
       }
     }
