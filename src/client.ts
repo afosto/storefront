@@ -8,6 +8,7 @@ import {
   confirmCartMutation,
   createAccountRmaItemsMutation,
   createAccountRmaMutation,
+  createAccountRmaWithItemsMutation,
   createCartMutation,
   createStockUpdateSubscriptionMutation,
   deleteAccountRmaItemsMutation,
@@ -1115,8 +1116,28 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const createAccountRma = async (
     input: CreateAccountRmaInput = {},
   ): Promise<AccountRma | null> => {
+    const { id, items = [], ...otherInput } = input || {};
+
+    if (items.length > 0) {
+      const rmaId = id ?? uuid();
+      const response = await authenticatedRequest(createAccountRmaWithItemsMutation, {
+        input: {
+          ...otherInput,
+          id: rmaId,
+        },
+        itemsInput: {
+          rmaId,
+          items,
+        },
+      });
+      return response?.createRmaItems?.rma || null;
+    }
+
     const response = await authenticatedRequest(createAccountRmaMutation, {
-      input,
+      input: {
+        ...otherInput,
+        id,
+      },
     });
     return response?.createRma?.rma || null;
   };

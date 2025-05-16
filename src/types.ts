@@ -854,10 +854,6 @@ export interface SearchAccountRmaItemsResponse {
   pageInfo?: PageInfo;
 }
 
-export interface CreateAccountRmaInput {
-  id?: string;
-}
-
 export interface CreateAccountRmaItemInput {
   id?: string;
   sku: string;
@@ -869,6 +865,11 @@ export interface CreateAccountRmaItemInput {
 export interface CreateAccountRmaItemsInput {
   rmaId: string;
   items: CreateAccountRmaItemInput[];
+}
+
+export interface CreateAccountRmaInput {
+  id?: string;
+  items?: CreateAccountRmaItemInput[];
 }
 
 export interface DeleteAccountRmaItemsInput {

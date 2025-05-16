@@ -5,6 +5,7 @@ export * from './changePasswordMutation';
 export * from './confirmCartMutation';
 export * from './createAccountRmaMutation';
 export * from './createAccountRmaItemsMutation';
+export * from './createAccountRmaWithItemsMutation';
 export * from './createCartMutation';
 export * from './createStockUpdateSubscriptionMutation';
 export * from './deleteAccountRmaMutation';
