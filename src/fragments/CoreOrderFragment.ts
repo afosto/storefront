@@ -28,7 +28,7 @@ export const CoreOrderFragment = gql`
     created_at
     is_including_vat
     is_vat_shifted
-    state
+    state: status
     subtotal
     total
     total_excluding_vat
