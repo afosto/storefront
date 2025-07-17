@@ -6,6 +6,13 @@ export const confirmCartMutation = gql`
       order {
         id
         number
+        billing {
+          payment {
+            method {
+              code
+            }
+          }
+        }
         options {
           proceeding_step {
             is_action_required
