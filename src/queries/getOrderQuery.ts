@@ -1,5 +1,13 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreOrderFragment } from '../fragments';
+import { CoreOrderFragment, type CoreOrder } from '../fragments/CoreOrderFragment';
+
+export interface GetOrderParams {
+  id: string;
+}
+
+export interface GetOrderResponse {
+  order: CoreOrder;
+}
 
 export const getOrderQuery = gql`
   ${CoreOrderFragment}

@@ -11,5 +11,6 @@ export * from './CorePaymentMethodSummaryFragment';
 export * from './CorePhoneNumberFragment';
 export * from './CoreRegistrationFragment';
 export * from './CoreRmaFragment';
+export * from './CoreSharedContactFragment';
 export * from './CoreShippingMethodSummaryFragment';
 export * from './CoreVatAmountFragment';

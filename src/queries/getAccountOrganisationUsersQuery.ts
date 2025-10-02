@@ -1,29 +1,28 @@
 import { gql } from '@afosto/graphql-client';
-import { CorePhoneNumberFragment } from '../fragments';
+import { CoreSharedContactFragment, type CoreSharedContact } from '../fragments/CoreSharedContactFragment';
+import type { OrganisationType } from '../types';
+
+export interface GetAccountOrganisationUsersResponseSharedOrganisation {
+  id: string;
+  type: OrganisationType;
+  sharedContacts: CoreSharedContact[];
+}
+
+export interface GetAccountOrganisationUsersResponse {
+  account: {
+    sharedOrganisations: GetAccountOrganisationUsersResponseSharedOrganisation[];
+  };
+}
 
 export const getAccountOrganisationUsersQuery = gql`
-  ${CorePhoneNumberFragment}
-
+  ${CoreSharedContactFragment}
   query GetAccountOrganisationUsers {
     account {
       shared_organisations {
         id
         type
         shared_contacts {
-          role
-          contact {
-            id
-            number
-            email
-            given_name
-            additional_name
-            family_name
-            phone_numbers {
-              primary {
-                ...CorePhoneNumberFragment
-              }
-            }
-          }
+          ...CoreSharedContactFragment
         }
       }
     }

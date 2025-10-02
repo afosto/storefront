@@ -1,5 +1,26 @@
 import { gql } from '@afosto/graphql-client';
 
+export interface CoreAddress {
+  countryCode: string;
+  administrativeArea: string;
+  locality: string;
+  postalCode: string;
+  addressLine1: string;
+  addressLine2: string;
+  thoroughfare: string;
+  premiseNumber: number;
+  premiseNumberSuffix: string;
+  givenName: string;
+  additionalName: string;
+  familyName: string;
+  organisation: string;
+  options: {
+    format: {
+      address: string;
+    };
+  };
+}
+
 export const CoreAddressFragment = gql`
   fragment CoreAddressFragment on Address {
     country_code

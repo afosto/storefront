@@ -1,8 +1,34 @@
 import { gql } from '@afosto/graphql-client';
-import { CorePhoneNumberFragment } from '../fragments';
+import { CoreSharedContactFragment, type CoreSharedContact } from '../fragments/CoreSharedContactFragment';
+import type { OrganisationType } from '../types';
+
+export interface InviteUserToAccountOrganisationInputContact {
+  contactId?: string;
+  email?: string;
+  role: string;
+}
+
+export interface InviteUserToAccountOrganisationInput {
+  inviteUserToAccountOrganisationInput: {
+    organisationId: string;
+    contact: InviteUserToAccountOrganisationInputContact;
+  }
+}
+
+export interface InviteUserToAccountOrganisationResponseOrganisation {
+  id: string;
+  type: OrganisationType;
+  sharedContacts: CoreSharedContact[];
+}
+
+export interface InviteUserToAccountOrganisationResponse {
+  addContactToAccountOrganisation: {
+    organisation: InviteUserToAccountOrganisationResponseOrganisation;
+  };
+}
 
 export const inviteUserToAccountOrganisationMutation = gql`
-  ${CorePhoneNumberFragment}
+  ${CoreSharedContactFragment}
   mutation InviteUserToAccountOrganisation(
     $invite_user_to_account_organisation_input: AddContactToAccountOrganisationInput!
   ) {
@@ -11,20 +37,7 @@ export const inviteUserToAccountOrganisationMutation = gql`
         id
         type
         shared_contacts {
-          role
-          contact {
-            id
-            number
-            email
-            given_name
-            additional_name
-            family_name
-            phone_numbers {
-              primary {
-                ...CorePhoneNumberFragment
-              }
-            }
-          }
+          ...CoreSharedContactFragment
         }
       }
     }

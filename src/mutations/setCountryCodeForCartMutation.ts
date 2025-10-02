@@ -1,5 +1,18 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreCartFragment } from '../fragments';
+import { CoreCartFragment, type CoreCart } from '../fragments/CoreCartFragment';
+
+export interface SetCountryCodeForCartInput {
+  setCountryCodeForCartInput: {
+    cartId: string;
+    countryCode: string;
+  }
+}
+
+export interface SetCountryCodeForCartResponse {
+  setCountryCodeForCart: {
+    cart: CoreCart;
+  };
+}
 
 export const setCountryCodeForCartMutation = gql`
   ${CoreCartFragment}
