@@ -1,8 +1,28 @@
 import { gql } from '@afosto/graphql-client';
-import { CorePhoneNumberFragment } from '../fragments';
+import { CoreSharedContactFragment, type CoreSharedContact } from '../fragments/CoreSharedContactFragment';
+import type { OrganisationType } from '../types';
+
+export interface RemoveUserFromAccountOrganisationInput {
+  removeUserFromAccountOrganisationInput: {
+    organisationId: string;
+    contactId: string;
+  }
+}
+
+export interface RemoveUserFromAccountOrganisationResponseOrganisation {
+  id: string;
+  type: OrganisationType;
+  sharedContacts: CoreSharedContact[];
+}
+
+export interface RemoveUserFromAccountOrganisationResponse {
+  removeContactFromAccountOrganisation: {
+    organisation: RemoveUserFromAccountOrganisationResponseOrganisation;
+  };
+}
 
 export const removeUserFromAccountOrganisationMutation = gql`
-  ${CorePhoneNumberFragment}
+  ${CoreSharedContactFragment}
   mutation RemoveUserFromAccountOrganisation(
     $remove_user_from_account_organisation_input: RemoveContactFromAccountOrganisationInput!
   ) {
@@ -11,20 +31,7 @@ export const removeUserFromAccountOrganisationMutation = gql`
         id
         type
         shared_contacts {
-          role
-          contact {
-            id
-            number
-            email
-            given_name
-            additional_name
-            family_name
-            phone_numbers {
-              primary {
-                ...CorePhoneNumberFragment
-              }
-            }
-          }
+          ...CoreSharedContactFragment
         }
       }
     }

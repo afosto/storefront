@@ -1,5 +1,16 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreCartFragment } from '../fragments';
+import { CoreCartFragment, type CoreCart } from '../fragments/CoreCartFragment';
+
+export type CartIntent = 'BEGIN_CHECKOUT' | 'VIEW_CART';
+
+export interface GetCartParams {
+  id: string;
+  intent?: CartIntent;
+}
+
+export interface GetCartResponse {
+  cart: CoreCart;
+}
 
 export const getCartQuery = gql`
   ${CoreCartFragment}

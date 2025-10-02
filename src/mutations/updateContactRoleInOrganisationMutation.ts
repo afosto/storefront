@@ -1,8 +1,29 @@
 import { gql } from '@afosto/graphql-client';
-import { CorePhoneNumberFragment } from '../fragments';
+import { CoreSharedContactFragment, type CoreSharedContact } from '../fragments/CoreSharedContactFragment';
+import type { OrganisationType } from '../types';
+
+export interface UpdateContactRoleInOrganisationInput {
+  updateContactRoleInOrganisationInput: {
+    organisationId: string;
+    contactId: string;
+    role: string;
+  }
+}
+
+export interface UpdateContactRoleInOrganisationResponseOrganisation {
+  id: string;
+  type: OrganisationType;
+  sharedContacts: CoreSharedContact[];
+}
+
+export interface UpdateContactRoleInOrganisationResponse {
+  updateContactRoleInOrganisation: {
+    organisation: UpdateContactRoleInOrganisationResponseOrganisation;
+  };
+}
 
 export const updateContactRoleInOrganisationMutation = gql`
-  ${CorePhoneNumberFragment}
+  ${CoreSharedContactFragment}
   mutation UpdateContactRoleInOrganisationMutation(
     $update_contact_role_in_organisation_input: UpdateContactRoleInOrganisationInput!
   ) {
@@ -11,20 +32,7 @@ export const updateContactRoleInOrganisationMutation = gql`
         id
         type
         shared_contacts {
-          role
-          contact {
-            id
-            number
-            email
-            given_name
-            additional_name
-            family_name
-            phone_numbers {
-              primary {
-                ...CorePhoneNumberFragment
-              }
-            }
-          }
+          ...CoreSharedContactFragment
         }
       }
     }
