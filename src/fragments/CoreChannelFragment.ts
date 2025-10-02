@@ -65,7 +65,7 @@ export interface CoreChannelOptions {
   isRmaEnabled: boolean;
   isSharedOrganisationRequired: boolean;
   isPrepaidBlocked: boolean;
-  isCheckSpendingLimit: boolean;
+  isCheckingSpendingLimit: boolean;
   isB2bExcluded: boolean;
   isB2cExcluded: boolean;
   isProjectRequired: boolean;
@@ -158,7 +158,7 @@ export const CoreChannelFragment = gql`
       is_rma_enabled
       is_shared_organisation_required
       is_prepaid_blocked
-      is_check_spending_limit
+      is_checking_spending_limit
     }
   }
 `;
