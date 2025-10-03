@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreAccountFragment, type CoreAccount } from '../fragments/CoreAccountFragment';
-import type { AddressInput, PhoneNumberInput } from '../types';
+import { CoreAccountFragment } from '../fragments/CoreAccountFragment';
+import type { Account, AddressInput, PhoneNumberInput } from '../types';
 
 export interface UpdateAccountInformationInput {
   updateAccountInformationInput: {
@@ -16,7 +16,7 @@ export interface UpdateAccountInformationInput {
 
 export interface UpdateAccountInformationResponse {
   updateAccount: {
-    account: CoreAccount;
+    account: Account;
   };
 }
 

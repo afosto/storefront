@@ -2,7 +2,7 @@ import { gql } from '@afosto/graphql-client';
 import { CoreSharedContactFragment, type CoreSharedContact } from '../fragments/CoreSharedContactFragment';
 import type { OrganisationType } from '../types';
 
-export interface GetAccountOrganisationUsersResponseSharedOrganisation {
+export interface AccountOrganisationUsersSharedOrganisation {
   id: string;
   type: OrganisationType;
   sharedContacts: CoreSharedContact[];
@@ -10,7 +10,7 @@ export interface GetAccountOrganisationUsersResponseSharedOrganisation {
 
 export interface GetAccountOrganisationUsersResponse {
   account: {
-    sharedOrganisations: GetAccountOrganisationUsersResponseSharedOrganisation[];
+    sharedOrganisations: AccountOrganisationUsersSharedOrganisation[];
   };
 }
 

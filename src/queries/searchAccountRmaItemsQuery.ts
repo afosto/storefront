@@ -17,33 +17,33 @@ export interface SearchAccountRmaItemsParams {
   filters?: SearchAccountRmaItemsParamsFilters;
 }
 
-export interface SearchAccountRmaItemsResponseRmaItemFilter {
+export interface SearchAccountRmaItemFilter {
   key: string;
   value: string;
 }
 
-export interface SearchAccountRmaItemsResponseRmaItemProduct {
+export interface SearchAccountRmaItemProduct {
   sku: string;
   label: string;
   brand: string;
   gtin: string[];
   images: string[];
   mpn: string;
-  filters: SearchAccountRmaItemsResponseRmaItemFilter[];
+  filters: SearchAccountRmaItemFilter[];
 }
 
-export interface SearchAccountRmaItemsResponseRmaItemOrder {
+export interface SearchAccountRmaItemOrder {
   id: string;
   number: string;
   currency: string;
 }
 
-export interface SearchAccountRmaItemsResponseRmaItem {
+export interface SearchAccountRmaItem {
   id: string;
-  product: SearchAccountRmaItemsResponseRmaItemProduct;
+  product: SearchAccountRmaItemProduct;
   image: string;
   status: AccountSearchRmaItemStatus;
-  order: SearchAccountRmaItemsResponseRmaItemOrder;
+  order: SearchAccountRmaItemOrder;
   url: string;
   warrantyExpiresAt: number;
   withdrawalExpiresAt: number;
@@ -52,7 +52,7 @@ export interface SearchAccountRmaItemsResponseRmaItem {
 
 export interface SearchAccountRmaItemsResponse {
   searchRmaItems: {
-    nodes: SearchAccountRmaItemsResponseRmaItem[];
+    nodes: SearchAccountRmaItem[];
     pageInfo: PageInfo;
   };
 }

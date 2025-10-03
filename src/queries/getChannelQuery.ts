@@ -1,12 +1,13 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreChannelFragment, type CoreChannel } from '../fragments/CoreChannelFragment';
+import { CoreChannelFragment } from '../fragments/CoreChannelFragment';
+import type { Channel } from '../types';
 
 export interface GetChannelParams {
   id?: string;
 }
 
 export interface GetChannelResponse {
-  channel: CoreChannel;
+  channel: Channel;
 }
 
 export const getChannelQuery = gql`

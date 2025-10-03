@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreRmaFragment, type CoreRma } from '../fragments/CoreRmaFragment';
-import type { AccountRmaStatus, PageInfo } from '../types';
+import { CoreRmaFragment } from '../fragments/CoreRmaFragment';
+import type { AccountRma, AccountRmaStatus, PageInfo } from '../types';
 
 export interface GetAccountRmasParamsFilters {
   status?: AccountRmaStatus;
@@ -14,7 +14,7 @@ export interface GetAccountRmasParams {
 
 export interface GetAccountRmasResponse {
   rmas: {
-    nodes: CoreRma[];
+    nodes: AccountRma[];
     pageInfo: PageInfo;
   }
 }

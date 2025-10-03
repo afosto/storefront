@@ -1,5 +1,6 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreRmaFragment, type CoreRma } from '../fragments/CoreRmaFragment';
+import { CoreRmaFragment } from '../fragments/CoreRmaFragment';
+import type { AccountRma } from '../types';
 
 export interface DeleteAccountRmaItemsInput {
   input: {
@@ -10,7 +11,7 @@ export interface DeleteAccountRmaItemsInput {
 
 export interface DeleteAccountRmaItemsResponse {
   deleteRmaItems: {
-    rma: CoreRma;
+    rma: AccountRma;
   };
 }
 

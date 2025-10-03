@@ -1,12 +1,13 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreRmaFragment, type CoreRma } from '../fragments/CoreRmaFragment';
+import { CoreRmaFragment } from '../fragments/CoreRmaFragment';
+import type { AccountRma } from '../types';
 
 export interface GetAccountRmaParams {
   id: string;
 }
 
 export interface GetAccountRmaResponse {
-  rma: CoreRma;
+  rma: AccountRma;
 }
 
 export const getAccountRmaQuery = gql`

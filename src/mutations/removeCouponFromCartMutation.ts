@@ -1,5 +1,6 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreCartFragment, type CoreCart } from '../fragments/CoreCartFragment';
+import { CoreCartFragment } from '../fragments/CoreCartFragment';
+import type { Cart } from '../types';
 
 export interface RemoveCouponFromCartInput {
   couponInput: {
@@ -10,7 +11,7 @@ export interface RemoveCouponFromCartInput {
 
 export interface RemoveCouponFromCartResponse {
   removeCouponFromCart: {
-    cart: CoreCart;
+    cart: Cart;
   };
 }
 

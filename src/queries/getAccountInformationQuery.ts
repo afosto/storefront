@@ -1,8 +1,9 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreAccountFragment, type CoreAccount } from '../fragments/CoreAccountFragment';
+import { CoreAccountFragment } from '../fragments/CoreAccountFragment';
+import type { Account } from '../types';
 
 export interface GetAccountInformationResponse {
-  account: CoreAccount;
+  account: Account;
 }
 
 export const getAccountInformationQuery = gql`

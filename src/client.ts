@@ -137,6 +137,7 @@ import {
   STOREFRONT_USER_TOKEN_COOKIE_NAME,
 } from './constants';
 import type {
+  AccountOrganisationUser,
   CartToken,
   DecodedUserToken,
   GraphQLClientError,
@@ -949,7 +950,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         role: InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput']['contact']['role'],
       }
     },
-  ) => {
+  ): Promise<{ users: AccountOrganisationUser[] }> => {
     const { organisationId, user } = input || {};
 
     const response = await authenticatedRequest<InviteUserToAccountOrganisationResponse, InviteUserToAccountOrganisationInput>(inviteUserToAccountOrganisationMutation, {
@@ -973,7 +974,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     input: Omit<UpdateContactRoleInOrganisationInput['updateContactRoleInOrganisationInput'], 'contactId'> & {
       userId: UpdateContactRoleInOrganisationInput['updateContactRoleInOrganisationInput']['contactId'],
     },
-  ) => {
+  ): Promise<{ users: AccountOrganisationUser[] }> => {
     const { organisationId, userId, role } = input || {};
 
     const response = await authenticatedRequest<UpdateContactRoleInOrganisationResponse, UpdateContactRoleInOrganisationInput>(updateContactRoleInOrganisationMutation, {
@@ -994,7 +995,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     input: Omit<RemoveUserFromAccountOrganisationInput['removeUserFromAccountOrganisationInput'], 'contactId'> & {
       userId: RemoveUserFromAccountOrganisationInput['removeUserFromAccountOrganisationInput']['contactId'],
     },
-  ) => {
+  ): Promise<{ users: AccountOrganisationUser[] }> => {
     const { organisationId, userId } = input || {};
     const response = await authenticatedRequest<RemoveUserFromAccountOrganisationResponse, RemoveUserFromAccountOrganisationInput>(removeUserFromAccountOrganisationMutation, {
       removeUserFromAccountOrganisationInput: {
@@ -1049,7 +1050,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Get the users that have account access to your organisation.
    */
-  const getAccountOrganisationUsers = async () => {
+  const getAccountOrganisationUsers = async (): Promise<{ users: AccountOrganisationUser[] }> => {
     const response = await authenticatedRequest<GetAccountOrganisationUsersResponse>(getAccountOrganisationUsersQuery);
     const accountOrganisations = response?.account?.sharedOrganisations || [];
 

@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreRmaFragment, type CoreRma } from '../fragments/CoreRmaFragment';
-import type { AccountRmaItemReason } from '../types';
+import { CoreRmaFragment } from '../fragments/CoreRmaFragment';
+import type { AccountRma, AccountRmaItemReason } from '../types';
 
 export interface UpdateAccountRmaItemsInputItem {
   id: string;
@@ -17,7 +17,7 @@ export interface UpdateAccountRmaItemsInput {
 
 export interface UpdateAccountRmaItemsResponse {
   updateRmaItems: {
-    rma: CoreRma;
+    rma: AccountRma;
   };
 }
 

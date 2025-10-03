@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
 
-export interface GetAccountProjectsResponseProject {
+export interface AccountProjectsProject {
   id: string;
   name: string;
   number: string;
@@ -15,7 +15,7 @@ export interface GetAccountProjectsResponseProject {
 
 export interface GetAccountProjectsResponse {
   account: {
-    projects: GetAccountProjectsResponseProject[];
+    projects: AccountProjectsProject[];
   };
 }
 
