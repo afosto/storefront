@@ -8,21 +8,21 @@ export interface GetAccountOrderParams {
   id: string;
 }
 
-export interface GetAccountOrderResponseOrderPaymentMethodPricing {
+export interface AccountOrderPaymentMethodPricing {
   fixed: number;
   percentage: number;
 }
 
-export interface GetAccountOrderResponseOrderPaymentMethod {
+export interface AccountOrderPaymentMethod {
   id: string;
   code: string;
   description: string;
   instruction: string;
   name: string;
-  pricing: GetAccountOrderResponseOrderPaymentMethodPricing;
+  pricing: AccountOrderPaymentMethodPricing;
 }
 
-export interface GetAccountOrderResponseOrderPaymentDetails {
+export interface AccountOrderPaymentDetails {
   type: string;
   status: string;
   amountPaid: number;
@@ -30,14 +30,14 @@ export interface GetAccountOrderResponseOrderPaymentDetails {
   paidAt: number;
 }
 
-export interface GetAccountOrderResponseOrderPayment {
+export interface AccountOrderPayment {
   id: string;
   amount: number;
   type: string;
-  details: GetAccountOrderResponseOrderPaymentDetails;
+  details: AccountOrderPaymentDetails;
 }
 
-export interface GetAccountOrderResponseOrderInvoice {
+export interface AccountOrderInvoice {
   id: string;
   createdAt: number;
   number: string;
@@ -45,11 +45,11 @@ export interface GetAccountOrderResponseOrderInvoice {
   total: number;
 }
 
-export interface GetAccountOrderResponseOrderItemPricing {
+export interface AccountOrderItemPricing {
   amount: number;
 }
 
-export interface GetAccountOrderResponseOrderItemDeliveryMethod {
+export interface AccountOrderItemDeliveryMethod {
   id: string;
   name: string;
   description: string;
@@ -58,7 +58,7 @@ export interface GetAccountOrderResponseOrderItemDeliveryMethod {
 }
 
 
-export interface GetAccountOrderResponseOrderItemDeliveryPickupPoint {
+export interface AccountOrderItemDeliveryPickupPoint {
   id: string;
   name: string;
   carrier: string;
@@ -68,7 +68,7 @@ export interface GetAccountOrderResponseOrderItemDeliveryPickupPoint {
   };
 }
 
-export interface GetAccountOrderResponseOrderItemDeliveryLocation {
+export interface AccountOrderItemDeliveryLocation {
   id: string;
   name: string;
   address: CoreAddress & {
@@ -76,24 +76,24 @@ export interface GetAccountOrderResponseOrderItemDeliveryLocation {
   };
 }
 
-export interface GetAccountOrderResponseOrderItemDeliveryTo {
+export interface AccountOrderItemDeliveryTo {
   address: CoreAddress & {
     id: string;
   };
-  pickupPoint: GetAccountOrderResponseOrderItemDeliveryPickupPoint;
-  location: GetAccountOrderResponseOrderItemDeliveryLocation;
+  pickupPoint: AccountOrderItemDeliveryPickupPoint;
+  location: AccountOrderItemDeliveryLocation;
 }
 
-export interface GetAccountOrderResponseOrderItemDelivery {
-  method: GetAccountOrderResponseOrderItemDeliveryMethod;
-  to: GetAccountOrderResponseOrderItemDeliveryTo;
+export interface AccountOrderItemDelivery {
+  method: AccountOrderItemDeliveryMethod;
+  to: AccountOrderItemDeliveryTo;
   expectedAt: number;
   status: string;
   trackTraceCode: string;
   trackTraceUrl: string;
 }
 
-export interface GetAccountOrderResponseOrderItem {
+export interface AccountOrderItem {
   sku: string;
   type: string;
   image: string;
@@ -103,11 +103,11 @@ export interface GetAccountOrderResponseOrderItem {
   gtin: string[];
   url: string;
   quantity: number;
-  pricing: GetAccountOrderResponseOrderItemPricing;
-  delivery: GetAccountOrderResponseOrderItemDelivery;
+  pricing: AccountOrderItemPricing;
+  delivery: AccountOrderItemDelivery;
 }
 
-export interface GetAccountOrderResponseOrder {
+export interface AccountOrder {
   id: string;
   number: string;
   createdAt: number;
@@ -128,18 +128,18 @@ export interface GetAccountOrderResponseOrder {
     shipping: CoreFee[];
     payment: CoreFee[];
   };
-  paymentMethod: GetAccountOrderResponseOrderPaymentMethod;
+  paymentMethod: AccountOrderPaymentMethod;
   vat: CoreVatAmount[];
   adjustments: CoreAdjustment[];
-  payments: GetAccountOrderResponseOrderPayment[];
-  invoices: GetAccountOrderResponseOrderInvoice[];
-  items: GetAccountOrderResponseOrderItem[];
+  payments: AccountOrderPayment[];
+  invoices: AccountOrderInvoice[];
+  items: AccountOrderItem[];
   metaData: Record<string, unknown>;
 }
 
 export interface GetAccountOrderResponse {
   account: {
-    order: GetAccountOrderResponseOrder;
+    order: AccountOrder;
   };
 }
 

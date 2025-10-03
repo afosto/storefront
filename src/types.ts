@@ -1,4 +1,20 @@
+import type { CoreAddress } from './fragments/CoreAddressFragment';
+import type { CoreCart } from './fragments/CoreCartFragment';
+import type { CoreAccount, CoreAccountOrganisation } from './fragments/CoreAccountFragment';
+import type { CoreChannel } from './fragments/CoreChannelFragment';
+import type { CoreRma } from './fragments/CoreRmaFragment';
+import type { CoreSharedContact } from './fragments/CoreSharedContactFragment';
+import type { CoreOrder } from './fragments/CoreOrderFragment';
+
 export type OptionalString = string | null;
+
+export type Account = CoreAccount;
+
+export type AccountOrganisation = CoreAccountOrganisation;
+
+export type AccountOrganisationUser = CoreSharedContact;
+
+export type AccountRma = CoreRma;
 
 export type AccountRmaStatus = 'CONCEPT' | 'OPEN' | 'CLOSED';
 
@@ -6,7 +22,15 @@ export type AccountRmaItemStatus = 'PENDING' | 'AUTHORIZED' | 'REJECTED';
 
 export type AccountSearchRmaItemStatus = 'CONCEPT' | 'OPEN' | 'CLOSED';
 
+export type Address = CoreAddress;
+
+export type Cart = CoreCart;
+
 export type CartToken = OptionalString;
+
+export type Channel = CoreChannel;
+
+export type Order = CoreOrder;
 
 export interface DecodedUserToken {
   sub: string;

@@ -1,5 +1,6 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreCartFragment, type CoreCart } from '../fragments/CoreCartFragment';
+import { CoreCartFragment } from '../fragments/CoreCartFragment';
+import type { Cart } from '../types';
 
 export interface AddItemsToCartInputItemMetaData {
   [key: string]: any;
@@ -59,7 +60,7 @@ export interface AddItemsToCartInput {
 
 export interface AddItemsToCartResponse {
   addItemsToCart: {
-    cart: CoreCart;
+    cart: Cart;
   };
 }
 

@@ -1,6 +1,6 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreCartFragment, type CoreCart } from '../fragments/CoreCartFragment';
-import type { ContactInput, OrganisationInput } from '../types';
+import { CoreCartFragment } from '../fragments/CoreCartFragment';
+import type { Cart, ContactInput, OrganisationInput } from '../types';
 
 export interface CreateCartInputCustomer {
   contact?: ContactInput;
@@ -28,7 +28,7 @@ export interface CreateCartInput {
 
 export interface CreateCartResponse {
   createCart: {
-    cart: CoreCart;
+    cart: Cart;
   };
 }
 

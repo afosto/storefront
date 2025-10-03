@@ -6,14 +6,14 @@ export interface GetAccountOrdersParams {
   after?: string;
 }
 
-export interface GetAccountOrdersResponseOrderItemDelivery {
+export interface AccountOrdersItemDelivery {
   expectedAt: number;
   status: string;
   trackTraceCode: string;
   trackTraceUrl: string;
 }
 
-export interface GetAccountOrdersResponseOrderItem {
+export interface AccountOrdersItem {
   sku: string;
   type: string;
   image: string;
@@ -23,21 +23,21 @@ export interface GetAccountOrdersResponseOrderItem {
   gtin: string[];
   url: string;
   quantity: number;
-  delivery: GetAccountOrdersResponseOrderItemDelivery;
+  delivery: AccountOrdersItemDelivery;
 }
 
-export interface GetAccountOrdersResponseOrder {
+export interface AccountOrdersOrder {
   id: string;
   number: string;
   createdAt: number;
   updatedAt: number;
-  items: GetAccountOrdersResponseOrderItem[];
+  items: AccountOrdersItem[];
 }
 
 export interface GetAccountOrdersResponse {
   account: {
     orders: {
-      nodes: GetAccountOrdersResponseOrder[];
+      nodes: AccountOrdersOrder[];
       pageInfo: PageInfo;
     };
   };
