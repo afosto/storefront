@@ -55,6 +55,10 @@ export interface CoreChannelBranding {
   style: CoreChannelBrandingStyle;
 }
 
+export interface CoreChannelPricing {
+  currency: string;
+}
+
 export interface CoreChannelOptions {
   isVatShiftingAllowed: boolean;
   isPhoneNumberRequired: boolean;
@@ -82,6 +86,7 @@ export interface CoreChannel {
   messaging: CoreChannelMessaging;
   business: CoreChannelBusiness;
   branding: CoreChannelBranding;
+  pricing: CoreChannelPricing;
   options: CoreChannelOptions;
 }
 
@@ -144,6 +149,9 @@ export const CoreChannelFragment = gql`
         success
       }
       style
+    }
+    pricing {
+      currency
     }
     options {
       is_vat_shifting_allowed
