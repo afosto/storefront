@@ -2,13 +2,16 @@ import type { CoreAddress } from './fragments/CoreAddressFragment';
 import type { CoreCart } from './fragments/CoreCartFragment';
 import type { CoreAccount, CoreAccountOrganisation } from './fragments/CoreAccountFragment';
 import type { CoreChannel } from './fragments/CoreChannelFragment';
-import type { CoreRma } from './fragments/CoreRmaFragment';
+import type { CoreRma, CoreRmaItem } from './fragments/CoreRmaFragment';
 import type { CoreSharedContact } from './fragments/CoreSharedContactFragment';
 import type { CoreOrder } from './fragments/CoreOrderFragment';
+import type { CoreAccountListedOrder } from './fragments/CoreAccountListedOrderFragment';
 
 export type OptionalString = string | null;
 
 export type Account = CoreAccount;
+
+export type AccountOrdersOrder = CoreAccountListedOrder;
 
 export type AccountOrganisation = CoreAccountOrganisation;
 
@@ -17,6 +20,8 @@ export type AccountOrganisationUser = CoreSharedContact;
 export type AccountRma = CoreRma;
 
 export type AccountRmaStatus = 'CONCEPT' | 'OPEN' | 'CLOSED';
+
+export type AccountRmaItem = CoreRmaItem;
 
 export type AccountRmaItemStatus = 'PENDING' | 'AUTHORIZED' | 'REJECTED';
 

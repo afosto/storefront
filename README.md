@@ -289,6 +289,14 @@ Get the account information for the user that's signed in.
 const account = await client.getAccountInformation();
 ```
 
+### Get account balance
+
+Get the account balance for the user that's signed in.
+
+```js
+const balance = await client.getAccountBalance();
+```
+
 ### Update account information
 
 Update the account information for the user that's signed in.
@@ -317,6 +325,14 @@ Get a specific account order by ID.
 
 ```js
 const order = await client.getAccountOrder('order-id');
+```
+
+### List account outstanding orders
+
+Get all account outstanding orders from the user that's signed in.
+
+```js
+const { orders } = await client.getAccountOutstandingOrders();
 ```
 
 ### Reorder a previous account order
