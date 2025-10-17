@@ -98,6 +98,8 @@ import {
   type VerifyUserResponse,
 } from './mutations';
 import {
+  getAccountBalanceQuery,
+  type GetAccountBalanceResponse,
   getAccountInformationQuery,
   type GetAccountInformationResponse,
   getAccountOrderQuery,
@@ -108,6 +110,8 @@ import {
   type GetAccountOrdersResponse,
   getAccountOrganisationUsersQuery,
   type GetAccountOrganisationUsersResponse,
+  getAccountOutstandingOrdersQuery,
+  type GetAccountOutstandingOrdersResponse,
   getAccountProjectsQuery,
   type GetAccountProjectsResponse,
   getAccountRmaQuery,
@@ -410,12 +414,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Send an authenticated graphQL request with the user token.
    */
-  const authenticatedRequest = async <TResponse, TVariables extends Record<string, any> = Record<string, any>>(
+  const authenticatedRequest = async <
+    TResponse,
+    TVariables extends Record<string, any> = Record<string, any>,
+  >(
     gqlQuery: string,
     variables?: TVariables,
     options: object = {},
   ): Promise<TResponse> =>
-    gqlClient.request(gqlQuery, variables ?? {} as TVariables, {
+    gqlClient.request(gqlQuery, variables ?? ({} as TVariables), {
       authorization: `Bearer ${storedUserToken || ''}`,
       ...options,
     });
@@ -428,7 +435,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     variables?: TVariables,
     options: object = {},
   ): Promise<TResponse> =>
-    gqlClient.request(gqlQuery, variables ?? {} as TVariables, {
+    gqlClient.request(gqlQuery, variables ?? ({} as TVariables), {
       authorization: `Bearer ${config.storefrontToken || ''}`,
       ...options,
     });
@@ -532,12 +539,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         }
       }
 
-      const response = await request<AddItemsToCartResponse, AddItemsToCartInput>(addItemsToCartMutation, {
-        addItemsToCartInput: {
-          cartId: currentCartToken as string,
-          items,
+      const response = await request<AddItemsToCartResponse, AddItemsToCartInput>(
+        addItemsToCartMutation,
+        {
+          addItemsToCartInput: {
+            cartId: currentCartToken as string,
+            items,
+          },
         },
-      });
+      );
 
       return response?.addItemsToCart?.cart || null;
     } catch (error) {
@@ -576,12 +586,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return Promise.reject(new Error('Provide at least one cart item id'));
       }
 
-      const response = await request<RemoveItemsFromCartResponse, RemoveItemsFromCartInput>(removeItemsFromCartMutation, {
-        removeItemsFromCartInput: {
-          cartId: currentCartToken,
-          ids,
+      const response = await request<RemoveItemsFromCartResponse, RemoveItemsFromCartInput>(
+        removeItemsFromCartMutation,
+        {
+          removeItemsFromCartInput: {
+            cartId: currentCartToken,
+            ids,
+          },
         },
-      });
+      );
       return response?.removeItemsFromCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
@@ -616,12 +629,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return Promise.reject(new Error('Provide a country code'));
       }
 
-      const response = await request<SetCountryCodeForCartResponse, SetCountryCodeForCartInput>(setCountryCodeForCartMutation, {
-        setCountryCodeForCartInput: {
-          cartId: currentCartToken as string,
-          countryCode,
+      const response = await request<SetCountryCodeForCartResponse, SetCountryCodeForCartInput>(
+        setCountryCodeForCartMutation,
+        {
+          setCountryCodeForCartInput: {
+            cartId: currentCartToken as string,
+            countryCode,
+          },
         },
-      });
+      );
       return response?.setCountryCodeForCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
@@ -637,7 +653,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Add coupon code to the cart
    */
-  const addCouponToCart = async (coupon: AddCouponToCartInput['couponInput']['coupon'], cartToken?: CartToken) => {
+  const addCouponToCart = async (
+    coupon: AddCouponToCartInput['couponInput']['coupon'],
+    cartToken?: CartToken,
+  ) => {
     try {
       let currentCartToken = cartToken || storedCartToken;
 
@@ -653,12 +672,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return Promise.reject(new Error('Provide a coupon code'));
       }
 
-      const response = await request<AddCouponToCartResponse, AddCouponToCartInput>(addCouponToCartMutation, {
-        couponInput: {
-          cartId: currentCartToken as string,
-          coupon,
+      const response = await request<AddCouponToCartResponse, AddCouponToCartInput>(
+        addCouponToCartMutation,
+        {
+          couponInput: {
+            cartId: currentCartToken as string,
+            coupon,
+          },
         },
-      });
+      );
 
       return response?.addCouponToCart?.cart || null;
     } catch (error) {
@@ -690,12 +712,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return Promise.reject(new Error('Provide the coupon code that should be removed'));
       }
 
-      const response = await request<RemoveCouponFromCartResponse, RemoveCouponFromCartInput>(removeCouponFromCartMutation, {
-        couponInput: {
-          cartId: currentCartToken as string,
-          coupon,
+      const response = await request<RemoveCouponFromCartResponse, RemoveCouponFromCartInput>(
+        removeCouponFromCartMutation,
+        {
+          couponInput: {
+            cartId: currentCartToken as string,
+            coupon,
+          },
         },
-      });
+      );
       return response?.removeCouponFromCart?.cart || null;
     } catch (error) {
       if (config.autoCreateCart && storedCartToken && !cartToken) {
@@ -713,12 +738,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const changePassword = async (input: ChangePasswordInput['changePasswordInput']) => {
     const { newPassword, password } = input || {};
-    const response = await authenticatedRequest<ChangePasswordResponse, ChangePasswordInput>(changePasswordMutation, {
-      changePasswordInput: {
-        password,
-        newPassword,
+    const response = await authenticatedRequest<ChangePasswordResponse, ChangePasswordInput>(
+      changePasswordMutation,
+      {
+        changePasswordInput: {
+          password,
+          newPassword,
+        },
       },
-    });
+    );
 
     return !!response?.setPasswordForAccount?.account?.email;
   };
@@ -726,13 +754,18 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Request a password reset.
    */
-  const requestPasswordReset = async (input: RequestPasswordResetInput['requestPasswordResetInput']) => {
+  const requestPasswordReset = async (
+    input: RequestPasswordResetInput['requestPasswordResetInput'],
+  ) => {
     const { email } = input || {};
-    const response = await request<RequestPasswordResetResponse, RequestPasswordResetInput>(requestPasswordResetMutation, {
-      requestPasswordResetInput: {
-        email,
+    const response = await request<RequestPasswordResetResponse, RequestPasswordResetInput>(
+      requestPasswordResetMutation,
+      {
+        requestPasswordResetInput: {
+          email,
+        },
       },
-    });
+    );
 
     return response?.requestCustomerPasswordReset?.isSuccessful || false;
   };
@@ -740,13 +773,18 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Request an user verification.
    */
-  const requestUserVerification = async (input: RequestUserVerificationInput['requestUserVerificationInput']) => {
+  const requestUserVerification = async (
+    input: RequestUserVerificationInput['requestUserVerificationInput'],
+  ) => {
     const { email } = input || {};
-    const response = await request<RequestUserVerificationResponse, RequestUserVerificationInput>(requestUserVerificationMutation, {
-      requestUserVerificationInput: {
-        email,
+    const response = await request<RequestUserVerificationResponse, RequestUserVerificationInput>(
+      requestUserVerificationMutation,
+      {
+        requestUserVerificationInput: {
+          email,
+        },
       },
-    });
+    );
 
     return response?.requestCustomerVerificationLink?.isSuccessful || false;
   };
@@ -756,12 +794,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const resetPassword = async (input: ResetPasswordInput['resetPasswordInput']) => {
     const { token, password } = input || {};
-    const response = await request<ResetPasswordResponse, ResetPasswordInput>(resetPasswordMutation, {
-      resetPasswordInput: {
-        token,
-        password,
+    const response = await request<ResetPasswordResponse, ResetPasswordInput>(
+      resetPasswordMutation,
+      {
+        resetPasswordInput: {
+          token,
+          password,
+        },
       },
-    });
+    );
 
     return response?.resetCustomerPassword?.isSuccessful || false;
   };
@@ -792,9 +833,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Sign in as organisation
    * Requires a default signIn first
    */
-  const signInAsOrganisation = async (input: SignInAsOrganisationInput['signInAsOrganisationInput']) => {
+  const signInAsOrganisation = async (
+    input: SignInAsOrganisationInput['signInAsOrganisationInput'],
+  ) => {
     const { organisationId } = input || {};
-    const response = await authenticatedRequest<SignInAsOrganisationResponse, SignInAsOrganisationInput>(signInAsOrganisationMutation, {
+    const response = await authenticatedRequest<
+      SignInAsOrganisationResponse,
+      SignInAsOrganisationInput
+    >(signInAsOrganisationMutation, {
       signInAsOrganisationInput: {
         organisationId,
       },
@@ -814,7 +860,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Sign out of an organisation to go back to the users account
    */
   const signOutOfOrganisation = async () => {
-    const response = await authenticatedRequest<SignOutOfOrganisationResponse>(signOutOfOrganisationMutation);
+    const response = await authenticatedRequest<SignOutOfOrganisationResponse>(
+      signOutOfOrganisationMutation,
+    );
     const { token } = response?.logOutAsOrganisation || {};
 
     if (!token || !validateUserToken(token)) {
@@ -867,7 +915,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const updateAccountInformation = async (
     input: UpdateAccountInformationInput['updateAccountInformationInput'],
   ) => {
-    const response = await authenticatedRequest<UpdateAccountInformationResponse, UpdateAccountInformationInput>(updateAccountInformationMutation, {
+    const response = await authenticatedRequest<
+      UpdateAccountInformationResponse,
+      UpdateAccountInformationInput
+    >(updateAccountInformationMutation, {
       updateAccountInformationInput: input || {},
     });
 
@@ -943,17 +994,23 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Invite a user to get account access to your organisation
    */
   const inviteUserToAccountOrganisation = async (
-    input: Omit<InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput'], 'contact'> & {
+    input: Omit<
+      InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput'],
+      'contact'
+    > & {
       user: {
-        id?: InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput']['contact']['contactId'],
-        email?: InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput']['contact']['email'],
-        role: InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput']['contact']['role'],
-      }
+        id?: InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput']['contact']['contactId'];
+        email?: InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput']['contact']['email'];
+        role: InviteUserToAccountOrganisationInput['inviteUserToAccountOrganisationInput']['contact']['role'];
+      };
     },
   ): Promise<{ users: AccountOrganisationUser[] }> => {
     const { organisationId, user } = input || {};
 
-    const response = await authenticatedRequest<InviteUserToAccountOrganisationResponse, InviteUserToAccountOrganisationInput>(inviteUserToAccountOrganisationMutation, {
+    const response = await authenticatedRequest<
+      InviteUserToAccountOrganisationResponse,
+      InviteUserToAccountOrganisationInput
+    >(inviteUserToAccountOrganisationMutation, {
       inviteUserToAccountOrganisationInput: {
         organisationId,
         contact: {
@@ -971,13 +1028,19 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Update the role of a user in an organisation
    */
   const updateUserRoleInAccountOrganisation = async (
-    input: Omit<UpdateContactRoleInOrganisationInput['updateContactRoleInOrganisationInput'], 'contactId'> & {
-      userId: UpdateContactRoleInOrganisationInput['updateContactRoleInOrganisationInput']['contactId'],
+    input: Omit<
+      UpdateContactRoleInOrganisationInput['updateContactRoleInOrganisationInput'],
+      'contactId'
+    > & {
+      userId: UpdateContactRoleInOrganisationInput['updateContactRoleInOrganisationInput']['contactId'];
     },
   ): Promise<{ users: AccountOrganisationUser[] }> => {
     const { organisationId, userId, role } = input || {};
 
-    const response = await authenticatedRequest<UpdateContactRoleInOrganisationResponse, UpdateContactRoleInOrganisationInput>(updateContactRoleInOrganisationMutation, {
+    const response = await authenticatedRequest<
+      UpdateContactRoleInOrganisationResponse,
+      UpdateContactRoleInOrganisationInput
+    >(updateContactRoleInOrganisationMutation, {
       updateContactRoleInOrganisationInput: {
         organisationId,
         contactId: userId,
@@ -992,12 +1055,18 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Remove a user with account access from your organisation
    */
   const removeUserFromAccountOrganisation = async (
-    input: Omit<RemoveUserFromAccountOrganisationInput['removeUserFromAccountOrganisationInput'], 'contactId'> & {
-      userId: RemoveUserFromAccountOrganisationInput['removeUserFromAccountOrganisationInput']['contactId'],
+    input: Omit<
+      RemoveUserFromAccountOrganisationInput['removeUserFromAccountOrganisationInput'],
+      'contactId'
+    > & {
+      userId: RemoveUserFromAccountOrganisationInput['removeUserFromAccountOrganisationInput']['contactId'];
     },
   ): Promise<{ users: AccountOrganisationUser[] }> => {
     const { organisationId, userId } = input || {};
-    const response = await authenticatedRequest<RemoveUserFromAccountOrganisationResponse, RemoveUserFromAccountOrganisationInput>(removeUserFromAccountOrganisationMutation, {
+    const response = await authenticatedRequest<
+      RemoveUserFromAccountOrganisationResponse,
+      RemoveUserFromAccountOrganisationInput
+    >(removeUserFromAccountOrganisationMutation, {
       removeUserFromAccountOrganisationInput: {
         organisationId,
         contactId: userId,
@@ -1013,30 +1082,44 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Get the account information of the user that is logged in.
    */
   const getAccountInformation = async () => {
-    const response = await authenticatedRequest<GetAccountInformationResponse>(getAccountInformationQuery);
+    const response = await authenticatedRequest<GetAccountInformationResponse>(
+      getAccountInformationQuery,
+    );
     return response?.account || null;
+  };
+
+  /**
+   * Get the balance of the account of the user that is logged in.
+   */
+  const getAccountBalance = async () => {
+    const response = await authenticatedRequest<GetAccountBalanceResponse>(getAccountBalanceQuery);
+    return response?.account?.balance || null;
   };
 
   /**
    * Get an order by ID for the user that is logged in.
    */
   const getAccountOrder = async (id: GetAccountOrderParams['id']) => {
-    const response = await authenticatedRequest<GetAccountOrderResponse, GetAccountOrderParams>(getAccountOrderQuery, {
-      id,
-    });
+    const response = await authenticatedRequest<GetAccountOrderResponse, GetAccountOrderParams>(
+      getAccountOrderQuery,
+      {
+        id,
+      },
+    );
     return response?.account?.order || null;
   };
 
   /**
    * Get the orders for the user that is logged in.
    */
-  const getAccountOrders = async (
-    query: GetAccountOrdersParams = {},
-  ) => {
-    const response = await authenticatedRequest<GetAccountOrdersResponse, GetAccountOrdersParams>(getAccountOrdersQuery, {
-      first: query?.first,
-      after: query?.after,
-    });
+  const getAccountOrders = async (query: GetAccountOrdersParams = {}) => {
+    const response = await authenticatedRequest<GetAccountOrdersResponse, GetAccountOrdersParams>(
+      getAccountOrdersQuery,
+      {
+        first: query?.first,
+        after: query?.after,
+      },
+    );
     const ordersResponse = response?.account?.orders || {};
     const orders = ordersResponse.nodes || [];
     const pageInfo = ordersResponse.pageInfo || {};
@@ -1048,10 +1131,24 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Get the outstanding orders for the user that is logged in.
+   */
+  const getAccountOutstandingOrders = async () => {
+    const response = await authenticatedRequest<GetAccountOutstandingOrdersResponse>(
+      getAccountOutstandingOrdersQuery,
+    );
+    const orders = response?.account?.outstandingOrders || [];
+
+    return { orders };
+  };
+
+  /**
    * Get the users that have account access to your organisation.
    */
   const getAccountOrganisationUsers = async (): Promise<{ users: AccountOrganisationUser[] }> => {
-    const response = await authenticatedRequest<GetAccountOrganisationUsersResponse>(getAccountOrganisationUsersQuery);
+    const response = await authenticatedRequest<GetAccountOrganisationUsersResponse>(
+      getAccountOrganisationUsersQuery,
+    );
     const accountOrganisations = response?.account?.sharedOrganisations || [];
 
     const user = getUser();
@@ -1074,7 +1171,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const updateOrganisationOnAccount = async (
     input: UpdateOrganisationOnAccountInput['updateOrganisationOnAccountInput'],
   ) => {
-    const response = await authenticatedRequest<UpdateOrganisationOnAccountResponse, UpdateOrganisationOnAccountInput>(updateOrganisationOnAccountMutation, {
+    const response = await authenticatedRequest<
+      UpdateOrganisationOnAccountResponse,
+      UpdateOrganisationOnAccountInput
+    >(updateOrganisationOnAccountMutation, {
       updateOrganisationOnAccountInput: input || {},
     });
 
@@ -1117,7 +1217,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const createStockUpdateSubscription = async (
     input: CreateStockUpdateSubscriptionInput['createStockUpdateSubscriptionInput'],
   ) => {
-    const response = await request<CreateStockUpdateSubscriptionResponse, CreateStockUpdateSubscriptionInput>(createStockUpdateSubscriptionMutation, {
+    const response = await request<
+      CreateStockUpdateSubscriptionResponse,
+      CreateStockUpdateSubscriptionInput
+    >(createStockUpdateSubscriptionMutation, {
       createStockUpdateSubscriptionInput: input,
     });
 
@@ -1130,7 +1233,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const approveStockUpdateSubscription = async (
     token: ApproveStockUpdateSubscriptionInput['approveStockUpdateSubscriptionInput']['token'],
   ) => {
-    const response = await request<ApproveStockUpdateSubscriptionResponse, ApproveStockUpdateSubscriptionInput>(approveStockUpdateSubscriptionMutation, {
+    const response = await request<
+      ApproveStockUpdateSubscriptionResponse,
+      ApproveStockUpdateSubscriptionInput
+    >(approveStockUpdateSubscriptionMutation, {
       approveStockUpdateSubscriptionInput: {
         token,
       },
@@ -1144,7 +1250,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const removeStockUpdateSubscription = async (
     token: RemoveStockUpdateSubscriptionInput['removeStockUpdateSubscriptionInput']['token'],
   ) => {
-    const response = await request<RemoveStockUpdateSubscriptionResponse, RemoveStockUpdateSubscriptionInput>(removeStockUpdateSubscriptionMutation, {
+    const response = await request<
+      RemoveStockUpdateSubscriptionResponse,
+      RemoveStockUpdateSubscriptionInput
+    >(removeStockUpdateSubscriptionMutation, {
       removeStockUpdateSubscriptionInput: {
         token,
       },
@@ -1156,7 +1265,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Get the projects for the user that is logged in.
    */
   const getAccountProjects = async () => {
-    const response = await authenticatedRequest<GetAccountProjectsResponse>(getAccountProjectsQuery);
+    const response =
+      await authenticatedRequest<GetAccountProjectsResponse>(getAccountProjectsQuery);
     const projects = response?.account?.projects || {};
 
     return {
@@ -1169,14 +1279,17 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const createAccountRma = async (
     input: CreateAccountRmaWithItemsInput['input'] & {
-      items?: CreateAccountRmaWithItemsInput['itemsInput']['items'],
+      items?: CreateAccountRmaWithItemsInput['itemsInput']['items'];
     } = {},
   ) => {
     const { id, items = [], ...otherInput } = input || {};
 
     if (items.length > 0) {
       const rmaId = id ?? uuid();
-      const response = await authenticatedRequest<CreateAccountRmaWithItemsResponse, CreateAccountRmaWithItemsInput>(createAccountRmaWithItemsMutation, {
+      const response = await authenticatedRequest<
+        CreateAccountRmaWithItemsResponse,
+        CreateAccountRmaWithItemsInput
+      >(createAccountRmaWithItemsMutation, {
         input: {
           ...otherInput,
           id: rmaId,
@@ -1189,12 +1302,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       return response?.createRmaItems?.rma || null;
     }
 
-    const response = await authenticatedRequest<CreateAccountRmaResponse, CreateAccountRmaInput>(createAccountRmaMutation, {
-      input: {
-        ...otherInput,
-        id,
+    const response = await authenticatedRequest<CreateAccountRmaResponse, CreateAccountRmaInput>(
+      createAccountRmaMutation,
+      {
+        input: {
+          ...otherInput,
+          id,
+        },
       },
-    });
+    );
     return response?.createRma?.rma || null;
   };
 
@@ -1202,11 +1318,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Delete a Return Merchandise Authorization (RMA) for the user that is logged in.
    */
   const deleteAccountRma = async (id: DeleteAccountRmaInput['input']['id']) => {
-    const response = await authenticatedRequest<DeleteAccountRmaResponse, DeleteAccountRmaInput>(deleteAccountRmaMutation, {
-      input: {
-        id,
+    const response = await authenticatedRequest<DeleteAccountRmaResponse, DeleteAccountRmaInput>(
+      deleteAccountRmaMutation,
+      {
+        input: {
+          id,
+        },
       },
-    });
+    );
     return response?.deleteRma?.isSuccessful || false;
   };
 
@@ -1214,10 +1333,13 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Get the Return Merchandise Authorizations (RMAs) for the user that is logged in.
    */
   const getAccountRmas = async (query: GetAccountRmasParams = {}) => {
-    const response = await authenticatedRequest<GetAccountRmasResponse, GetAccountRmasParams>(getAccountRmasQuery, {
-      ...(query ?? {}),
-      filters: query?.filters ?? {},
-    });
+    const response = await authenticatedRequest<GetAccountRmasResponse, GetAccountRmasParams>(
+      getAccountRmasQuery,
+      {
+        ...(query ?? {}),
+        filters: query?.filters ?? {},
+      },
+    );
     const rmasResponse = response?.rmas || {};
     const rmas = rmasResponse.nodes || [];
     const pageInfo = rmasResponse.pageInfo || {};
@@ -1232,9 +1354,12 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Get a Return Merchandise Authorization (RMA) by ID for the user that is logged in.
    */
   const getAccountRma = async (id: GetAccountRmaParams['id']) => {
-    const response = await authenticatedRequest<GetAccountRmaResponse, GetAccountRmaParams>(getAccountRmaQuery, {
-      id,
-    });
+    const response = await authenticatedRequest<GetAccountRmaResponse, GetAccountRmaParams>(
+      getAccountRmaQuery,
+      {
+        id,
+      },
+    );
     return response?.rma || null;
   };
 
@@ -1242,9 +1367,12 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Update a Return Merchandise Authorization (RMA) for the user that is logged in.
    */
   const updateAccountRma = async (input: UpdateAccountRmaInput['input']) => {
-    const response = await authenticatedRequest<UpdateAccountRmaResponse, UpdateAccountRmaInput>(updateAccountRmaMutation, {
-      input: input || {},
-    });
+    const response = await authenticatedRequest<UpdateAccountRmaResponse, UpdateAccountRmaInput>(
+      updateAccountRmaMutation,
+      {
+        input: input || {},
+      },
+    );
 
     return response?.updateRma?.rma || null;
   };
@@ -1252,10 +1380,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Create items for a Return Merchandise Authorization (RMA) for the user that is logged in.
    */
-  const createAccountRmaItems = async (
-    input: CreateAccountRmaItemsInput['input'],
-  ) => {
-    const response = await authenticatedRequest<CreateAccountRmaItemsResponse, CreateAccountRmaItemsInput>(createAccountRmaItemsMutation, {
+  const createAccountRmaItems = async (input: CreateAccountRmaItemsInput['input']) => {
+    const response = await authenticatedRequest<
+      CreateAccountRmaItemsResponse,
+      CreateAccountRmaItemsInput
+    >(createAccountRmaItemsMutation, {
       input: input || {},
     });
     return response?.createRmaItems?.rma || null;
@@ -1264,10 +1393,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Delete items of a Return Merchandise Authorization (RMA) for the user that is logged in.
    */
-  const deleteAccountRmaItems = async (
-    input: DeleteAccountRmaItemsInput['input'],
-  ) => {
-    const response = await authenticatedRequest<DeleteAccountRmaItemsResponse, DeleteAccountRmaItemsInput>(deleteAccountRmaItemsMutation, {
+  const deleteAccountRmaItems = async (input: DeleteAccountRmaItemsInput['input']) => {
+    const response = await authenticatedRequest<
+      DeleteAccountRmaItemsResponse,
+      DeleteAccountRmaItemsInput
+    >(deleteAccountRmaItemsMutation, {
       input: input || {},
     });
     return response?.deleteRmaItems?.rma || null;
@@ -1276,10 +1406,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Search for available items that can be added to a Return Merchandise Authorization (RMA) for the user that is logged in.
    */
-  const searchAccountRmaItems = async (
-    query: SearchAccountRmaItemsParams = {},
-  ) => {
-    const response = await authenticatedRequest<SearchAccountRmaItemsResponse, SearchAccountRmaItemsParams>(searchAccountRmaItemsQuery, {
+  const searchAccountRmaItems = async (query: SearchAccountRmaItemsParams = {}) => {
+    const response = await authenticatedRequest<
+      SearchAccountRmaItemsResponse,
+      SearchAccountRmaItemsParams
+    >(searchAccountRmaItemsQuery, {
       ...(query ?? {}),
       filters: query?.filters ?? {},
     });
@@ -1296,10 +1427,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Update items for a Return Merchandise Authorization (RMA) for the user that is logged in.
    */
-  const updateAccountRmaItems = async (
-    input: UpdateAccountRmaItemsInput['input'],
-  ) => {
-    const response = await authenticatedRequest<UpdateAccountRmaItemsResponse, UpdateAccountRmaItemsInput>(updateAccountRmaItemsMutation, {
+  const updateAccountRmaItems = async (input: UpdateAccountRmaItemsInput['input']) => {
+    const response = await authenticatedRequest<
+      UpdateAccountRmaItemsResponse,
+      UpdateAccountRmaItemsInput
+    >(updateAccountRmaItemsMutation, {
       input: input || {},
     });
     return response?.updateRmaItems?.rma || null;
@@ -1320,10 +1452,12 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     createStockUpdateSubscription,
     deleteAccountRma,
     deleteAccountRmaItems,
+    getAccountBalance,
     getAccountInformation,
     getAccountOrder,
     getAccountOrders,
     getAccountOrganisationUsers,
+    getAccountOutstandingOrders,
     getAccountProjects,
     getAccountRma,
     getAccountRmas,
