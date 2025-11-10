@@ -8,6 +8,13 @@ export interface GetAccountOrderParams {
   id: string;
 }
 
+export interface AccountOrderCustomer {
+  countryCode: string;
+  locale: string;
+  notes: string;
+  reference: string;
+}
+
 export interface AccountOrderPaymentMethodPricing {
   fixed: number;
   percentage: number;
@@ -56,7 +63,6 @@ export interface AccountOrderItemDeliveryMethod {
   instruction: string;
   carrier: string;
 }
-
 
 export interface AccountOrderItemDeliveryPickupPoint {
   id: string;
@@ -121,6 +127,7 @@ export interface AccountOrder {
   coupons: string[];
   currency: string;
   processing: string[];
+  customer: AccountOrderCustomer;
   billingAddress: CoreAddress & {
     id: string;
   };
@@ -163,6 +170,12 @@ export const getAccountOrderQuery = gql`
         coupons
         currency
         processing
+        customer {
+          country_code
+          locale
+          notes
+          reference
+        }
         billing_address {
           id
           ...CoreAddressFragment
