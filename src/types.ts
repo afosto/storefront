@@ -148,6 +148,7 @@ export enum PaymentMethodCodes {
   cod = 'COD',
   epsUberweisung = 'EPS_UBERWEISUNG',
   fashioncheque = 'FASHIONCHEQUE',
+  giftCard = 'GIFT_CARD',
   giropay = 'GIROPAY',
   givacard = 'GIVACARD',
   googleWallet = 'GOOGLE_WALLET',
