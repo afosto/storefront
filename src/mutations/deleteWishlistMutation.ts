@@ -1,6 +1,5 @@
 import { gql } from '@afosto/graphql-client';
 import { CoreWishlistFragment } from '../fragments/CoreWishlistFragment';
-import type { Wishlist } from '../types';
 
 export interface DeleteWishlistInput {
   wishlistInput: {

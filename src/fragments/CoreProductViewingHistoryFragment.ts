@@ -1,52 +1,51 @@
 import { gql } from '@afosto/graphql-client';
 
-export interface CoreWishlistItemProductPriceVat {
+export interface CoreProductViewingHistoryItemProductPriceVat {
   rate: number;
-  country_ode: string;
+  countryCode: string;
 }
 
-export interface CoreWishlistItemProductPrice {
+export interface CoreProductViewingHistoryItemProductPrice {
   amount: number;
   originalAmount: number;
-  vat: CoreWishlistItemProductPriceVat[];
+  vat: CoreProductViewingHistoryItemProductPriceVat[];
 }
 
-export interface CoreWishlistItemProductFilter {
+export interface CoreProductViewingHistoryItemProductFilter {
   key: string;
   value: string;
 }
 
-export interface CoreWishlistItemProduct {
+export interface CoreProductViewingHistoryItemProduct {
   label: string;
   sku: string;
   gtin: string[];
   mpn: string;
   brand: string;
   categories: string[];
-  filters: CoreWishlistItemProductFilter;
-  prices: CoreWishlistItemProductPrice[];
+  filters: CoreProductViewingHistoryItemProductFilter;
+  prices: CoreProductViewingHistoryItemProductPrice[];
 }
 
-export interface CoreWishlistItem {
+export interface CoreProductViewingHistoryItem {
   quantity: number;
-  product: CoreWishlistItemProduct;
+  product: CoreProductViewingHistoryItemProduct;
 }
 
-export interface CoreWishlist {
+export interface CoreProductViewingHistory {
   label: string;
   token: string;
-  items: CoreWishlistItem[];
+  items: CoreProductViewingHistoryItem[];
   expiresAt: number;
   createdAt: number;
   updatedAt: number;
 }
 
-export const CoreWishlistFragment = gql`
-  fragment CoreWishlistFragment on Wishlist {
+export const CoreProductViewingHistoryFragment = gql`
+  fragment CoreProductViewingHistoryFragment on ProductViewingHistory {
     label
     token
     items {
-      quantity
       product {
         label
         sku

@@ -10,6 +10,7 @@ export * from './CoreOrderFragment';
 export * from './CorePaymentIssuerFragment';
 export * from './CorePaymentMethodSummaryFragment';
 export * from './CorePhoneNumberFragment';
+export * from './CoreProductViewingHistoryFragment';
 export * from './CoreRegistrationFragment';
 export * from './CoreRmaFragment';
 export * from './CoreSharedContactFragment';

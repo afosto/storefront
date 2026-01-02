@@ -111,6 +111,18 @@ import {
   createWishlistMutation,
   type CreateWishlistInput,
   type CreateWishlistResponse,
+  type AddItemToProductViewingHistoryInput,
+  type AddItemToProductViewingHistoryResponse,
+  type CreateProductViewingHistoryInput,
+  type CreateProductViewingHistoryResponse,
+  addItemToProductViewingHistoryMutation,
+  createProductViewingHistoryMutation,
+  type DeleteProductViewingHistoryInput,
+  type DeleteProductViewingHistoryResponse,
+  type UpdateProductViewingHistoryInput,
+  type UpdateProductViewingHistoryResponse,
+  updateProductViewingHistoryMutation,
+  deleteProductViewingHistoryMutation,
 } from './mutations';
 import {
   getAccountBalanceQuery,
@@ -150,6 +162,9 @@ import {
   searchAccountRmaItemsQuery,
   type SearchAccountRmaItemsParams,
   type SearchAccountRmaItemsResponse,
+  type GetProductViewingHistoryParams,
+  type GetProductViewingHistoryResponse,
+  getProductViewingHistoryQuery,
 } from './queries';
 import { isDefined, parseJwt, uuid } from './utils';
 import {
@@ -881,6 +896,122 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
+   * Create a product viewing history
+   */
+  const createProductViewingHistory = async ({
+    label,
+    expiresAt,
+  }: CreateProductViewingHistoryInput['productViewingHistoryInput']) => {
+    try {
+      const response = await request<
+        CreateProductViewingHistoryResponse,
+        CreateProductViewingHistoryInput
+      >(createProductViewingHistoryMutation, {
+        productViewingHistoryInput: {
+          label,
+          expiresAt,
+        },
+      });
+
+      return response?.createProductViewingHistory?.productViewingHistory || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Get a wishlist
+   */
+  const getProductViewingHistory = async (token: GetProductViewingHistoryParams['token']) => {
+    try {
+      const response = await request<
+        GetProductViewingHistoryResponse,
+        GetProductViewingHistoryParams
+      >(getProductViewingHistoryQuery, {
+        token,
+      });
+
+      return response?.productViewingHistory || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Update a wishlist
+   */
+  const updateProductViewingHistory = async (
+    {
+      label,
+      expiresAt,
+    }: Omit<UpdateProductViewingHistoryInput['productViewingHistoryInput'], 'token'>,
+    token: UpdateProductViewingHistoryInput['productViewingHistoryInput']['token'],
+  ) => {
+    try {
+      const response = await request<
+        UpdateProductViewingHistoryResponse,
+        UpdateProductViewingHistoryInput
+      >(updateProductViewingHistoryMutation, {
+        productViewingHistoryInput: {
+          token,
+          label,
+          expiresAt,
+        },
+      });
+
+      return response?.updateProductViewingHistory?.productViewingHistory || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Delete a wishlist
+   */
+  const deleteProductViewingHistory = async (
+    token: DeleteProductViewingHistoryInput['productViewingHistoryInput']['token'],
+  ) => {
+    try {
+      const response = await request<
+        DeleteProductViewingHistoryResponse,
+        DeleteProductViewingHistoryInput
+      >(deleteProductViewingHistoryMutation, {
+        productViewingHistoryInput: {
+          token,
+        },
+      });
+
+      return response?.deleteProductViewingHistory?.success || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Add an item to a wishlist
+   */
+  const addProductViewingHistoryItem = async (
+    item: Omit<AddItemToProductViewingHistoryInput['productViewingHistoryInput'], 'token'>,
+    token: AddItemToProductViewingHistoryInput['productViewingHistoryInput']['token'],
+  ) => {
+    try {
+      const response = await request<
+        AddItemToProductViewingHistoryResponse,
+        AddItemToProductViewingHistoryInput
+      >(addItemToProductViewingHistoryMutation, {
+        productViewingHistoryInput: {
+          ...item,
+          token,
+        },
+      });
+
+      return response?.addItemToProductViewingHistory?.productViewingHistory || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
    * Change your password.
    */
   const changePassword = async (input: ChangePasswordInput['changePasswordInput']) => {
@@ -1590,6 +1721,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   return {
     addCartItems,
     addCouponToCart,
+    addProductViewingHistoryItem,
     addWishlistItem,
     approveStockUpdateSubscription,
     changePassword,
@@ -1598,9 +1730,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     createAccountRmaItems,
     createCart,
     createStockUpdateSubscription,
+    createProductViewingHistory,
     createWishlist,
     deleteAccountRma,
     deleteAccountRmaItems,
+    deleteProductViewingHistory,
     deleteWishlist,
     getAccountBalance,
     getAccountInformation,
@@ -1615,6 +1749,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     getCartTokenFromStorage,
     getChannel,
     getOrder,
+    getProductViewingHistory,
     getSessionID,
     getUser,
     getUserToken,
@@ -1645,6 +1780,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     updateAccountRma,
     updateAccountRmaItems,
     updateOrganisationOnAccount,
+    updateProductViewingHistory,
     updateUserRoleInAccountOrganisation,
     updateWishlist,
     validateUserToken,

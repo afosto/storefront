@@ -579,7 +579,7 @@ const order = await client.deleteWishlist('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed'
 
 ### Add an item to a wishlist
 
-Add an item to an existing wishlist by SKU.
+Add an item to a wishlist by SKU.
 
 ```js
 const order = await client.addWishlistItem(
@@ -601,6 +601,57 @@ Remove an item from a wishlist by SKU.
 ```js
 const order = await client.removeWishlistItem('sku-123', 'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
 ```
+
+
+### Create a product viewing history
+
+Create a history of items the use has viewed.
+
+```js
+const order = await client.createProductViewingHistory({ label: 'my-viewing-history', expiresAt: 1732888670242 });
+```
+
+### Get a product viewing history
+
+Get a product viewing history by token.
+
+```js
+const order = await client.getProductViewingHistory('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+### Update a product viewing history
+
+Update a product viewing history label and expiration date.
+
+```js
+const order = await client.updateProductViewingHistory({ label: 'my-updated-wishlist', expiresAt: 1732999670242 });
+```
+
+### Delete a product viewing history
+
+Delete a product viewing history by token.
+
+```js
+const order = await client.deleteProductViewingHistory('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+### Add an item to a product viewing history
+
+Add an item to a product viewing history by SKU.
+
+```js
+const order = await client.addProductViewingHistoryItem(
+  {
+    sku: 'sku-123',
+    quantity: 2,
+    metaData: {},
+    expirestAt: 1732999670242,
+    
+  },
+  'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed',
+);
+```
+
 
 ## Custom queries / mutations
 

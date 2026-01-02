@@ -10,5 +10,6 @@ export * from './getAccountRmasQuery';
 export * from './getCartQuery';
 export * from './getChannelQuery';
 export * from './getOrderQuery';
+export * from './getProductViewingHistoryQuery';
 export * from './getWishlistQuery';
 export * from './searchAccountRmaItemsQuery';
