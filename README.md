@@ -90,10 +90,8 @@ Before using these examples check the **Get started** section how to initialize 
 ### Create cart
 
 Use this when you manually want to create a new cart.
-
-Fetch the cart information if a cart exists. Returns null when no cart exists.
 ```js
-const cart = await client.getCart();
+const cart = await client.createCart();
 ```
 
 ### Get cart information
@@ -544,6 +542,64 @@ Remove all stock update subscriptions for an email address with a token.
 
 ```js
 const order = await client.removeStockUpdateSubscription('ef34c272-b1ee-41b3-9e07-01e792405747');
+```
+
+
+### Create a wishlist
+
+Create a wishlist to store items in.
+
+```js
+const order = await client.createWishlist({ label: 'my-wishlist', expiresAt: 1732888670242 });
+```
+
+### Get a wishlist
+
+Get a wishlist by token.
+
+```js
+const order = await client.getWishlist('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+### Update a wishlist
+
+Update a wishlists label and expiration date.
+
+```js
+const order = await client.updateWishlist({ label: 'my-updated-wishlist', expiresAt: 1732999670242 });
+```
+
+### Delete a wishlist
+
+Delete a wishlist by token.
+
+```js
+const order = await client.deleteWishlist('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+### Add an item to a wishlist
+
+Add an item to an existing wishlist by SKU.
+
+```js
+const order = await client.addWishlistItem(
+  {
+    sku: 'sku-123',
+    quantity: 2,
+    metaData: {},
+    expirestAt: 1732999670242,
+    
+  },
+  'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed',
+);
+```
+
+### Remove an item from a wishlist
+
+Remove an item from a wishlist by SKU.
+
+```js
+const order = await client.removeWishlistItem('sku-123', 'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
 ```
 
 ## Custom queries / mutations

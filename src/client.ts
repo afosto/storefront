@@ -7,6 +7,9 @@ import {
   addItemsToCartMutation,
   type AddItemsToCartInput,
   type AddItemsToCartResponse,
+  addItemToWishlistMutation,
+  type AddItemToWishlistInput,
+  type AddItemToWishlistResponse,
   approveStockUpdateSubscriptionMutation,
   type ApproveStockUpdateSubscriptionInput,
   type ApproveStockUpdateSubscriptionResponse,
@@ -37,6 +40,9 @@ import {
   deleteAccountRmaMutation,
   type DeleteAccountRmaInput,
   type DeleteAccountRmaResponse,
+  deleteWishlistMutation,
+  type DeleteWishlistInput,
+  type DeleteWishlistResponse,
   inviteUserToAccountOrganisationMutation,
   type InviteUserToAccountOrganisationInput,
   type InviteUserToAccountOrganisationResponse,
@@ -52,6 +58,9 @@ import {
   removeUserFromAccountOrganisationMutation,
   type RemoveUserFromAccountOrganisationInput,
   type RemoveUserFromAccountOrganisationResponse,
+  removeItemFromWishlistMutation,
+  type RemoveItemFromWishlistInput,
+  type RemoveItemFromWishlistResponse,
   reorderMutation,
   type ReorderInput,
   type ReorderResponse,
@@ -93,9 +102,15 @@ import {
   updateOrganisationOnAccountMutation,
   type UpdateOrganisationOnAccountInput,
   type UpdateOrganisationOnAccountResponse,
+  updateWishlistMutation,
+  type UpdateWishlistInput,
+  type UpdateWishlistResponse,
   verifyUserMutation,
   type VerifyUserInput,
   type VerifyUserResponse,
+  createWishlistMutation,
+  type CreateWishlistInput,
+  type CreateWishlistResponse,
 } from './mutations';
 import {
   getAccountBalanceQuery,
@@ -129,6 +144,9 @@ import {
   getOrderQuery,
   type GetOrderParams,
   type GetOrderResponse,
+  getWishlistQuery,
+  type GetWishlistParams,
+  type GetWishlistResponse,
   searchAccountRmaItemsQuery,
   type SearchAccountRmaItemsParams,
   type SearchAccountRmaItemsResponse,
@@ -729,6 +747,135 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         );
       }
 
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Create a wishlist
+   */
+  const createWishlist = async ({ label, expiresAt }: CreateWishlistInput['wishlistInput']) => {
+    try {
+      const response = await request<CreateWishlistResponse, CreateWishlistInput>(
+        createWishlistMutation,
+        {
+          wishlistInput: {
+            label,
+            expiresAt,
+          },
+        },
+      );
+
+      return response?.createWishlist?.wishlist || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Get a wishlist
+   */
+  const getWishlist = async (token: GetWishlistParams['token']) => {
+    try {
+      const response = await request<GetWishlistResponse, GetWishlistParams>(getWishlistQuery, {
+        token,
+      });
+
+      return response?.wishlist || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Update a wishlist
+   */
+  const updateWishlist = async (
+    { label, expiresAt }: Omit<UpdateWishlistInput['wishlistInput'], 'token'>,
+    token: UpdateWishlistInput['wishlistInput']['token'],
+  ) => {
+    try {
+      const response = await request<UpdateWishlistResponse, UpdateWishlistInput>(
+        updateWishlistMutation,
+        {
+          wishlistInput: {
+            token,
+            label,
+            expiresAt,
+          },
+        },
+      );
+
+      return response?.updateWishlist?.wishlist || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Delete a wishlist
+   */
+  const deleteWishlist = async (token: DeleteWishlistInput['wishlistInput']['token']) => {
+    try {
+      const response = await request<DeleteWishlistResponse, DeleteWishlistInput>(
+        deleteWishlistMutation,
+        {
+          wishlistInput: {
+            token,
+          },
+        },
+      );
+
+      return response?.deleteWishlist?.success || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Add an item to a wishlist
+   */
+  const addWishlistItem = async (
+    item: Omit<AddItemToWishlistInput['wishlistInput'], 'token'>,
+    token: AddItemToWishlistInput['wishlistInput']['token'],
+  ) => {
+    try {
+      const response = await request<AddItemToWishlistResponse, AddItemToWishlistInput>(
+        addItemToWishlistMutation,
+        {
+          wishlistInput: {
+            ...item,
+            token,
+          },
+        },
+      );
+
+      return response?.addItemToWishlist?.wishlist || null;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Remove an item from a wishlist
+   */
+  const removeWishlistItem = async (
+    sku: RemoveItemFromWishlistInput['wishlistInput']['sku'],
+    token: RemoveItemFromWishlistInput['wishlistInput']['token'],
+  ) => {
+    try {
+      const response = await request<RemoveItemFromWishlistResponse, RemoveItemFromWishlistInput>(
+        removeItemFromWishlistMutation,
+        {
+          wishlistInput: {
+            sku,
+            token,
+          },
+        },
+      );
+
+      return response?.removeItemFromWishlist?.wishlist || null;
+    } catch (error) {
       return Promise.reject(error);
     }
   };
@@ -1443,6 +1590,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   return {
     addCartItems,
     addCouponToCart,
+    addWishlistItem,
     approveStockUpdateSubscription,
     changePassword,
     confirmCart,
@@ -1450,8 +1598,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     createAccountRmaItems,
     createCart,
     createStockUpdateSubscription,
+    createWishlist,
     deleteAccountRma,
     deleteAccountRmaItems,
+    deleteWishlist,
     getAccountBalance,
     getAccountInformation,
     getAccountOrder,
@@ -1468,6 +1618,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     getSessionID,
     getUser,
     getUserToken,
+    getWishlist,
     inviteUserToAccountOrganisation,
     query: request,
     queryAccount: authenticatedRequest,
@@ -1476,6 +1627,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     removeCouponFromCart,
     removeStockUpdateSubscription,
     removeUserFromAccountOrganisation,
+    removeWishlistItem,
     reorderAccountOrder,
     requestPasswordReset,
     requestUserVerification,
@@ -1494,6 +1646,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     updateAccountRmaItems,
     updateOrganisationOnAccount,
     updateUserRoleInAccountOrganisation,
+    updateWishlist,
     validateUserToken,
     verifyUser,
   };

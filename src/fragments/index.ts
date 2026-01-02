@@ -15,3 +15,4 @@ export * from './CoreRmaFragment';
 export * from './CoreSharedContactFragment';
 export * from './CoreShippingMethodSummaryFragment';
 export * from './CoreVatAmountFragment';
+export * from './CoreWishlistFragment';
