@@ -1,5 +1,4 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreProductViewingHistoryFragment } from '../fragments/CoreProductViewingHistoryFragment';
 
 export interface DeleteProductViewingHistoryInput {
   productViewingHistoryInput: {
@@ -14,7 +13,6 @@ export interface DeleteProductViewingHistoryResponse {
 }
 
 export const deleteProductViewingHistoryMutation = gql`
-  ${CoreProductViewingHistoryFragment}
   mutation DeleteProductViewingHistory(
     $product_viewing_history_input: DeleteProductViewingHistoryInput!
   ) {
