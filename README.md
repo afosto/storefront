@@ -90,10 +90,8 @@ Before using these examples check the **Get started** section how to initialize 
 ### Create cart
 
 Use this when you manually want to create a new cart.
-
-Fetch the cart information if a cart exists. Returns null when no cart exists.
 ```js
-const cart = await client.getCart();
+const cart = await client.createCart();
 ```
 
 ### Get cart information
@@ -524,7 +522,7 @@ const { items, pageInfo } = await client.searchAccountRmaItems({
 Get stock updates for the given SKU on the given email address.
 
 ```js
-const order = await client.createStockUpdateSubscription({
+const subscription = await client.createStockUpdateSubscription({
   email: 'janedoe@example.com',
   sku: 'sku-123',
 });
@@ -535,7 +533,7 @@ const order = await client.createStockUpdateSubscription({
 Approve a requested stock update subscription with a token.
 
 ```js
-const order = await client.approveStockUpdateSubscription('87ff9149-dcca-4cd7-a154-b03c5cbf62c3');
+const subscription = await client.approveStockUpdateSubscription('87ff9149-dcca-4cd7-a154-b03c5cbf62c3');
 ```
 
 ### Remove stock updates subscriptions
@@ -543,8 +541,117 @@ const order = await client.approveStockUpdateSubscription('87ff9149-dcca-4cd7-a1
 Remove all stock update subscriptions for an email address with a token.
 
 ```js
-const order = await client.removeStockUpdateSubscription('ef34c272-b1ee-41b3-9e07-01e792405747');
+const subscription = await client.removeStockUpdateSubscription('ef34c272-b1ee-41b3-9e07-01e792405747');
 ```
+
+
+### Create a wishlist
+
+Create a wishlist to store items in.
+
+```js
+const wishlist = await client.createWishlist({ label: 'my-wishlist', expiresAt: 1732888670242 });
+```
+
+### Get a wishlist
+
+Get a wishlist by token.
+
+```js
+const wishlist = await client.getWishlist('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+### Update a wishlist
+
+Update a wishlists label and expiration date.
+
+```js
+const wishlist = await client.updateWishlist({ label: 'my-updated-wishlist', expiresAt: 1732999670242 });
+```
+
+### Delete a wishlist
+
+Delete a wishlist by token.
+
+```js
+const wishlist = await client.deleteWishlist('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+### Add an item to a wishlist
+
+Add an item to a wishlist by SKU.
+
+```js
+const wishlist = await client.addWishlistItem(
+  {
+    sku: 'sku-123',
+    quantity: 2,
+    metaData: {},
+    expirestAt: 1732999670242,
+    
+  },
+  'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed',
+);
+```
+
+### Remove an item from a wishlist
+
+Remove an item from a wishlist by SKU.
+
+```js
+const wishlist = await client.removeWishlistItem('sku-123', 'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+
+### Create a product viewing history
+
+Create a history of items the use has viewed.
+
+```js
+const viewingHistory = await client.createProductViewingHistory({ label: 'my-viewing-history', expiresAt: 1732888670242 });
+```
+
+### Get a product viewing history
+
+Get a product viewing history by token.
+
+```js
+const viewingHistory = await client.getProductViewingHistory('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+### Update a product viewing history
+
+Update a product viewing history label and expiration date.
+
+```js
+const viewingHistory = await client.updateProductViewingHistory({ label: 'my-updated-wishlist', expiresAt: 1732999670242 });
+```
+
+### Delete a product viewing history
+
+Delete a product viewing history by token.
+
+```js
+const viewingHistory = await client.deleteProductViewingHistory('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+```
+
+### Add an item to a product viewing history
+
+Add an item to a product viewing history by SKU.
+
+```js
+const viewingHistory = await client.addProductViewingHistoryItem(
+  {
+    sku: 'sku-123',
+    metaData: {},
+    expirestAt: 1732999670242,
+    viewedAt: 1768299944000
+    
+  },
+  'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed',
+);
+```
+
 
 ## Custom queries / mutations
 

@@ -2,10 +2,12 @@ import type { CoreAddress } from './fragments/CoreAddressFragment';
 import type { CoreCart } from './fragments/CoreCartFragment';
 import type { CoreAccount, CoreAccountOrganisation } from './fragments/CoreAccountFragment';
 import type { CoreChannel } from './fragments/CoreChannelFragment';
+import type { CoreProductViewingHistory } from './fragments/CoreProductViewingHistoryFragment';
 import type { CoreRma, CoreRmaItem } from './fragments/CoreRmaFragment';
 import type { CoreSharedContact } from './fragments/CoreSharedContactFragment';
 import type { CoreOrder } from './fragments/CoreOrderFragment';
 import type { CoreAccountListedOrder } from './fragments/CoreAccountListedOrderFragment';
+import type { CoreWishlist } from './fragments/CoreWishlistFragment';
 
 export type OptionalString = string | null;
 
@@ -36,6 +38,10 @@ export type CartToken = OptionalString;
 export type Channel = CoreChannel;
 
 export type Order = CoreOrder;
+
+export type Wishlist = CoreWishlist;
+
+export type ProductViewingHistory = CoreProductViewingHistory;
 
 export interface DecodedUserToken {
   sub: string;
