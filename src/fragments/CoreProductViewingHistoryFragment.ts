@@ -28,8 +28,9 @@ export interface CoreProductViewingHistoryItemProduct {
 }
 
 export interface CoreProductViewingHistoryItem {
-  quantity: number;
   product: CoreProductViewingHistoryItemProduct;
+  expiresAt: number;
+  viewedAt: number;
 }
 
 export interface CoreProductViewingHistory {
@@ -68,6 +69,9 @@ export const CoreProductViewingHistoryFragment = gql`
           }
         }
       }
+      meta_data
+      viewed_at
+      expires_at
     }
     expires_at
     created_at

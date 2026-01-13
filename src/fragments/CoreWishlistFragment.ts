@@ -2,7 +2,7 @@ import { gql } from '@afosto/graphql-client';
 
 export interface CoreWishlistItemProductPriceVat {
   rate: number;
-  country_ode: string;
+  countryCode: string;
 }
 
 export interface CoreWishlistItemProductPrice {
@@ -28,8 +28,10 @@ export interface CoreWishlistItemProduct {
 }
 
 export interface CoreWishlistItem {
-  quantity: number;
   product: CoreWishlistItemProduct;
+  quantity: number;
+  metaData: JSON;
+  expiresAt: number;
 }
 
 export interface CoreWishlist {
@@ -47,6 +49,8 @@ export const CoreWishlistFragment = gql`
     token
     items {
       quantity
+      expires_at
+      meta_data
       product {
         label
         sku
