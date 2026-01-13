@@ -770,36 +770,28 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Create a wishlist
    */
   const createWishlist = async ({ label, expiresAt }: CreateWishlistInput['wishlistInput']) => {
-    try {
-      const response = await request<CreateWishlistResponse, CreateWishlistInput>(
-        createWishlistMutation,
-        {
-          wishlistInput: {
-            label,
-            expiresAt,
-          },
+    const response = await request<CreateWishlistResponse, CreateWishlistInput>(
+      createWishlistMutation,
+      {
+        wishlistInput: {
+          label,
+          expiresAt,
         },
-      );
+      },
+    );
 
-      return response?.createWishlist?.wishlist || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.createWishlist?.wishlist || null;
   };
 
   /**
    * Get a wishlist
    */
   const getWishlist = async (token: GetWishlistParams['token']) => {
-    try {
-      const response = await request<GetWishlistResponse, GetWishlistParams>(getWishlistQuery, {
-        token,
-      });
+    const response = await request<GetWishlistResponse, GetWishlistParams>(getWishlistQuery, {
+      token,
+    });
 
-      return response?.wishlist || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.wishlist || null;
   };
 
   /**
@@ -809,42 +801,34 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     { label, expiresAt }: Omit<UpdateWishlistInput['wishlistInput'], 'token'>,
     token: UpdateWishlistInput['wishlistInput']['token'],
   ) => {
-    try {
-      const response = await request<UpdateWishlistResponse, UpdateWishlistInput>(
-        updateWishlistMutation,
-        {
-          wishlistInput: {
-            token,
-            label,
-            expiresAt,
-          },
+    const response = await request<UpdateWishlistResponse, UpdateWishlistInput>(
+      updateWishlistMutation,
+      {
+        wishlistInput: {
+          token,
+          label,
+          expiresAt,
         },
-      );
+      },
+    );
 
-      return response?.updateWishlist?.wishlist || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.updateWishlist?.wishlist || null;
   };
 
   /**
    * Delete a wishlist
    */
   const deleteWishlist = async (token: DeleteWishlistInput['wishlistInput']['token']) => {
-    try {
-      const response = await request<DeleteWishlistResponse, DeleteWishlistInput>(
-        deleteWishlistMutation,
-        {
-          wishlistInput: {
-            token,
-          },
+    const response = await request<DeleteWishlistResponse, DeleteWishlistInput>(
+      deleteWishlistMutation,
+      {
+        wishlistInput: {
+          token,
         },
-      );
+      },
+    );
 
-      return response?.deleteWishlist?.success || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.deleteWishlist?.success || null;
   };
 
   /**
@@ -854,21 +838,17 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     item: Omit<AddItemToWishlistInput['wishlistInput'], 'token'>,
     token: AddItemToWishlistInput['wishlistInput']['token'],
   ) => {
-    try {
-      const response = await request<AddItemToWishlistResponse, AddItemToWishlistInput>(
-        addItemToWishlistMutation,
-        {
-          wishlistInput: {
-            ...item,
-            token,
-          },
+    const response = await request<AddItemToWishlistResponse, AddItemToWishlistInput>(
+      addItemToWishlistMutation,
+      {
+        wishlistInput: {
+          ...item,
+          token,
         },
-      );
+      },
+    );
 
-      return response?.addItemToWishlist?.wishlist || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.addItemToWishlist?.wishlist || null;
   };
 
   /**
@@ -878,21 +858,17 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     sku: RemoveItemFromWishlistInput['wishlistInput']['sku'],
     token: RemoveItemFromWishlistInput['wishlistInput']['token'],
   ) => {
-    try {
-      const response = await request<RemoveItemFromWishlistResponse, RemoveItemFromWishlistInput>(
-        removeItemFromWishlistMutation,
-        {
-          wishlistInput: {
-            sku,
-            token,
-          },
+    const response = await request<RemoveItemFromWishlistResponse, RemoveItemFromWishlistInput>(
+      removeItemFromWishlistMutation,
+      {
+        wishlistInput: {
+          sku,
+          token,
         },
-      );
+      },
+    );
 
-      return response?.removeItemFromWishlist?.wishlist || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.removeItemFromWishlist?.wishlist || null;
   };
 
   /**
@@ -902,39 +878,31 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     label,
     expiresAt,
   }: CreateProductViewingHistoryInput['productViewingHistoryInput']) => {
-    try {
-      const response = await request<
-        CreateProductViewingHistoryResponse,
-        CreateProductViewingHistoryInput
-      >(createProductViewingHistoryMutation, {
-        productViewingHistoryInput: {
-          label,
-          expiresAt,
-        },
-      });
+    const response = await request<
+      CreateProductViewingHistoryResponse,
+      CreateProductViewingHistoryInput
+    >(createProductViewingHistoryMutation, {
+      productViewingHistoryInput: {
+        label,
+        expiresAt,
+      },
+    });
 
-      return response?.createProductViewingHistory?.productViewingHistory || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.createProductViewingHistory?.productViewingHistory || null;
   };
 
   /**
    * Get a wishlist
    */
   const getProductViewingHistory = async (token: GetProductViewingHistoryParams['token']) => {
-    try {
-      const response = await request<
-        GetProductViewingHistoryResponse,
-        GetProductViewingHistoryParams
-      >(getProductViewingHistoryQuery, {
-        token,
-      });
+    const response = await request<
+      GetProductViewingHistoryResponse,
+      GetProductViewingHistoryParams
+    >(getProductViewingHistoryQuery, {
+      token,
+    });
 
-      return response?.productViewingHistory || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.productViewingHistory || null;
   };
 
   /**
@@ -947,22 +915,18 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     }: Omit<UpdateProductViewingHistoryInput['productViewingHistoryInput'], 'token'>,
     token: UpdateProductViewingHistoryInput['productViewingHistoryInput']['token'],
   ) => {
-    try {
-      const response = await request<
-        UpdateProductViewingHistoryResponse,
-        UpdateProductViewingHistoryInput
-      >(updateProductViewingHistoryMutation, {
-        productViewingHistoryInput: {
-          token,
-          label,
-          expiresAt,
-        },
-      });
+    const response = await request<
+      UpdateProductViewingHistoryResponse,
+      UpdateProductViewingHistoryInput
+    >(updateProductViewingHistoryMutation, {
+      productViewingHistoryInput: {
+        token,
+        label,
+        expiresAt,
+      },
+    });
 
-      return response?.updateProductViewingHistory?.productViewingHistory || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.updateProductViewingHistory?.productViewingHistory || null;
   };
 
   /**
@@ -971,20 +935,16 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const deleteProductViewingHistory = async (
     token: DeleteProductViewingHistoryInput['productViewingHistoryInput']['token'],
   ) => {
-    try {
-      const response = await request<
-        DeleteProductViewingHistoryResponse,
-        DeleteProductViewingHistoryInput
-      >(deleteProductViewingHistoryMutation, {
-        productViewingHistoryInput: {
-          token,
-        },
-      });
+    const response = await request<
+      DeleteProductViewingHistoryResponse,
+      DeleteProductViewingHistoryInput
+    >(deleteProductViewingHistoryMutation, {
+      productViewingHistoryInput: {
+        token,
+      },
+    });
 
-      return response?.deleteProductViewingHistory?.success || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.deleteProductViewingHistory?.success || null;
   };
 
   /**
@@ -994,21 +954,17 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     item: Omit<AddItemToProductViewingHistoryInput['productViewingHistoryInput'], 'token'>,
     token: AddItemToProductViewingHistoryInput['productViewingHistoryInput']['token'],
   ) => {
-    try {
-      const response = await request<
-        AddItemToProductViewingHistoryResponse,
-        AddItemToProductViewingHistoryInput
-      >(addItemToProductViewingHistoryMutation, {
-        productViewingHistoryInput: {
-          ...item,
-          token,
-        },
-      });
+    const response = await request<
+      AddItemToProductViewingHistoryResponse,
+      AddItemToProductViewingHistoryInput
+    >(addItemToProductViewingHistoryMutation, {
+      productViewingHistoryInput: {
+        ...item,
+        token,
+      },
+    });
 
-      return response?.addItemToProductViewingHistory?.productViewingHistory || null;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return response?.addItemToProductViewingHistory?.productViewingHistory || null;
   };
 
   /**
