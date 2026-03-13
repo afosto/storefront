@@ -191,6 +191,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     storeCartToken: true,
     storeUserToken: true,
     storageKeyPrefix: STOREFRONT_STORAGE_KEY_PREFIX,
+    cartTokenStorageName: STOREFRONT_CART_TOKEN_STORAGE_NAME,
     cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
     cartTokenCookieOptions: {},
     userTokenCookieOptions: {},
@@ -241,6 +242,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeCartToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
@@ -248,7 +250,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return null;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${cartTokenStorageName}`;
 
       if (cartTokenStorageType === 'cookie') {
         return Cookies.get(storagePath) || null;
@@ -269,6 +271,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeCartToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
@@ -276,7 +279,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${cartTokenStorageName}`;
 
       if (cartTokenStorageType === 'cookie') {
         Cookies.remove(storagePath, cartTokenCookieOptions);
@@ -300,6 +303,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeCartToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
@@ -307,7 +311,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${cartTokenStorageName}`;
 
       if (cartTokenStorageType === 'cookie') {
         Cookies.set(storagePath, token, cartTokenCookieOptions);
