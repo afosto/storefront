@@ -84,6 +84,7 @@ export interface User {
 export interface StorefrontClientOptions {
   autoCreateCart?: boolean;
   autoGenerateSessionID?: boolean;
+  cartTokenStorageName?: string;
   cartTokenStorageType?: 'localStorage' | 'sessionStorage' | 'cookie';
   cartTokenCookieOptions?: Cookies.CookieAttributes;
   userTokenCookieOptions?: Cookies.CookieAttributes;
