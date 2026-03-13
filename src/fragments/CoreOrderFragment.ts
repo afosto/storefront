@@ -4,10 +4,16 @@ import { CoreAdjustmentFragment, type CoreAdjustment } from './CoreAdjustmentFra
 import { CoreFeeFragment, type CoreFee } from './CoreFeeFragment';
 import { CoreItemFilterFragment, type CoreItemFilter } from './CoreItemFilterFragment';
 import { CorePaymentIssuerFragment, type CorePaymentIssuer } from './CorePaymentIssuerFragment';
-import { CorePaymentMethodSummaryFragment, type CorePaymentMethodSummary } from './CorePaymentMethodSummaryFragment';
+import {
+  CorePaymentMethodSummaryFragment,
+  type CorePaymentMethodSummary,
+} from './CorePaymentMethodSummaryFragment';
 import { CorePhoneNumberFragment, type CorePhoneNumber } from './CorePhoneNumberFragment';
 import { CoreRegistrationFragment, type CoreRegistration } from './CoreRegistrationFragment';
-import { CoreShippingMethodSummaryFragment, type CoreShippingMethodSummary } from './CoreShippingMethodSummaryFragment';
+import {
+  CoreShippingMethodSummaryFragment,
+  type CoreShippingMethodSummary,
+} from './CoreShippingMethodSummaryFragment';
 import { CoreVatAmountFragment, type CoreVatAmount } from './CoreVatAmountFragment';
 
 export type CoreOrderState = 'CONCEPT' | 'OPEN' | 'CLOSED';
@@ -67,7 +73,6 @@ export interface CoreOrderItemDetails {
   pricing: CoreOrderItemPricing;
 }
 
-
 export interface CoreOrderItem {
   ids: string[];
   brand: string;
@@ -121,6 +126,7 @@ export interface CoreOrder {
   isCancelled: boolean;
   isIncludingVat: boolean;
   isVatShifted: boolean;
+  metaData: Record<string, unknown>;
   subtotal: number;
   total: number;
   totalExcludingVat: number;
@@ -153,6 +159,7 @@ export const CoreOrderFragment = gql`
     created_at
     is_including_vat
     is_vat_shifted
+    meta_data
     state: status
     subtotal
     total
