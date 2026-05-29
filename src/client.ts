@@ -211,7 +211,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     ...(config.domain ? { domain: config.domain } : {}),
     ...config.userTokenCookieOptions,
   };
-  let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
+  let sessionID: OptionalString = null;
   let storedCartToken: OptionalString = null;
   let storedUserToken: OptionalString = null;
 
@@ -439,7 +439,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Return the session ID used for server side tracking in the storefront.
    */
-  const getSessionID = (): OptionalString => sessionID;
+  const getSessionID = () => {
+    if (!config.autoGenerateSessionID) {
+      return null;
+    }
+    if (sessionID === null) {
+      sessionID = uuid();
+    }
+    return sessionID;
+  };
 
   /**
    * Set the session ID used for server side tracking in the storefront.
@@ -520,7 +528,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const createCart = async (input: CreateCartInput['cartInput'] = {}) => {
     const response = await request<CreateCartResponse, CreateCartInput>(createCartMutation, {
       cartInput: {
-        sessionId: sessionID ?? undefined,
+        sessionId: getSessionID() ?? undefined,
         ...input,
       },
     });
