@@ -172,6 +172,9 @@ import {
   STOREFRONT_CART_TOKEN_STORAGE_TYPE,
   STOREFRONT_CART_TOKEN_STORAGE_NAME,
   STOREFRONT_USER_TOKEN_COOKIE_NAME,
+  STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+  STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
+  STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
 } from './constants';
 import type {
   AccountOrganisationUser,
@@ -181,19 +184,30 @@ import type {
   OptionalString,
   StorefrontClientOptions,
   User,
+  WishlistToken,
 } from './types';
 
 export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const config = {
     autoCreateCart: true,
+    autoCreateWishlist: true,
+    autoCreateProductViewingHistory: true,
     autoGenerateSessionID: true,
     graphQLClientOptions: {},
     storeCartToken: true,
     storeUserToken: true,
+    storeWishlistToken: true,
+    storeProductViewingHistoryToken: true,
     storageKeyPrefix: STOREFRONT_STORAGE_KEY_PREFIX,
     cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
+    wishlistTokenStorageType: STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+    productViewingHistoryTokenStorageType: STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
     cartTokenCookieOptions: {},
     userTokenCookieOptions: {},
+    wishlistDefaultLabel: 'Wishlist',
+    wishlistDefaultExpiresInDays: 30,
+    wishlistTokenCookieOptions: {},
+    productViewingHistoryTokenCookieOptions: {},
     ...(options || {}),
   };
   const cartTokenCookieOptions = {
@@ -201,6 +215,20 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     secure: true,
     ...(config.domain ? { domain: config.domain } : {}),
     ...config.cartTokenCookieOptions,
+  };
+
+  const wishlistTokenCookieOptions = {
+    path: '/',
+    secure: true,
+    ...(config.domain ? { domain: config.domain } : {}),
+    ...config.wishlistTokenCookieOptions,
+  };
+
+  const productViewingHistoryTokenCookieOptions = {
+    path: '/',
+    secure: true,
+    ...(config.domain ? { domain: config.domain } : {}),
+    ...config.productViewingHistoryTokenCookieOptions,
   };
 
   const userTokenCookieOptions = {
@@ -213,6 +241,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
   let storedCartToken: OptionalString = null;
   let storedUserToken: OptionalString = null;
+  let storedWishlistToken: OptionalString = null;
+  let storedProductViewingHistoryToken: OptionalString = null;
 
   if (!isDefined(config?.storefrontToken)) {
     throw new Error('The Afosto storefront client requires a storefront token.');
@@ -223,7 +253,27 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     !['localStorage', 'sessionStorage', 'cookie'].includes(config.cartTokenStorageType)
   ) {
     throw new Error(
-      'Invalid storage type provided. Must be one of type: localStorage, sessionStorage or cookie.',
+      'Invalid storage type provided for the cart token. Must be one of type: localStorage, sessionStorage or cookie.',
+    );
+  }
+
+  if (
+    config.storeWishlistToken &&
+    !['localStorage', 'sessionStorage', 'cookie'].includes(config.wishlistTokenStorageType)
+  ) {
+    throw new Error(
+      'Invalid storage type provided for the wishlist token. Must be one of type: localStorage, sessionStorage or cookie.',
+    );
+  }
+
+  if (
+    config.storeProductViewingHistoryToken &&
+    !['localStorage', 'sessionStorage', 'cookie'].includes(
+      config.productViewingHistoryTokenStorageType,
+    )
+  ) {
+    throw new Error(
+      'Invalid storage type provided for the product viewing history token. Must be one of type: localStorage, sessionStorage or cookie.',
     );
   }
 
@@ -346,6 +396,239 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     }
 
     return callback(cartNotFound);
+  };
+
+  /**
+   * Get wishlist token from storage if storage enabled in the configuration
+   */
+  const getWishlistTokenFromStorage = (): OptionalString => {
+    try {
+      const {
+        storeWishlistToken,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+      } = config || {};
+
+      if (!storeWishlistToken) {
+        return null;
+      }
+
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+
+      if (wishlistTokenStorageType === 'cookie') {
+        return Cookies.get(storagePath) || null;
+      }
+
+      const storage = wishlistTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      return storage.getItem(storagePath);
+    } catch {
+      return null;
+    }
+  };
+
+  /**
+   * Remove wishlist token from storage if storage enabled in the configuration
+   */
+  const removeWishlistTokenFromStorage = () => {
+    try {
+      const {
+        storeWishlistToken,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+      } = config || {};
+
+      if (!storeWishlistToken) {
+        return;
+      }
+
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+
+      if (wishlistTokenStorageType === 'cookie') {
+        Cookies.remove(storagePath, wishlistTokenCookieOptions);
+        storedWishlistToken = null;
+        return;
+      }
+
+      const storage = wishlistTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      storage.removeItem(storagePath);
+
+      storedWishlistToken = null;
+    } catch {}
+  };
+
+  /**
+   * Store the wishlist token in storage if storage enabled in the configuration.
+   * @param {string} token The wishlist token
+   */
+  const storeWishlistTokenInStorage = (token: string) => {
+    try {
+      const {
+        storeWishlistToken,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+      } = config || {};
+
+      if (!storeWishlistToken) {
+        return;
+      }
+
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+
+      if (wishlistTokenStorageType === 'cookie') {
+        Cookies.set(storagePath, token, wishlistTokenCookieOptions);
+        storedWishlistToken = token;
+        return;
+      }
+
+      const storage = wishlistTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      storage.setItem(storagePath, token);
+      storedWishlistToken = token;
+    } catch {}
+  };
+
+  /**
+   * Initialize wishlist token from storage.
+   */
+  const initializeWishlistTokenFromStorage = () => {
+    storedWishlistToken = getWishlistTokenFromStorage();
+  };
+
+  /**
+   * Check for wishlist mutations whether the stored wishlist token is still valid.
+   * @private
+   */
+  const checkStoredWishlistTokenStillValid = async <T>(
+    error: GraphQLClientError,
+    callback: (wishlistNotFound: boolean) => T | Promise<T>,
+  ): Promise<T> => {
+    const { errors } = error?.response || {};
+    const wishlistNotFound = (errors || []).some(
+      responseError => responseError.extensions?.status === 404,
+    );
+
+    if (wishlistNotFound) {
+      removeWishlistTokenFromStorage();
+    }
+
+    return callback(wishlistNotFound);
+  };
+
+  /**
+   * Get product viewing history token from storage if storage enabled in the configuration
+   */
+  const getProductViewingHistoryTokenFromStorage = (): OptionalString => {
+    try {
+      const {
+        storeProductViewingHistoryToken,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        productViewingHistoryTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+      } = config || {};
+
+      if (!storeProductViewingHistoryToken) {
+        return null;
+      }
+
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+
+      if (productViewingHistoryTokenStorageType === 'cookie') {
+        return Cookies.get(storagePath) || null;
+      }
+
+      const storage =
+        productViewingHistoryTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      return storage.getItem(storagePath);
+    } catch {
+      return null;
+    }
+  };
+
+  /**
+   * Remove product viewing history token from storage if storage enabled in the configuration
+   */
+  const removeProductViewingHistoryTokenFromStorage = () => {
+    try {
+      const {
+        storeProductViewingHistoryToken,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        productViewingHistoryTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+      } = config || {};
+
+      if (!storeProductViewingHistoryToken) {
+        return;
+      }
+
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+
+      if (productViewingHistoryTokenStorageType === 'cookie') {
+        Cookies.remove(storagePath, productViewingHistoryTokenCookieOptions);
+        storedProductViewingHistoryToken = null;
+        return;
+      }
+
+      const storage =
+        productViewingHistoryTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      storage.removeItem(storagePath);
+
+      storedProductViewingHistoryToken = null;
+    } catch {}
+  };
+
+  /**
+   * Store the product viewing history token in storage if storage enabled in the configuration.
+   * @param {string} token The product viewing history token
+   */
+  const storeProductViewingHistoryTokenInStorage = (token: string) => {
+    try {
+      const {
+        storeProductViewingHistoryToken,
+        storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        productViewingHistoryTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+      } = config || {};
+
+      if (!storeProductViewingHistoryToken) {
+        return;
+      }
+
+      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+
+      if (productViewingHistoryTokenStorageType === 'cookie') {
+        Cookies.set(storagePath, token, productViewingHistoryTokenCookieOptions);
+        storedProductViewingHistoryToken = token;
+        return;
+      }
+
+      const storage =
+        productViewingHistoryTokenStorageType === 'sessionStorage' ? sessionStorage : localStorage;
+      storage.setItem(storagePath, token);
+      storedProductViewingHistoryToken = token;
+    } catch {}
+  };
+
+  /**
+   * Initialize product viewing history token from storage.
+   */
+  const initializeProductViewingHistoryTokenFromStorage = () => {
+    storedProductViewingHistoryToken = getProductViewingHistoryTokenFromStorage();
+  };
+
+  /**
+   * Check for product viewing history mutations whether the stored product viewing history token is still valid.
+   * @private
+   */
+  const checkStoredProductViewingHistoryTokenStillValid = async <T>(
+    error: GraphQLClientError,
+    callback: (productViewingHistoryNotFound: boolean) => T | Promise<T>,
+  ): Promise<T> => {
+    const { errors } = error?.response || {};
+    const productViewingHistoryNotFound = (errors || []).some(
+      responseError => responseError.extensions?.status === 404,
+    );
+
+    if (productViewingHistoryNotFound) {
+      removeProductViewingHistoryTokenFromStorage();
+    }
+
+    return callback(productViewingHistoryNotFound);
   };
 
   /**
@@ -769,13 +1052,19 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Create a wishlist
    */
-  const createWishlist = async ({ label, expiresAt }: CreateWishlistInput['wishlistInput']) => {
+  const createWishlist = async ({
+    label,
+    expiresAt,
+  }: {
+    label?: CreateWishlistInput['wishlistInput']['label'];
+    expiresAt?: CreateWishlistInput['wishlistInput']['expiresAt'];
+  } = {}) => {
     const response = await request<CreateWishlistResponse, CreateWishlistInput>(
       createWishlistMutation,
       {
         wishlistInput: {
-          label,
-          expiresAt,
+          label: label || config.wishlistDefaultLabel,
+          expiresAt: expiresAt || config.wishlistDefaultExpiresInDays,
         },
       },
     );
@@ -786,12 +1075,26 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Get a wishlist
    */
-  const getWishlist = async (token: GetWishlistParams['token']) => {
-    const response = await request<GetWishlistResponse, GetWishlistParams>(getWishlistQuery, {
-      token,
-    });
+  const getWishlist = async (wishlistToken?: WishlistToken) => {
+    try {
+      let currentWishlistToken = wishlistToken || storedWishlistToken;
 
-    return response?.wishlist || null;
+      if (!currentWishlistToken) {
+        return null;
+      }
+
+      const response = await request<GetWishlistResponse, GetWishlistParams>(getWishlistQuery, {
+        token: currentWishlistToken as string,
+      });
+
+      return response?.wishlist || null;
+    } catch (error) {
+      if (config.autoCreateWishlist && storedWishlistToken && !wishlistToken) {
+        return checkStoredWishlistTokenStillValid(error as GraphQLClientError, async () => null);
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   /**
@@ -799,36 +1102,78 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const updateWishlist = async (
     { label, expiresAt }: Omit<UpdateWishlistInput['wishlistInput'], 'token'>,
-    token: UpdateWishlistInput['wishlistInput']['token'],
-  ) => {
-    const response = await request<UpdateWishlistResponse, UpdateWishlistInput>(
-      updateWishlistMutation,
-      {
-        wishlistInput: {
-          token,
-          label,
-          expiresAt,
-        },
-      },
-    );
+    wishlistToken?: WishlistToken,
+  ): Promise<UpdateWishlistResponse['updateWishlist']['wishlist']> => {
+    try {
+      let currentWishlistToken = wishlistToken || storedWishlistToken;
 
-    return response?.updateWishlist?.wishlist || null;
+      if (!currentWishlistToken && config.autoCreateWishlist) {
+        const createdWishlist = await createWishlist();
+
+        if (createdWishlist) {
+          currentWishlistToken = createdWishlist.token;
+        }
+      }
+      const response = await request<UpdateWishlistResponse, UpdateWishlistInput>(
+        updateWishlistMutation,
+        {
+          wishlistInput: {
+            token: currentWishlistToken as string,
+            label,
+            expiresAt,
+          },
+        },
+      );
+
+      return response?.updateWishlist?.wishlist || null;
+    } catch (error) {
+      if (config.autoCreateWishlist && storedWishlistToken && !wishlistToken) {
+        return checkStoredWishlistTokenStillValid(
+          error as GraphQLClientError,
+          async (wishlistNotFound: boolean) => {
+            if (wishlistNotFound) {
+              return updateWishlist({ label, expiresAt });
+            }
+
+            return Promise.reject(error);
+          },
+        );
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   /**
    * Delete a wishlist
    */
-  const deleteWishlist = async (token: DeleteWishlistInput['wishlistInput']['token']) => {
-    const response = await request<DeleteWishlistResponse, DeleteWishlistInput>(
-      deleteWishlistMutation,
-      {
-        wishlistInput: {
-          token,
-        },
-      },
-    );
+  const deleteWishlist = async (wishlistToken?: WishlistToken) => {
+    try {
+      let currentWishlistToken = wishlistToken || storedWishlistToken;
 
-    return response?.deleteWishlist?.success || null;
+      if (!currentWishlistToken) {
+        return Promise.reject(new Error('No wishlist token provided'));
+      }
+
+      const response = await request<DeleteWishlistResponse, DeleteWishlistInput>(
+        deleteWishlistMutation,
+        {
+          wishlistInput: {
+            token: currentWishlistToken as string,
+          },
+        },
+      );
+
+      return response?.deleteWishlist?.success || null;
+    } catch (error) {
+      if (config.autoCreateWishlist && storedWishlistToken && !wishlistToken) {
+        return checkStoredWishlistTokenStillValid(error as GraphQLClientError, async () =>
+          Promise.reject(error),
+        );
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   /**
@@ -836,19 +1181,46 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const addWishlistItem = async (
     item: Omit<AddItemToWishlistInput['wishlistInput'], 'token'>,
-    token: AddItemToWishlistInput['wishlistInput']['token'],
-  ) => {
-    const response = await request<AddItemToWishlistResponse, AddItemToWishlistInput>(
-      addItemToWishlistMutation,
-      {
-        wishlistInput: {
-          ...item,
-          token,
-        },
-      },
-    );
+    wishlistToken?: WishlistToken,
+  ): Promise<AddItemToWishlistResponse['addItemToWishlist']['wishlist']> => {
+    try {
+      let currentWishlistToken = wishlistToken || storedWishlistToken;
 
-    return response?.addItemToWishlist?.wishlist || null;
+      if (!currentWishlistToken && config.autoCreateWishlist) {
+        const createdWishlist = await createWishlist();
+
+        if (createdWishlist) {
+          currentWishlistToken = createdWishlist.token;
+        }
+      }
+
+      const response = await request<AddItemToWishlistResponse, AddItemToWishlistInput>(
+        addItemToWishlistMutation,
+        {
+          wishlistInput: {
+            ...item,
+            token: currentWishlistToken as string,
+          },
+        },
+      );
+
+      return response?.addItemToWishlist?.wishlist || null;
+    } catch (error) {
+      if (config.autoCreateWishlist && storedWishlistToken && !wishlistToken) {
+        return checkStoredWishlistTokenStillValid(
+          error as GraphQLClientError,
+          async (wishlistNotFound: boolean) => {
+            if (wishlistNotFound) {
+              return addWishlistItem(item);
+            }
+
+            return Promise.reject(error);
+          },
+        );
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   /**
@@ -856,19 +1228,39 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const removeWishlistItem = async (
     sku: RemoveItemFromWishlistInput['wishlistInput']['sku'],
-    token: RemoveItemFromWishlistInput['wishlistInput']['token'],
+    wishlistToken: RemoveItemFromWishlistInput['wishlistInput']['token'],
   ) => {
-    const response = await request<RemoveItemFromWishlistResponse, RemoveItemFromWishlistInput>(
-      removeItemFromWishlistMutation,
-      {
-        wishlistInput: {
-          sku,
-          token,
-        },
-      },
-    );
+    try {
+      let currentWishlistToken = wishlistToken || storedWishlistToken;
 
-    return response?.removeItemFromWishlist?.wishlist || null;
+      if (!currentWishlistToken) {
+        return Promise.reject(new Error('No wishlist token provided'));
+      }
+
+      if (!isDefined(sku)) {
+        return Promise.reject(new Error('Provide a sku to remove'));
+      }
+
+      const response = await request<RemoveItemFromWishlistResponse, RemoveItemFromWishlistInput>(
+        removeItemFromWishlistMutation,
+        {
+          wishlistInput: {
+            sku,
+            token: currentWishlistToken as string,
+          },
+        },
+      );
+
+      return response?.removeItemFromWishlist?.wishlist || null;
+    } catch (error) {
+      if (config.autoCreateWishlist && storedWishlistToken && !wishlistToken) {
+        return checkStoredWishlistTokenStillValid(error as GraphQLClientError, async () =>
+          Promise.reject(error),
+        );
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   /**
@@ -894,15 +1286,38 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Get a wishlist
    */
-  const getProductViewingHistory = async (token: GetProductViewingHistoryParams['token']) => {
-    const response = await request<
-      GetProductViewingHistoryResponse,
-      GetProductViewingHistoryParams
-    >(getProductViewingHistoryQuery, {
-      token,
-    });
+  const getProductViewingHistory = async (
+    productViewingHistoryToken: GetProductViewingHistoryParams['token'],
+  ) => {
+    try {
+      let currentProductViewingHistoryToken =
+        productViewingHistoryToken || storedProductViewingHistoryToken;
 
-    return response?.productViewingHistory || null;
+      if (!currentProductViewingHistoryToken) {
+        return null;
+      }
+      const response = await request<
+        GetProductViewingHistoryResponse,
+        GetProductViewingHistoryParams
+      >(getProductViewingHistoryQuery, {
+        token: currentProductViewingHistoryToken,
+      });
+
+      return response?.productViewingHistory || null;
+    } catch (error) {
+      if (
+        config.autoCreateProductViewingHistory &&
+        storedProductViewingHistoryToken &&
+        !productViewingHistoryToken
+      ) {
+        return checkStoredProductViewingHistoryTokenStillValid(
+          error as GraphQLClientError,
+          async () => null,
+        );
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   /**
@@ -913,20 +1328,51 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       label,
       expiresAt,
     }: Omit<UpdateProductViewingHistoryInput['productViewingHistoryInput'], 'token'>,
-    token: UpdateProductViewingHistoryInput['productViewingHistoryInput']['token'],
+    productViewingHistoryToken: UpdateProductViewingHistoryInput['productViewingHistoryInput']['token'],
   ) => {
-    const response = await request<
-      UpdateProductViewingHistoryResponse,
-      UpdateProductViewingHistoryInput
-    >(updateProductViewingHistoryMutation, {
-      productViewingHistoryInput: {
-        token,
-        label,
-        expiresAt,
-      },
-    });
+    try {
+      let currentProductViewingHistoryToken =
+        productViewingHistoryToken || storedProductViewingHistoryToken;
 
-    return response?.updateProductViewingHistory?.productViewingHistory || null;
+      if (!currentProductViewingHistoryToken && config.autoCreateProductViewingHistory) {
+        const createdWishlist = await createWishlist();
+
+        if (createdWishlist) {
+          currentProductViewingHistoryToken = createdWishlist.token;
+        }
+      }
+      const response = await request<
+        UpdateProductViewingHistoryResponse,
+        UpdateProductViewingHistoryInput
+      >(updateProductViewingHistoryMutation, {
+        productViewingHistoryInput: {
+          token: currentProductViewingHistoryToken as string,
+          label,
+          expiresAt,
+        },
+      });
+
+      return response?.updateProductViewingHistory?.productViewingHistory || null;
+    } catch (error) {
+      if (
+        config.autoCreateProductViewingHistory &&
+        storedProductViewingHistoryToken &&
+        !productViewingHistoryToken
+      ) {
+        return checkStoredProductViewingHistoryTokenStillValid(
+          error as GraphQLClientError,
+          async (productViewingHistoryNotFound: boolean) => {
+            if (productViewingHistoryNotFound) {
+              return updateProductViewingHistory({ label, expiresAt });
+            }
+
+            return Promise.reject(error);
+          },
+        );
+      }
+
+      return Promise.reject(error);
+    }
   };
 
   /**
@@ -1672,6 +2118,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   initializeCartTokenFromStorage();
+  initializeWishlistTokenFromStorage();
+  initializeProductViewingHistoryTokenFromStorage();
   initializeUserToken();
 
   return {
@@ -1706,19 +2154,23 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     getChannel,
     getOrder,
     getProductViewingHistory,
+    getProductViewingHistoryTokenFromStorage,
     getSessionID,
     getUser,
     getUserToken,
     getWishlist,
+    getWishlistTokenFromStorage,
     inviteUserToAccountOrganisation,
     query: request,
     queryAccount: authenticatedRequest,
     removeCartItems,
     removeCartTokenFromStorage,
     removeCouponFromCart,
+    removeProductViewingHistoryTokenFromStorage,
     removeStockUpdateSubscription,
     removeUserFromAccountOrganisation,
     removeWishlistItem,
+    removeWishlistTokenFromStorage,
     reorderAccountOrder,
     requestPasswordReset,
     requestUserVerification,
@@ -1732,6 +2184,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     signOutOfOrganisation,
     signUp,
     storeCartTokenInStorage,
+    storeProductViewingHistoryTokenInStorage,
+    storeWishlistTokenInStorage,
     updateAccountInformation,
     updateAccountRma,
     updateAccountRmaItems,

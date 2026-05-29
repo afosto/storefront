@@ -41,6 +41,8 @@ export type Order = CoreOrder;
 
 export type Wishlist = CoreWishlist;
 
+export type WishlistToken = OptionalString;
+
 export type ProductViewingHistory = CoreProductViewingHistory;
 
 export interface DecodedUserToken {
