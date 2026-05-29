@@ -440,10 +440,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Return the session ID used for server side tracking in the storefront.
    */
   const getSessionID = () => {
-    if (!config.autoGenerateSessionID) {
-      return null;
-    }
-    if (sessionID === null) {
+    if (config.autoGenerateSessionID && sessionID === null) {
       sessionID = uuid();
     }
     return sessionID;
