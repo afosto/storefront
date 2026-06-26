@@ -55,6 +55,7 @@ export interface CoreCartIncentive {
 
 export interface CoreCartItemPricing {
   amount: number;
+  originalAmount: number;
 }
 
 export interface CoreCartItemDetails {
@@ -194,6 +195,7 @@ export const CoreCartFragment = gql`
         }
         pricing {
           amount
+          original_amount
         }
       }
       vat {
