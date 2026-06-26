@@ -65,6 +65,7 @@ export interface CoreOrderCustomer {
 
 export interface CoreOrderItemPricing {
   amount: number;
+  originalAmount: number;
 }
 
 export interface CoreOrderItemDetails {
@@ -221,6 +222,7 @@ export const CoreOrderFragment = gql`
         parent_id
         pricing {
           amount
+          original_amount
         }
         meta_data
       }
