@@ -1,6 +1,6 @@
 {
   "name": "@afosto/storefront",
-  "version": "3.2.0-beta.16",
+  "version": "4.0.1",
   "description": "Afosto storefront client",
   "keywords": [
     "afosto",
@@ -46,10 +46,8 @@
   "dependencies": {
     "@afosto/graphql-client": "^3.0.0-alpha.7",
     "@types/js-cookie": "^3.0.6",
-    "@types/uuid": "^9.0.1",
     "js-cookie": "^3.0.5",
-    "jwt-decode": "^4.0.0",
-    "uuid": "^9.0.0"
+    "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

@@ -199,6 +199,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     storeWishlistToken: true,
     storeProductViewingHistoryToken: true,
     storageKeyPrefix: STOREFRONT_STORAGE_KEY_PREFIX,
+    cartTokenStorageName: STOREFRONT_CART_TOKEN_STORAGE_NAME,
     cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
     wishlistTokenStorageType: STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
     productViewingHistoryTokenStorageType: STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
@@ -238,7 +239,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     ...(config.domain ? { domain: config.domain } : {}),
     ...config.userTokenCookieOptions,
   };
-  let sessionID: OptionalString = config.autoGenerateSessionID ? uuid() : null;
+  let sessionID: OptionalString = null;
   let storedCartToken: OptionalString = null;
   let storedUserToken: OptionalString = null;
   let storedWishlistToken: OptionalString = null;
@@ -291,6 +292,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeCartToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
@@ -298,7 +300,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return null;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${cartTokenStorageName}`;
 
       if (cartTokenStorageType === 'cookie') {
         return Cookies.get(storagePath) || null;
@@ -319,6 +321,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeCartToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
@@ -326,7 +329,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${cartTokenStorageName}`;
 
       if (cartTokenStorageType === 'cookie') {
         Cookies.remove(storagePath, cartTokenCookieOptions);
@@ -350,6 +353,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeCartToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+        cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
       } = config || {};
 
@@ -357,7 +361,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_CART_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${cartTokenStorageName}`;
 
       if (cartTokenStorageType === 'cookie') {
         Cookies.set(storagePath, token, cartTokenCookieOptions);
@@ -718,7 +722,12 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   /**
    * Return the session ID used for server side tracking in the storefront.
    */
-  const getSessionID = (): OptionalString => sessionID;
+  const getSessionID = () => {
+    if (config.autoGenerateSessionID && sessionID === null) {
+      sessionID = uuid();
+    }
+    return sessionID;
+  };
 
   /**
    * Set the session ID used for server side tracking in the storefront.
@@ -799,7 +808,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const createCart = async (input: CreateCartInput['cartInput'] = {}) => {
     const response = await request<CreateCartResponse, CreateCartInput>(createCartMutation, {
       cartInput: {
-        sessionId: sessionID ?? undefined,
+        sessionId: getSessionID() ?? undefined,
         ...input,
       },
     });

@@ -55,6 +55,7 @@ export interface CoreCartIncentive {
 
 export interface CoreCartItemPricing {
   amount: number;
+  originalAmount: number;
 }
 
 export interface CoreCartItemDetails {
@@ -64,7 +65,6 @@ export interface CoreCartItemDetails {
   filters: CoreCartProductFilter[];
   pricing: CoreCartItemPricing;
 }
-
 
 export interface CoreCartItem {
   ids: string[];
@@ -91,6 +91,11 @@ export interface CoreCartDelivery {
   address: CoreCartDeliveryAddress;
 }
 
+export interface CoreCartFees {
+  shipping: CoreFee[];
+  payment: CoreFee[];
+}
+
 export interface CoreCart {
   id: string;
   createdAt: number;
@@ -107,9 +112,9 @@ export interface CoreCart {
   customer: CoreCartCustomer;
   incentives: CoreCartIncentive[];
   items: CoreCartItem[];
-  fees: CoreFee[];
+  fees: CoreCartFees;
   delivery: CoreCartDelivery;
-  vat: CoreVatAmount;
+  vat: CoreVatAmount[];
 }
 
 export const CoreCartFragment = gql`
@@ -190,6 +195,7 @@ export const CoreCartFragment = gql`
         }
         pricing {
           amount
+          original_amount
         }
       }
       vat {
