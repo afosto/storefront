@@ -116,10 +116,6 @@ export interface StorefrontClientOptions {
   storefrontToken: string;
 }
 
-/**
- * The resolved client configuration. Every option that receives a default value
- * is required, so consumers don't have to guard against `undefined`.
- */
 export type StorefrontClientConfig = Required<Omit<StorefrontClientOptions, 'domain'>> &
   Pick<StorefrontClientOptions, 'domain'>;
 

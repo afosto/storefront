@@ -176,7 +176,11 @@ import {
   STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
   STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
   STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
-  VALID_STORAGE_TYPES,
+  STOREFRONT_VALID_STORAGE_TYPES,
+  STOREFRONT_WISHLIST_TOKEN_EXPIRES_IN_DAYS,
+  STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_EXPIRES_IN_DAYS,
+  STOREFRONT_PRODUCT_VIEWING_HISTORY_DEFAULT_LABEL,
+  STOREFRONT_WISHLIST_DEFAULT_LABEL,
 } from './constants';
 import type {
   AccountOrganisationUser,
@@ -206,16 +210,17 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     storeProductViewingHistoryToken: true,
     productViewingHistoryTokenStorageType: STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
     productViewingHistoryTokenStorageName: STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
-    productViewingHistoryDefaultLabel: 'Product viewing history',
-    productViewingHistoryDefaultExpiresInDays: 30,
+    productViewingHistoryDefaultLabel: STOREFRONT_PRODUCT_VIEWING_HISTORY_DEFAULT_LABEL,
+    productViewingHistoryDefaultExpiresInDays:
+      STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_EXPIRES_IN_DAYS,
     productViewingHistoryTokenCookieOptions: {},
     userTokenCookieOptions: {},
     autoCreateWishlist: true,
     storeWishlistToken: true,
     wishlistTokenStorageType: STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
     wishlistTokenStorageName: STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
-    wishlistDefaultLabel: 'Wishlist',
-    wishlistDefaultExpiresInDays: 30,
+    wishlistDefaultLabel: STOREFRONT_WISHLIST_DEFAULT_LABEL,
+    wishlistDefaultExpiresInDays: STOREFRONT_WISHLIST_TOKEN_EXPIRES_IN_DAYS,
     wishlistTokenCookieOptions: {},
     ...(options || {}),
   };
@@ -275,10 +280,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   ];
 
   for (const { enabled, storageType, name } of tokenStorageConfigs) {
-    if (enabled && !VALID_STORAGE_TYPES.includes(storageType)) {
+    if (enabled && !STOREFRONT_VALID_STORAGE_TYPES.includes(storageType)) {
       throw new Error(
         `Invalid storage type provided for the ${name} token. ` +
-          `Must be one of: ${VALID_STORAGE_TYPES.join(', ')}.`,
+          `Must be one of: ${STOREFRONT_VALID_STORAGE_TYPES.join(', ')}.`,
       );
     }
   }
@@ -1124,28 +1129,24 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     { label, expiresAt }: Omit<UpdateWishlistInput['wishlistInput'], 'token'>,
     wishlistToken?: WishlistToken,
   ): Promise<UpdateWishlistResponse['updateWishlist']['wishlist']> => {
-    try {
-      let currentWishlistToken = wishlistToken || storedWishlistToken;
+    let currentWishlistToken = wishlistToken || storedWishlistToken;
 
-      if (!currentWishlistToken) {
-        return Promise.reject(new Error('No wishlist to update'));
-      }
-
-      const response = await request<UpdateWishlistResponse, UpdateWishlistInput>(
-        updateWishlistMutation,
-        {
-          wishlistInput: {
-            token: currentWishlistToken as string,
-            label,
-            expiresAt,
-          },
-        },
-      );
-
-      return response?.updateWishlist?.wishlist || null;
-    } catch (error) {
-      return Promise.reject(error);
+    if (!currentWishlistToken) {
+      return Promise.reject(new Error('No wishlist to update'));
     }
+
+    const response = await request<UpdateWishlistResponse, UpdateWishlistInput>(
+      updateWishlistMutation,
+      {
+        wishlistInput: {
+          token: currentWishlistToken as string,
+          label,
+          expiresAt,
+        },
+      },
+    );
+
+    return response?.updateWishlist?.wishlist || null;
   };
 
   /**
@@ -1282,8 +1283,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       CreateProductViewingHistoryInput
     >(createProductViewingHistoryMutation, {
       productViewingHistoryInput: {
-        label: label || (config.productViewingHistoryDefaultLabel as string),
-        expiresAt: expiresAt || (config.productViewingHistoryDefaultExpiresInDays as number),
+        label: label || config.productViewingHistoryDefaultLabel,
+        expiresAt: expiresAt || config.productViewingHistoryDefaultExpiresInDays,
       },
     });
 
@@ -1339,29 +1340,25 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   ): Promise<
     UpdateProductViewingHistoryResponse['updateProductViewingHistory']['productViewingHistory']
   > => {
-    try {
-      let currentProductViewingHistoryToken =
-        productViewingHistoryToken || storedProductViewingHistoryToken;
+    let currentProductViewingHistoryToken =
+      productViewingHistoryToken || storedProductViewingHistoryToken;
 
-      if (!currentProductViewingHistoryToken) {
-        return Promise.reject(new Error('No product viewing history to update'));
-      }
-
-      const response = await request<
-        UpdateProductViewingHistoryResponse,
-        UpdateProductViewingHistoryInput
-      >(updateProductViewingHistoryMutation, {
-        productViewingHistoryInput: {
-          token: currentProductViewingHistoryToken as string,
-          label,
-          expiresAt,
-        },
-      });
-
-      return response?.updateProductViewingHistory?.productViewingHistory || null;
-    } catch (error) {
-      return Promise.reject(error);
+    if (!currentProductViewingHistoryToken) {
+      return Promise.reject(new Error('No product viewing history to update'));
     }
+
+    const response = await request<
+      UpdateProductViewingHistoryResponse,
+      UpdateProductViewingHistoryInput
+    >(updateProductViewingHistoryMutation, {
+      productViewingHistoryInput: {
+        token: currentProductViewingHistoryToken as string,
+        label,
+        expiresAt,
+      },
+    });
+
+    return response?.updateProductViewingHistory?.productViewingHistory || null;
   };
 
   /**
@@ -1473,7 +1470,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
-   * Request an user verification.
+   * Request a user verification.
    */
   const requestUserVerification = async (
     input: RequestUserVerificationInput['requestUserVerificationInput'],
