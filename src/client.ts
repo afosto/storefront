@@ -176,6 +176,7 @@ import {
   STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
   STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
   STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
+  VALID_STORAGE_TYPES,
 } from './constants';
 import type {
   AccountOrganisationUser,
@@ -183,63 +184,66 @@ import type {
   DecodedUserToken,
   GraphQLClientError,
   OptionalString,
+  ProductViewingHistoryToken,
+  StorefrontClientConfig,
   StorefrontClientOptions,
   User,
   WishlistToken,
 } from './types';
 
 export const createStorefrontClient = (options: StorefrontClientOptions) => {
-  const config = {
+  const config: StorefrontClientConfig = {
     autoCreateCart: true,
-    autoCreateWishlist: true,
-    autoCreateProductViewingHistory: true,
     autoGenerateSessionID: true,
     graphQLClientOptions: {},
     storeCartToken: true,
     storeUserToken: true,
-    storeWishlistToken: true,
-    storeProductViewingHistoryToken: true,
     storageKeyPrefix: STOREFRONT_STORAGE_KEY_PREFIX,
     cartTokenStorageName: STOREFRONT_CART_TOKEN_STORAGE_NAME,
     cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
-    wishlistTokenStorageType: STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
-    wishlistTokenStorageName: STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
+    cartTokenCookieOptions: {},
+    autoCreateProductViewingHistory: true,
+    storeProductViewingHistoryToken: true,
     productViewingHistoryTokenStorageType: STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
     productViewingHistoryTokenStorageName: STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
-    cartTokenCookieOptions: {},
+    productViewingHistoryDefaultLabel: 'Product viewing history',
+    productViewingHistoryDefaultExpiresInDays: 30,
+    productViewingHistoryTokenCookieOptions: {},
     userTokenCookieOptions: {},
+    autoCreateWishlist: true,
+    storeWishlistToken: true,
+    wishlistTokenStorageType: STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+    wishlistTokenStorageName: STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
     wishlistDefaultLabel: 'Wishlist',
     wishlistDefaultExpiresInDays: 30,
     wishlistTokenCookieOptions: {},
-    productViewingHistoryTokenCookieOptions: {},
     ...(options || {}),
   };
-  const cartTokenCookieOptions = {
+
+  const defaultCookieOptions = {
     path: '/',
     secure: true,
     ...(config.domain ? { domain: config.domain } : {}),
+  };
+
+  const cartTokenCookieOptions = {
+    ...defaultCookieOptions,
     ...config.cartTokenCookieOptions,
   };
 
   const wishlistTokenCookieOptions = {
-    path: '/',
-    secure: true,
-    ...(config.domain ? { domain: config.domain } : {}),
+    ...defaultCookieOptions,
     ...config.wishlistTokenCookieOptions,
   };
 
   const productViewingHistoryTokenCookieOptions = {
-    path: '/',
-    secure: true,
-    ...(config.domain ? { domain: config.domain } : {}),
+    ...defaultCookieOptions,
     ...config.productViewingHistoryTokenCookieOptions,
   };
 
   const userTokenCookieOptions = {
     expires: 1,
-    path: '/',
-    secure: true,
-    ...(config.domain ? { domain: config.domain } : {}),
+    ...defaultCookieOptions,
     ...config.userTokenCookieOptions,
   };
   let sessionID: OptionalString = null;
@@ -252,33 +256,31 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     throw new Error('The Afosto storefront client requires a storefront token.');
   }
 
-  if (
-    config.storeCartToken &&
-    !['localStorage', 'sessionStorage', 'cookie'].includes(config.cartTokenStorageType)
-  ) {
-    throw new Error(
-      'Invalid storage type provided for the cart token. Must be one of type: localStorage, sessionStorage or cookie.',
-    );
-  }
+  const tokenStorageConfigs = [
+    {
+      enabled: config.storeCartToken,
+      storageType: config.cartTokenStorageType,
+      name: 'cart',
+    },
+    {
+      enabled: config.storeWishlistToken,
+      storageType: config.wishlistTokenStorageType,
+      name: 'wishlist',
+    },
+    {
+      enabled: config.storeProductViewingHistoryToken,
+      storageType: config.productViewingHistoryTokenStorageType,
+      name: 'product viewing history',
+    },
+  ];
 
-  if (
-    config.storeWishlistToken &&
-    !['localStorage', 'sessionStorage', 'cookie'].includes(config.wishlistTokenStorageType)
-  ) {
-    throw new Error(
-      'Invalid storage type provided for the wishlist token. Must be one of type: localStorage, sessionStorage or cookie.',
-    );
-  }
-
-  if (
-    config.storeProductViewingHistoryToken &&
-    !['localStorage', 'sessionStorage', 'cookie'].includes(
-      config.productViewingHistoryTokenStorageType,
-    )
-  ) {
-    throw new Error(
-      'Invalid storage type provided for the product viewing history token. Must be one of type: localStorage, sessionStorage or cookie.',
-    );
+  for (const { enabled, storageType, name } of tokenStorageConfigs) {
+    if (enabled && !VALID_STORAGE_TYPES.includes(storageType)) {
+      throw new Error(
+        `Invalid storage type provided for the ${name} token. ` +
+          `Must be one of: ${VALID_STORAGE_TYPES.join(', ')}.`,
+      );
+    }
   }
 
   if (!(typeof window !== 'undefined' && typeof Storage !== 'undefined') && config.storeCartToken) {
@@ -561,8 +563,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeProductViewingHistoryToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
-        productViewingHistoryTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
-        productViewingHistoryTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
+        productViewingHistoryTokenStorageType = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
+        productViewingHistoryTokenStorageName = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
       } = config || {};
 
       if (!storeProductViewingHistoryToken) {
@@ -594,8 +596,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeProductViewingHistoryToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
-        productViewingHistoryTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
-        productViewingHistoryTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
+        productViewingHistoryTokenStorageType = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
+        productViewingHistoryTokenStorageName = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
       } = config || {};
 
       if (!storeProductViewingHistoryToken) {
@@ -1125,13 +1127,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     try {
       let currentWishlistToken = wishlistToken || storedWishlistToken;
 
-      if (!currentWishlistToken && config.autoCreateWishlist) {
-        const createdWishlist = await createWishlist();
-
-        if (createdWishlist) {
-          currentWishlistToken = createdWishlist.token;
-        }
+      if (!currentWishlistToken) {
+        return Promise.reject(new Error('No wishlist to update'));
       }
+
       const response = await request<UpdateWishlistResponse, UpdateWishlistInput>(
         updateWishlistMutation,
         {
@@ -1145,19 +1144,6 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
       return response?.updateWishlist?.wishlist || null;
     } catch (error) {
-      if (config.autoCreateWishlist && storedWishlistToken && !wishlistToken) {
-        return checkStoredWishlistTokenStillValid(
-          error as GraphQLClientError,
-          async (wishlistNotFound: boolean) => {
-            if (wishlistNotFound) {
-              return updateWishlist({ label, expiresAt });
-            }
-
-            return Promise.reject(error);
-          },
-        );
-      }
-
       return Promise.reject(error);
     }
   };
@@ -1287,14 +1273,17 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const createProductViewingHistory = async ({
     label,
     expiresAt,
-  }: CreateProductViewingHistoryInput['productViewingHistoryInput']) => {
+  }: {
+    label?: CreateProductViewingHistoryInput['productViewingHistoryInput']['label'];
+    expiresAt?: CreateProductViewingHistoryInput['productViewingHistoryInput']['expiresAt'];
+  } = {}) => {
     const response = await request<
       CreateProductViewingHistoryResponse,
       CreateProductViewingHistoryInput
     >(createProductViewingHistoryMutation, {
       productViewingHistoryInput: {
-        label,
-        expiresAt,
+        label: label || (config.productViewingHistoryDefaultLabel as string),
+        expiresAt: expiresAt || (config.productViewingHistoryDefaultExpiresInDays as number),
       },
     });
 
@@ -1302,7 +1291,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
-   * Get a wishlist
+   * Get a product viewing history
    */
   const getProductViewingHistory = async (
     productViewingHistoryToken: GetProductViewingHistoryParams['token'],
@@ -1339,7 +1328,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
-   * Update a wishlist
+   * Update a product viewing history
    */
   const updateProductViewingHistory = async (
     {
@@ -1354,13 +1343,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       let currentProductViewingHistoryToken =
         productViewingHistoryToken || storedProductViewingHistoryToken;
 
-      if (!currentProductViewingHistoryToken && config.autoCreateProductViewingHistory) {
-        const createdWishlist = await createWishlist();
-
-        if (createdWishlist) {
-          currentProductViewingHistoryToken = createdWishlist.token;
-        }
+      if (!currentProductViewingHistoryToken) {
+        return Promise.reject(new Error('No product viewing history to update'));
       }
+
       const response = await request<
         UpdateProductViewingHistoryResponse,
         UpdateProductViewingHistoryInput
@@ -1374,6 +1360,35 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
       return response?.updateProductViewingHistory?.productViewingHistory || null;
     } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Delete a product viewing history
+   */
+  const deleteProductViewingHistory = async (
+    productViewingHistoryToken: DeleteProductViewingHistoryInput['productViewingHistoryInput']['token'],
+  ) => {
+    try {
+      let currentProductViewingHistoryToken =
+        productViewingHistoryToken || storedProductViewingHistoryToken;
+
+      if (!currentProductViewingHistoryToken) {
+        return Promise.reject(new Error('No product viewing history token provided'));
+      }
+
+      const response = await request<
+        DeleteProductViewingHistoryResponse,
+        DeleteProductViewingHistoryInput
+      >(deleteProductViewingHistoryMutation, {
+        productViewingHistoryInput: {
+          token: currentProductViewingHistoryToken as string,
+        },
+      });
+
+      return response?.deleteProductViewingHistory?.success || null;
+    } catch (error) {
       if (
         config.autoCreateProductViewingHistory &&
         storedProductViewingHistoryToken &&
@@ -1381,13 +1396,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       ) {
         return checkStoredProductViewingHistoryTokenStillValid(
           error as GraphQLClientError,
-          async (productViewingHistoryNotFound: boolean) => {
-            if (productViewingHistoryNotFound) {
-              return updateProductViewingHistory({ label, expiresAt });
-            }
-
-            return Promise.reject(error);
-          },
+          async () => Promise.reject(error),
         );
       }
 
@@ -1396,37 +1405,30 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
-   * Delete a wishlist
-   */
-  const deleteProductViewingHistory = async (
-    token: DeleteProductViewingHistoryInput['productViewingHistoryInput']['token'],
-  ) => {
-    const response = await request<
-      DeleteProductViewingHistoryResponse,
-      DeleteProductViewingHistoryInput
-    >(deleteProductViewingHistoryMutation, {
-      productViewingHistoryInput: {
-        token,
-      },
-    });
-
-    return response?.deleteProductViewingHistory?.success || null;
-  };
-
-  /**
-   * Add an item to a wishlist
+   * Add an item to a product viewing history
    */
   const addProductViewingHistoryItem = async (
     item: Omit<AddItemToProductViewingHistoryInput['productViewingHistoryInput'], 'token'>,
-    token: AddItemToProductViewingHistoryInput['productViewingHistoryInput']['token'],
+    productViewingHistoryToken: ProductViewingHistoryToken,
   ) => {
+    let currentProductViewingHistoryToken =
+      productViewingHistoryToken || storedProductViewingHistoryToken;
+
+    if (!currentProductViewingHistoryToken && config.autoCreateProductViewingHistory) {
+      const createdProductViewingHistory = await createProductViewingHistory();
+
+      if (createdProductViewingHistory) {
+        currentProductViewingHistoryToken = createdProductViewingHistory.token;
+      }
+    }
+
     const response = await request<
       AddItemToProductViewingHistoryResponse,
       AddItemToProductViewingHistoryInput
     >(addItemToProductViewingHistoryMutation, {
       productViewingHistoryInput: {
         ...item,
-        token,
+        token: currentProductViewingHistoryToken as string,
       },
     });
 
