@@ -69,20 +69,34 @@ Use an ESM CDN like https://esm.sh
 
 If you would like to use the client with other configuration than the default configuration.
 
-| Option                         | Description                                                                                                                                                                                                                         | Default        |
-|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|
-| storefrontToken (**required**) | This is the token being used for authentication with the Afosto GraphQL storefront.                                                                                                                                                 |                |
-| autoCreateCart                 | Whether to automatically create a cart when adding an item if there is no cart.                                                                                                                                                     | true           |                      
-| autoGenerateSessionID          | Whether to automatically generate a session ID for the storefront client.                                                                                                                                                           | true           |                      
-| cartTokenStorageName           | The name used for storing the cart token in storage.                                                                                                                  | 'cart-token' |
-| cartTokenStorageType           | The type of storage you would like to use for storing the cart token `localStorage`, `sessionStorage` or `cookie`.                                                                                                                  | 'localStorage' |
-| domain                         | The domain for which the user token should be stored. Can be used to share the user token across sub domains. Defaults to current domain.                                                                                           |                |
-| graphQLClientOptions           | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>. | {}             |                      
-| storeCartToken                 | Whether to store the cart token in web storage.                                                                                                                                                                                     | true           |
-| cartTokenCookieOptions         | Customize the options used for the cart token cookie. Only applicable when `cartTokenStorageType` is set to `cookie`.                                                                                                               | {}             |
-| storeUserToken                 | Whether to store the user token in a cookie.                                                                                                                                                                                        | true           |
-| userTokenCookieOptions         | Customize the options used for the user token cookie.                                                                                                                                                                               | {}             |
-| storageKeyPrefix               | The prefix used for storing storefront information in web storage.                                                                                                                                                                  | 'af-'          |
+| Option                                     | Description                                                                                                                                                                                                                          | Default                         |
+|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------|
+| storefrontToken (**required**)             | This is the token being used for authentication with the Afosto GraphQL storefront.                                                                                                                                                  |                                 |
+| autoCreateCart                             | Whether to automatically create a cart when adding an item if there is no cart.                                                                                                                                                      | true                            |                      
+| autoGenerateSessionID                      | Whether to automatically generate a session ID for the storefront client.                                                                                                                                                            | true                            |                      
+| cartTokenStorageName                       | The name used for storing the cart token in storage.                                                                                                                                                                                 | 'cart-token'                    |
+| cartTokenStorageType                       | The type of storage you would like to use for storing the cart token `localStorage`, `sessionStorage` or `cookie`.                                                                                                                   | 'localStorage'                  |
+| domain                                     | The domain for which the user token should be stored. Can be used to share the user token across sub domains. Defaults to current domain.                                                                                            |                                 |
+| graphQLClientOptions                       | The <a href="https://www.npmjs.com/package/@afosto/graphql-client#user-content-custom-configuration">options</a> that are provided to the <a href="https://www.npmjs.com/package/@afosto/graphql-client">Afosto GraphQL client</a>.  | {}                              |                      
+| storeCartToken                             | Whether to store the cart token in web storage.                                                                                                                                                                                      | true                            |
+| cartTokenCookieOptions                     | Customize the options used for the cart token cookie. Only applicable when `cartTokenStorageType` is set to `cookie`.                                                                                                                | {}                              |
+| storeUserToken                             | Whether to store the user token in a cookie.                                                                                                                                                                                         | true                            |
+| userTokenCookieOptions                     | Customize the options used for the user token cookie.                                                                                                                                                                                | {}                              |
+| storageKeyPrefix                           | The prefix used for storing storefront information in web storage.                                                                                                                                                                   | 'af-'                           |
+| autoCreateWishlist                         | Whether to automatically create a wishlist when adding an item if there is no wishlist.                                                                                                                                              | true                            |
+| storeWishlistToken                         | Whether to store the wishlist token in web storage.                                                                                                                                                                                  | true                            |
+| wishlistTokenStorageName                   | The name used for storing the wishlist token in storage.                                                                                                                                                                             | 'wishlist-token'                |
+| wishlistTokenStorageType                   | The type of storage you would like to use for storing the wishlist token `localStorage`, `sessionStorage` or `cookie`.                                                                                                               | 'localStorage'                  |
+| wishlistTokenCookieOptions                 | Customize the options used for the wishlist token cookie. Only applicable when `wishlistTokenStorageType` is set to `cookie`.                                                                                                        | {}                              |
+| wishlistDefaultLabel                       | The label used when a wishlist is created without an explicit label.                                                                                                                                                                 | 'Wishlist'                      |
+| wishlistDefaultExpiresInDays               | The default number of days until a wishlist expires, used when a wishlist is created without an explicit expiration.                                                                                                                 | 30                              |
+| autoCreateProductViewingHistory            | Whether to automatically create a product viewing history when adding an item if there is none.                                                                                                                                      | true                            |
+| storeProductViewingHistoryToken            | Whether to store the product viewing history token in web storage.                                                                                                                                                                   | true                            |
+| productViewingHistoryTokenStorageName      | The name used for storing the product viewing history token in storage.                                                                                                                                                              | 'product-viewing-history-token' |
+| productViewingHistoryTokenStorageType      | The type of storage you would like to use for storing the product viewing history token `localStorage`, `sessionStorage` or `cookie`.                                                                                                | 'localStorage'                  |
+| productViewingHistoryTokenCookieOptions    | Customize the options used for the product viewing history token cookie. Only applicable when `productViewingHistoryTokenStorageType` is set to `cookie`.                                                                            | {}                              |
+| productViewingHistoryDefaultLabel          | The label used when a product viewing history is created without an explicit label.                                                                                                                                                  | 'Product viewing history'       |
+| productViewingHistoryDefaultExpiresInDays  | The default number of days until a product viewing history expires, used when created without an explicit expiration.                                                                                                                | 30                              |
 
 ## Examples
 
@@ -575,7 +589,7 @@ const wishlist = await client.updateWishlist({ label: 'my-updated-wishlist', exp
 Delete a wishlist by token.
 
 ```js
-const wishlist = await client.deleteWishlist('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+const wishlist = await client.deleteWishlist();
 ```
 
 ### Add an item to a wishlist
@@ -588,10 +602,8 @@ const wishlist = await client.addWishlistItem(
     sku: 'sku-123',
     quantity: 2,
     metaData: {},
-    expirestAt: 1732999670242,
-    
+    expiresAt: 1732999670242,
   },
-  'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed',
 );
 ```
 
@@ -600,13 +612,13 @@ const wishlist = await client.addWishlistItem(
 Remove an item from a wishlist by SKU.
 
 ```js
-const wishlist = await client.removeWishlistItem('sku-123', 'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+const wishlist = await client.removeWishlistItem('sku-123');
 ```
 
 
 ### Create a product viewing history
 
-Create a history of items the use has viewed.
+Create a history of items the user has viewed.
 
 ```js
 const viewingHistory = await client.createProductViewingHistory({ label: 'my-viewing-history', expiresAt: 1732888670242 });
@@ -617,7 +629,7 @@ const viewingHistory = await client.createProductViewingHistory({ label: 'my-vie
 Get a product viewing history by token.
 
 ```js
-const viewingHistory = await client.getProductViewingHistory('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+const viewingHistory = await client.getProductViewingHistory();
 ```
 
 ### Update a product viewing history
@@ -625,7 +637,7 @@ const viewingHistory = await client.getProductViewingHistory('f8b1bb3c-0f9f-4b9c
 Update a product viewing history label and expiration date.
 
 ```js
-const viewingHistory = await client.updateProductViewingHistory({ label: 'my-updated-wishlist', expiresAt: 1732999670242 });
+const viewingHistory = await client.updateProductViewingHistory({ label: 'my-updated-viewing-history', expiresAt: 1732999670242 });
 ```
 
 ### Delete a product viewing history
@@ -633,7 +645,7 @@ const viewingHistory = await client.updateProductViewingHistory({ label: 'my-upd
 Delete a product viewing history by token.
 
 ```js
-const viewingHistory = await client.deleteProductViewingHistory('f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed');
+const viewingHistory = await client.deleteProductViewingHistory();
 ```
 
 ### Add an item to a product viewing history
@@ -645,11 +657,9 @@ const viewingHistory = await client.addProductViewingHistoryItem(
   {
     sku: 'sku-123',
     metaData: {},
-    expirestAt: 1732999670242,
-    viewedAt: 1768299944000
-    
+    expiresAt: 1732999670242,
+    viewedAt: 1768299944000,
   },
-  'f8b1bb3c-0f9f-4b9c-a474-0ea0f5809aed',
 );
 ```
 
