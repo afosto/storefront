@@ -173,8 +173,9 @@ import {
   STOREFRONT_CART_TOKEN_STORAGE_NAME,
   STOREFRONT_USER_TOKEN_COOKIE_NAME,
   STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
-  STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
   STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
+  STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
+  STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
 } from './constants';
 import type {
   AccountOrganisationUser,
@@ -202,7 +203,9 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     cartTokenStorageName: STOREFRONT_CART_TOKEN_STORAGE_NAME,
     cartTokenStorageType: STOREFRONT_CART_TOKEN_STORAGE_TYPE,
     wishlistTokenStorageType: STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+    wishlistTokenStorageName: STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
     productViewingHistoryTokenStorageType: STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
+    productViewingHistoryTokenStorageName: STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
     cartTokenCookieOptions: {},
     userTokenCookieOptions: {},
     wishlistDefaultLabel: 'Wishlist',
@@ -411,13 +414,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storeWishlistToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+        wishlistTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
       } = config || {};
 
       if (!storeWishlistToken) {
         return null;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${wishlistTokenStorageName}`;
 
       if (wishlistTokenStorageType === 'cookie') {
         return Cookies.get(storagePath) || null;
@@ -439,13 +443,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storeWishlistToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+        wishlistTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
       } = config || {};
 
       if (!storeWishlistToken) {
         return;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${wishlistTokenStorageName}`;
 
       if (wishlistTokenStorageType === 'cookie') {
         Cookies.remove(storagePath, wishlistTokenCookieOptions);
@@ -470,13 +475,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storeWishlistToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+        wishlistTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
       } = config || {};
 
       if (!storeWishlistToken) {
         return;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${wishlistTokenStorageName}`;
 
       if (wishlistTokenStorageType === 'cookie') {
         Cookies.set(storagePath, token, wishlistTokenCookieOptions);
@@ -525,14 +531,15 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       const {
         storeProductViewingHistoryToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
-        productViewingHistoryTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+        productViewingHistoryTokenStorageType = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
+        productViewingHistoryTokenStorageName = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
       } = config || {};
 
       if (!storeProductViewingHistoryToken) {
         return null;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${productViewingHistoryTokenStorageName}`;
 
       if (productViewingHistoryTokenStorageType === 'cookie') {
         return Cookies.get(storagePath) || null;
@@ -555,13 +562,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storeProductViewingHistoryToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         productViewingHistoryTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+        productViewingHistoryTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
       } = config || {};
 
       if (!storeProductViewingHistoryToken) {
         return;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${productViewingHistoryTokenStorageName}`;
 
       if (productViewingHistoryTokenStorageType === 'cookie') {
         Cookies.remove(storagePath, productViewingHistoryTokenCookieOptions);
@@ -587,13 +595,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storeProductViewingHistoryToken,
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         productViewingHistoryTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
+        productViewingHistoryTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
       } = config || {};
 
       if (!storeProductViewingHistoryToken) {
         return;
       }
 
-      const storagePath = `${storageKeyPrefix}${STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME}`;
+      const storagePath = `${storageKeyPrefix}${productViewingHistoryTokenStorageName}`;
 
       if (productViewingHistoryTokenStorageType === 'cookie') {
         Cookies.set(storagePath, token, productViewingHistoryTokenCookieOptions);
@@ -1337,8 +1346,10 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       label,
       expiresAt,
     }: Omit<UpdateProductViewingHistoryInput['productViewingHistoryInput'], 'token'>,
-    productViewingHistoryToken: UpdateProductViewingHistoryInput['productViewingHistoryInput']['token'],
-  ) => {
+    productViewingHistoryToken?: UpdateProductViewingHistoryInput['productViewingHistoryInput']['token'],
+  ): Promise<
+    UpdateProductViewingHistoryResponse['updateProductViewingHistory']['productViewingHistory']
+  > => {
     try {
       let currentProductViewingHistoryToken =
         productViewingHistoryToken || storedProductViewingHistoryToken;
