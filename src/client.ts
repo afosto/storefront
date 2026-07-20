@@ -1233,7 +1233,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    */
   const removeWishlistItem = async (
     sku: RemoveItemFromWishlistInput['wishlistInput']['sku'],
-    wishlistToken: RemoveItemFromWishlistInput['wishlistInput']['token'],
+    wishlistToken: WishlistToken,
   ) => {
     try {
       let currentWishlistToken = wishlistToken || storedWishlistToken;
@@ -1295,7 +1295,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Get a product viewing history
    */
   const getProductViewingHistory = async (
-    productViewingHistoryToken: GetProductViewingHistoryParams['token'],
+    productViewingHistoryToken: ProductViewingHistoryToken,
   ) => {
     try {
       let currentProductViewingHistoryToken =
@@ -1336,7 +1336,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       label,
       expiresAt,
     }: Omit<UpdateProductViewingHistoryInput['productViewingHistoryInput'], 'token'>,
-    productViewingHistoryToken?: UpdateProductViewingHistoryInput['productViewingHistoryInput']['token'],
+    productViewingHistoryToken?: ProductViewingHistoryToken,
   ): Promise<
     UpdateProductViewingHistoryResponse['updateProductViewingHistory']['productViewingHistory']
   > => {
@@ -1365,7 +1365,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Delete a product viewing history
    */
   const deleteProductViewingHistory = async (
-    productViewingHistoryToken: DeleteProductViewingHistoryInput['productViewingHistoryInput']['token'],
+    productViewingHistoryToken: ProductViewingHistoryToken,
   ) => {
     try {
       let currentProductViewingHistoryToken =
