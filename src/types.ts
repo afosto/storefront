@@ -41,7 +41,13 @@ export type Order = CoreOrder;
 
 export type Wishlist = CoreWishlist;
 
+export type WishlistToken = OptionalString;
+
+export type ProductViewingHistoryToken = OptionalString;
+
 export type ProductViewingHistory = CoreProductViewingHistory;
+
+export type BrowserStorageTypes = 'localStorage' | 'sessionStorage' | 'cookie';
 
 export interface DecodedUserToken {
   sub: string;
@@ -82,19 +88,36 @@ export interface User {
 }
 
 export interface StorefrontClientOptions {
-  autoCreateCart?: boolean;
   autoGenerateSessionID?: boolean;
+  autoCreateCart?: boolean;
+  storeCartToken?: boolean;
   cartTokenStorageName?: string;
-  cartTokenStorageType?: 'localStorage' | 'sessionStorage' | 'cookie';
+  cartTokenStorageType?: BrowserStorageTypes;
   cartTokenCookieOptions?: Cookies.CookieAttributes;
+  autoCreateProductViewingHistory?: boolean;
+  storeProductViewingHistoryToken?: boolean;
+  productViewingHistoryTokenStorageName?: string;
+  productViewingHistoryTokenStorageType?: BrowserStorageTypes;
+  productViewingHistoryDefaultLabel?: string;
+  productViewingHistoryDefaultExpiresInDays?: number;
+  productViewingHistoryTokenCookieOptions?: Cookies.CookieAttributes;
   userTokenCookieOptions?: Cookies.CookieAttributes;
+  autoCreateWishlist?: boolean;
+  storeWishlistToken?: boolean;
+  wishlistTokenStorageName?: string;
+  wishlistTokenStorageType?: BrowserStorageTypes;
+  wishlistDefaultLabel?: string;
+  wishlistDefaultExpiresInDays?: number;
+  wishlistTokenCookieOptions?: Cookies.CookieAttributes;
   domain?: string;
   graphQLClientOptions?: GraphQLClientOptions;
-  storeCartToken?: boolean;
   storeUserToken?: boolean;
   storageKeyPrefix?: string;
   storefrontToken: string;
 }
+
+export type StorefrontClientConfig = Required<Omit<StorefrontClientOptions, 'domain'>> &
+  Pick<StorefrontClientOptions, 'domain'>;
 
 export enum Carriers {
   afosto = 'AFOSTO',
