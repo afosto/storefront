@@ -8,7 +8,7 @@ export interface AddItemToWishlistInput {
     sku: string;
     quantity: number;
     metaData?: JSON;
-    expirestAt: number;
+    expiresAt: number;
   };
 }
 

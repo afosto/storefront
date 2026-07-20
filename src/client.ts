@@ -166,7 +166,7 @@ import {
   type GetProductViewingHistoryResponse,
   getProductViewingHistoryQuery,
 } from './queries';
-import { isDefined, parseJwt, uuid } from './utils';
+import { getExpiresAtFromDays, isDefined, parseJwt, uuid } from './utils';
 import {
   STOREFRONT_STORAGE_KEY_PREFIX,
   STOREFRONT_CART_TOKEN_STORAGE_TYPE,
@@ -1089,7 +1089,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       {
         wishlistInput: {
           label: label || config.wishlistDefaultLabel,
-          expiresAt: expiresAt || config.wishlistDefaultExpiresInDays,
+          expiresAt: expiresAt || getExpiresAtFromDays(config.wishlistDefaultExpiresInDays),
         },
       },
     );
@@ -1284,7 +1284,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     >(createProductViewingHistoryMutation, {
       productViewingHistoryInput: {
         label: label || config.productViewingHistoryDefaultLabel,
-        expiresAt: expiresAt || config.productViewingHistoryDefaultExpiresInDays,
+        expiresAt:
+          expiresAt || getExpiresAtFromDays(config.productViewingHistoryDefaultExpiresInDays),
       },
     });
 

@@ -7,7 +7,7 @@ export interface AddItemToProductViewingHistoryInput {
     token: string;
     sku: string;
     metaData?: JSON;
-    expirestAt: number;
+    expiresAt: number;
     viewedAt: number;
   };
 }
