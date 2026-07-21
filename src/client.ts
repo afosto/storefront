@@ -1654,44 +1654,36 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Get the user that is logged in.
    */
   const getUser = (): User | null => {
-    try {
-      if (!storedUserToken || !validateUserToken(storedUserToken)) {
-        return null;
-      }
-
-      const decodedToken = decodeUserToken(storedUserToken) as DecodedUserToken | null;
-      const {
-        sub: id,
-        email,
-        family_name: familyName,
-        given_name: givenName,
-        name,
-        organisation_id: organisationId,
-        organisation_name: organisationName,
-        contact_role: role,
-      } = decodedToken || {};
-
-      if (!id) {
-        return null;
-      }
-
-      return {
-        id,
-        email: email || '',
-        familyName: familyName || '',
-        givenName: givenName || '',
-        name: name || '',
-        organisation: organisationId
-          ? {
-              id: organisationId,
-              name: organisationName || '',
-              role: role?.toLowerCase() || 'user',
-            }
-          : null,
-      };
-    } catch (error) {
+    if (!storedUserToken || !validateUserToken(storedUserToken)) {
       return null;
     }
+
+    const decodedToken = decodeUserToken(storedUserToken) as DecodedUserToken;
+    const {
+      sub: id,
+      email,
+      family_name: familyName,
+      given_name: givenName,
+      name,
+      organisation_id: organisationId,
+      organisation_name: organisationName,
+      contact_role: role,
+    } = decodedToken;
+
+    return {
+      id,
+      email: email || '',
+      familyName: familyName || '',
+      givenName: givenName || '',
+      name: name || '',
+      organisation: organisationId
+        ? {
+            id: organisationId,
+            name: organisationName || '',
+            role: role?.toLowerCase() || 'user',
+          }
+        : null,
+    };
   };
 
   /**

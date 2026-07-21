@@ -26,10 +26,10 @@ export default defineConfig({
       // regressions are blocked without hindering the step-by-step build-up.
       // When a phase adds tests, bump these up to the new achieved level.
       thresholds: {
-        statements: 99,
+        statements: 100,
         branches: 80,
         functions: 100,
-        lines: 99,
+        lines: 100,
       },
     },
   },
