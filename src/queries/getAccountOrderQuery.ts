@@ -244,6 +244,7 @@ export const getAccountOrderQuery = gql`
           quantity
           pricing {
             amount
+            original_amount
           }
           delivery {
             method {
