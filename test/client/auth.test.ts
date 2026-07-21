@@ -39,6 +39,11 @@ describe('auth / user token domain', () => {
       const client = createTestClient();
       expect(client.validateUserToken(makeUserJwt({ sub: 'CU_1' }))).toBeFalsy();
     });
+
+    it('rejects an empty token (nothing to decode)', () => {
+      const client = createTestClient();
+      expect(client.validateUserToken('')).toBeFalsy();
+    });
   });
 
   describe('initializeUserToken (on client creation)', () => {
@@ -133,6 +138,15 @@ describe('auth / user token domain', () => {
 
       expect(user?.givenName).toBe('Ada');
       expect(client.getUserToken()).toBe(token);
+    });
+
+    it('rejects when the returned token is invalid', async () => {
+      server.use(mockOperation('SignUpMutation', { registerCustomer: { token: expiredUserToken() } }));
+
+      const client = createTestClient();
+      await expect(
+        client.signUp({ givenName: 'Ada', familyName: 'Lovelace', email: 'ada@example.com', password: 'secret' }),
+      ).rejects.toBe('Invalid user token');
     });
   });
 

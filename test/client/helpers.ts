@@ -1,5 +1,7 @@
+import Cookies from 'js-cookie';
 import { createStorefrontClient } from '../../src';
 import type { StorefrontClientOptions } from '../../src';
+import { validUserToken } from '../msw/fixtures/auth';
 
 export const STOREFRONT_TOKEN = 'test-storefront-token';
 
@@ -20,3 +22,14 @@ export const createTestClient = (options: Partial<StorefrontClientOptions> = {})
     storefrontToken: STOREFRONT_TOKEN,
     ...options,
   } as StorefrontClientOptions);
+
+/**
+ * A client that starts signed in: a valid user token is seeded in the `af-sid`
+ * cookie before creation, so `authenticatedRequest`-backed methods send the
+ * user token. Returns the token so tests can assert the Authorization header.
+ */
+export const createSignedInClient = (options: Partial<StorefrontClientOptions> = {}) => {
+  const userToken = validUserToken();
+  Cookies.set(USER_TOKEN_COOKIE_KEY, userToken);
+  return { client: createTestClient(options), userToken };
+};
