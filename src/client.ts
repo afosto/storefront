@@ -166,7 +166,7 @@ import {
   type GetProductViewingHistoryResponse,
   getProductViewingHistoryQuery,
 } from './queries';
-import { getExpiresAtFromDays, isDefined, parseJwt, uuid } from './utils';
+import { getExpiresAtFromDays, isDefined, isStorageTypeAvailable, parseJwt, uuid } from './utils';
 import {
   STOREFRONT_STORAGE_KEY_PREFIX,
   STOREFRONT_CART_TOKEN_STORAGE_TYPE,
@@ -263,33 +263,37 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
 
   const tokenStorageConfigs = [
     {
-      enabled: config.storeCartToken,
+      key: 'storeCartToken',
       storageType: config.cartTokenStorageType,
       name: 'cart',
     },
     {
-      enabled: config.storeWishlistToken,
+      key: 'storeWishlistToken',
       storageType: config.wishlistTokenStorageType,
       name: 'wishlist',
     },
     {
-      enabled: config.storeProductViewingHistoryToken,
+      key: 'storeProductViewingHistoryToken',
       storageType: config.productViewingHistoryTokenStorageType,
       name: 'product viewing history',
     },
-  ];
+  ] as const;
 
-  for (const { enabled, storageType, name } of tokenStorageConfigs) {
-    if (enabled && !STOREFRONT_VALID_STORAGE_TYPES.includes(storageType)) {
+  for (const { key, storageType, name } of tokenStorageConfigs) {
+    if (!config[key]) {
+      continue;
+    }
+
+    if (!STOREFRONT_VALID_STORAGE_TYPES.includes(storageType)) {
       throw new Error(
         `Invalid storage type provided for the ${name} token. ` +
           `Must be one of: ${STOREFRONT_VALID_STORAGE_TYPES.join(', ')}.`,
       );
     }
-  }
 
-  if (!(typeof window !== 'undefined' && typeof Storage !== 'undefined') && config.storeCartToken) {
-    config.storeCartToken = false;
+    if (!isStorageTypeAvailable(storageType)) {
+      config[key] = false;
+    }
   }
 
   const gqlClient = createGraphQLClient(config.graphQLClientOptions);
