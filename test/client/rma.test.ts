@@ -17,7 +17,7 @@ describe('rma domain', () => {
         ),
       );
       const { client } = createSignedInClient();
-      const rma = await client.createAccountRma({ orderId: 'OR_1' });
+      const rma = await client.createAccountRma({ contactId: 'CO_1' });
       expect(rma?.id).toBe('RMA_1');
       expect(operations).toEqual(['CreateAccountRma']);
     });
@@ -34,7 +34,7 @@ describe('rma domain', () => {
         ),
       );
       const { client } = createSignedInClient();
-      const rma = await client.createAccountRma({ orderId: 'OR_1', items: [{ sku: 'SKU-1' }] });
+      const rma = await client.createAccountRma({ items: [{ orderId: 'OR_1', sku: 'SKU-1' }] });
       expect(rma?.id).toBe('RMA_2');
       // A shared rma id is generated and threaded into both inputs.
       const input = variables?.input as Record<string, unknown>;
@@ -87,14 +87,17 @@ describe('rma domain', () => {
   it('createAccountRmaItems returns the RMA', async () => {
     server.use(mockOperation('CreateAccountRmaItems', { createRmaItems: { rma: { id: 'RMA_1' } } }));
     const { client } = createSignedInClient();
-    const rma = await client.createAccountRmaItems({ rmaId: 'RMA_1', items: [{ sku: 'SKU-1' }] });
+    const rma = await client.createAccountRmaItems({
+      rmaId: 'RMA_1',
+      items: [{ orderId: 'OR_1', sku: 'SKU-1' }],
+    });
     expect(rma?.id).toBe('RMA_1');
   });
 
   it('deleteAccountRmaItems returns the RMA', async () => {
     server.use(mockOperation('DeleteAccountRmaItems', { deleteRmaItems: { rma: { id: 'RMA_1' } } }));
     const { client } = createSignedInClient();
-    const rma = await client.deleteAccountRmaItems({ rmaId: 'RMA_1', ids: ['RI_1'] });
+    const rma = await client.deleteAccountRmaItems({ rmaId: 'RMA_1', items: ['RI_1'] });
     expect(rma?.id).toBe('RMA_1');
   });
 
@@ -112,7 +115,7 @@ describe('rma domain', () => {
       }),
     );
     const { client } = createSignedInClient();
-    const { items, pageInfo } = await client.searchAccountRmaItems({ orderId: 'OR_1' });
+    const { items, pageInfo } = await client.searchAccountRmaItems({ filters: { orderId: 'OR_1' } });
     expect(items).toHaveLength(1);
     expect(pageInfo.hasNextPage).toBe(true);
   });

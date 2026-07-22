@@ -75,7 +75,7 @@ describe('wishlist domain', () => {
   });
 
   describe('addWishlistItem — autoCreate flow', () => {
-    const item = { sku: 'SKU-1', quantity: 1 };
+    const item = { sku: 'SKU-1', quantity: 1, expiresAt: 1702592000 };
 
     it('auto-creates a wishlist first when no token exists, then adds the item', async () => {
       const operations: string[] = [];
@@ -181,7 +181,9 @@ describe('wishlist domain', () => {
   describe('updateWishlist & deleteWishlist', () => {
     it('rejects updating when there is no wishlist token', async () => {
       const client = createTestClient();
-      await expect(client.updateWishlist({ label: 'New' })).rejects.toThrow('No wishlist to update');
+      await expect(
+        client.updateWishlist({ label: 'New', expiresAt: 1702592000 }),
+      ).rejects.toThrow('No wishlist to update');
     });
 
     it('updates a wishlist', async () => {
@@ -189,7 +191,7 @@ describe('wishlist domain', () => {
       server.use(mockOperation('UpdateWishlist', { updateWishlist: { wishlist: wishlistSnakeCase } }));
 
       const client = createTestClient();
-      const wishlist = await client.updateWishlist({ label: 'Renamed' });
+      const wishlist = await client.updateWishlist({ label: 'Renamed', expiresAt: 1702592000 });
       expect(wishlist?.token).toBe(wishlistSnakeCase.token);
     });
 

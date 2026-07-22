@@ -12,7 +12,6 @@ import {
 
 describe('client construction', () => {
   it('throws when no storefront token is provided', () => {
-    // @ts-expect-error deliberately omitting the storefront token
     expect(() => createTestClient({ storefrontToken: undefined })).toThrow(
       /requires a storefront token/,
     );
@@ -133,7 +132,7 @@ describe('updateProductViewingHistory', () => {
   it('rejects when there is no history token', async () => {
     const client = createTestClient();
     await expect(
-      client.updateProductViewingHistory({ label: 'New' }),
+      client.updateProductViewingHistory({ label: 'New', expiresAt: 1702592000 }),
     ).rejects.toThrow('No product viewing history to update');
   });
 
@@ -145,7 +144,10 @@ describe('updateProductViewingHistory', () => {
       }),
     );
     const client = createTestClient();
-    const history = await client.updateProductViewingHistory({ label: 'Renamed' });
+    const history = await client.updateProductViewingHistory({
+      label: 'Renamed',
+      expiresAt: 1702592000,
+    });
     expect(history?.token).toBe(productViewingHistorySnakeCase.token);
   });
 });

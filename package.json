@@ -44,7 +44,8 @@
     "build": "pnpm cleanup && tsup **/*.ts --format esm,cjs --dts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
     "@afosto/graphql-client": "^3.0.0-alpha.7",

@@ -9,6 +9,17 @@ export const GRAPHQL_ENDPOINT = 'https://afosto.app/graphql';
 
 const link = graphql.link(GRAPHQL_ENDPOINT);
 
+/**
+ * Match an operation by substring on the query text. Operation names are used
+ * as labels here, so a shorter name (e.g. `CreateAccountRma`) also matches a
+ * longer operation that contains it (`CreateAccountRmaItems`). When several
+ * such names are registered in one test, order the handlers so the more
+ * specific name is registered first (MSW checks handlers in registration
+ * order, first match wins).
+ */
+const matchesOperation = (operationName: string, query: string): boolean =>
+  query.includes(operationName);
+
 export interface GraphQLError {
   message?: string;
   extensions?: { status?: number; [key: string]: unknown };
@@ -30,7 +41,7 @@ export const mockOperation = (
   onRequest?: (info: { variables: Record<string, unknown>; request: Request }) => void,
 ): GraphQLHandler =>
   link.operation(({ query, variables, request }) => {
-    if (!query.includes(operationName)) {
+    if (!matchesOperation(operationName, query)) {
       return undefined;
     }
 
@@ -51,13 +62,27 @@ export const mockOperationError = (
   onRequest?: (info: { variables: Record<string, unknown>; request: Request }) => void,
 ): GraphQLHandler =>
   link.operation(({ query, variables, request }) => {
-    if (!query.includes(operationName)) {
+    if (!matchesOperation(operationName, query)) {
       return undefined;
     }
 
     onRequest?.({ variables, request });
 
     return HttpResponse.json({ errors });
+  });
+
+/**
+ * Build a handler that fails a named GraphQL operation with a transport-level
+ * network error (no GraphQL `response.errors`). Used to exercise the recovery
+ * paths where `error?.response` is absent.
+ */
+export const mockNetworkError = (operationName: string): GraphQLHandler =>
+  link.operation(({ query }) => {
+    if (!matchesOperation(operationName, query)) {
+      return undefined;
+    }
+
+    return HttpResponse.error();
   });
 
 export type OperationStep = { data: Record<string, unknown> } | { errors: GraphQLError[] };
@@ -76,7 +101,7 @@ export const mockOperationSequence = (
   let index = 0;
 
   return link.operation(({ query }) => {
-    if (!query.includes(operationName)) {
+    if (!matchesOperation(operationName, query)) {
       return undefined;
     }
 

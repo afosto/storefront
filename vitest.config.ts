@@ -27,7 +27,7 @@ export default defineConfig({
       // When a phase adds tests, bump these up to the new achieved level.
       thresholds: {
         statements: 100,
-        branches: 80,
+        branches: 98,
         functions: 100,
         lines: 100,
       },

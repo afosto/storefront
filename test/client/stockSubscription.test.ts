@@ -15,7 +15,7 @@ describe('stock update subscription domain', () => {
         'CreateStockUpdateSubscriptionMutation',
         {
           createStockUpdateSubscription: {
-            subscription: { email: 'ada@example.com', is_approved: false },
+            subscription: { email: 'ada@example.com' },
           },
         },
         info => {
@@ -31,7 +31,6 @@ describe('stock update subscription domain', () => {
     });
 
     expect(result?.subscription.email).toBe('ada@example.com');
-    expect(result?.subscription.isApproved).toBe(false);
     expect(captured?.headers.get('authorization')).toBe(`Bearer ${STOREFRONT_TOKEN}`);
   });
 

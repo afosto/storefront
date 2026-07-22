@@ -34,5 +34,7 @@ jobs:
             "${{ runner.os }}-pnpm-store-"
       - name: Install dependencies
         run: pnpm i --ignore-scripts --frozen-lockfile
+      - name: Type-check
+        run: pnpm typecheck
       - name: Run tests with coverage
         run: pnpm test:coverage

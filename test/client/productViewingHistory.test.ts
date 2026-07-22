@@ -85,7 +85,7 @@ describe('product viewing history domain', () => {
   });
 
   describe('addProductViewingHistoryItem — autoCreate flow', () => {
-    const item = { sku: 'SKU-1' };
+    const item = { sku: 'SKU-1', expiresAt: 1702592000, viewedAt: 1700000000 };
 
     it('auto-creates a history first when no token exists, then adds the item', async () => {
       const operations: string[] = [];

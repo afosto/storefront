@@ -32,12 +32,12 @@ describe('account domain', () => {
     it('getAccountBalance returns the balance', async () => {
       server.use(
         mockOperation('GetAccountBalance', {
-          account: { balance: { amount: 12345, currency: 'EUR' } },
+          account: { balance: { available_balance: 12345, spending_limit: 0, used_balance: 0 } },
         }),
       );
       const { client } = createSignedInClient();
       const balance = await client.getAccountBalance();
-      expect(balance?.amount).toBe(12345);
+      expect(balance?.availableBalance).toBe(12345);
     });
 
     it('getAccountBalance returns null when there is no balance', async () => {
@@ -51,13 +51,13 @@ describe('account domain', () => {
     it('getAccountOrder returns a single order', async () => {
       let captured: Request | undefined;
       server.use(
-        mockOperation('GetAccountOrder', { account: { order: { id: 'OR_1', order_number: '1001' } } }, info => {
+        mockOperation('GetAccountOrder', { account: { order: { id: 'OR_1', number: '1001' } } }, info => {
           captured = info.request;
         }),
       );
       const { client, userToken } = createSignedInClient();
       const order = await client.getAccountOrder('OR_1');
-      expect(order?.orderNumber).toBe('1001');
+      expect(order?.number).toBe('1001');
       expect(captured?.headers.get('authorization')).toBe(`Bearer ${userToken}`);
     });
 
@@ -66,7 +66,7 @@ describe('account domain', () => {
         mockOperation('GetAccountOrders', {
           account: {
             orders: {
-              nodes: [{ id: 'OR_1', order_number: '1001' }],
+              nodes: [{ id: 'OR_1', number: '1001' }],
               pageInfo: { has_next_page: false, end_cursor: null },
             },
           },
@@ -75,7 +75,7 @@ describe('account domain', () => {
       const { client } = createSignedInClient();
       const { orders, pageInfo } = await client.getAccountOrders({ first: 10 });
       expect(orders).toHaveLength(1);
-      expect(orders[0].orderNumber).toBe('1001');
+      expect(orders[0].number).toBe('1001');
       expect(pageInfo.hasNextPage).toBe(false);
     });
 
@@ -101,20 +101,20 @@ describe('account domain', () => {
     it('reorderAccountOrder returns the resulting cart', async () => {
       server.use(mockOperation('Reorder', { reorder: { cart: { id: 'CA_1', total: 5000 } } }));
       const { client } = createSignedInClient();
-      const cart = await client.reorderAccountOrder({ id: 'OR_1' });
+      const cart = await client.reorderAccountOrder({ orderId: 'OR_1' });
       expect(cart?.id).toBe('CA_1');
     });
 
     it('getOrder is a public lookup (storefront token)', async () => {
       let captured: Request | undefined;
       server.use(
-        mockOperation('GetOrder', { order: { id: 'OR_1', order_number: '1001' } }, info => {
+        mockOperation('GetOrder', { order: { id: 'OR_1', number: '1001' } }, info => {
           captured = info.request;
         }),
       );
       const client = createTestClient();
       const order = await client.getOrder('OR_1');
-      expect(order?.orderNumber).toBe('1001');
+      expect(order?.number).toBe('1001');
       expect(captured?.headers.get('authorization')).toBe(`Bearer ${STOREFRONT_TOKEN}`);
     });
   });
@@ -122,11 +122,11 @@ describe('account domain', () => {
   describe('projects', () => {
     it('getAccountProjects returns the projects', async () => {
       server.use(
-        mockOperation('GetAccountProjects', { account: { projects: { nodes: [{ id: 'PR_1' }] } } }),
+        mockOperation('GetAccountProjects', { account: { projects: [{ id: 'PR_1' }] } }),
       );
       const { client } = createSignedInClient();
       const { projects } = await client.getAccountProjects();
-      expect(projects.nodes[0].id).toBe('PR_1');
+      expect(projects[0].id).toBe('PR_1');
     });
   });
 
@@ -159,7 +159,10 @@ describe('account domain', () => {
         mockOperation('GetAccountOrganisationUsers', {
           account: {
             sharedOrganisations: [
-              { id: 'OR_1', sharedContacts: [{ id: 'CU_9', given_name: 'Grace' }] },
+              {
+                id: 'OR_1',
+                sharedContacts: [{ role: 'admin', contact: { id: 'CU_9', given_name: 'Grace' } }],
+              },
               { id: 'OR_2', sharedContacts: [] },
             ],
           },
@@ -168,7 +171,7 @@ describe('account domain', () => {
       const { client } = createSignedInClient();
       const { users } = await client.getAccountOrganisationUsers();
       expect(users).toHaveLength(1);
-      expect(users[0].givenName).toBe('Grace');
+      expect(users[0].contact.givenName).toBe('Grace');
     });
 
     it('getAccountOrganisationUsers returns no users when the session has no organisation', async () => {
@@ -229,12 +232,14 @@ describe('account domain', () => {
     it('updateOrganisationOnAccount returns the updated account', async () => {
       server.use(
         mockOperation('UpdateOrganisationOnAccountMutation', {
-          updateOrganisationOnAccount: { account: { id: 'AC_1' } },
+          updateOrganisationOnAccount: { account: { given_name: 'Ada' } },
         }),
       );
       const { client } = createSignedInClient();
-      const account = await client.updateOrganisationOnAccount({ name: 'New name' });
-      expect(account?.id).toBe('AC_1');
+      const account = await client.updateOrganisationOnAccount({
+        name: 'New name',
+      } as Parameters<typeof client.updateOrganisationOnAccount>[0]);
+      expect(account?.givenName).toBe('Ada');
     });
   });
 });

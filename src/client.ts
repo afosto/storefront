@@ -222,7 +222,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     wishlistDefaultLabel: STOREFRONT_WISHLIST_DEFAULT_LABEL,
     wishlistDefaultExpiresInDays: STOREFRONT_WISHLIST_TOKEN_EXPIRES_IN_DAYS,
     wishlistTokenCookieOptions: {},
-    ...(options || {}),
+    ...options,
   };
 
   const defaultCookieOptions = {
@@ -308,7 +308,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
-      } = config || {};
+      } = config;
 
       if (!storeCartToken) {
         return null;
@@ -337,7 +337,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
-      } = config || {};
+      } = config;
 
       if (!storeCartToken) {
         return;
@@ -369,7 +369,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         cartTokenStorageName = STOREFRONT_CART_TOKEN_STORAGE_NAME,
         cartTokenStorageType = STOREFRONT_CART_TOKEN_STORAGE_TYPE,
-      } = config || {};
+      } = config;
 
       if (!storeCartToken) {
         return;
@@ -426,7 +426,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
         wishlistTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
-      } = config || {};
+      } = config;
 
       if (!storeWishlistToken) {
         return null;
@@ -455,7 +455,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
         wishlistTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
-      } = config || {};
+      } = config;
 
       if (!storeWishlistToken) {
         return;
@@ -487,7 +487,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         wishlistTokenStorageType = STOREFRONT_WISHLIST_TOKEN_STORAGE_TYPE,
         wishlistTokenStorageName = STOREFRONT_WISHLIST_TOKEN_STORAGE_NAME,
-      } = config || {};
+      } = config;
 
       if (!storeWishlistToken) {
         return;
@@ -544,7 +544,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         productViewingHistoryTokenStorageType = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
         productViewingHistoryTokenStorageName = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
-      } = config || {};
+      } = config;
 
       if (!storeProductViewingHistoryToken) {
         return null;
@@ -574,7 +574,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         productViewingHistoryTokenStorageType = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
         productViewingHistoryTokenStorageName = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
-      } = config || {};
+      } = config;
 
       if (!storeProductViewingHistoryToken) {
         return;
@@ -607,7 +607,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
         productViewingHistoryTokenStorageType = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_TYPE,
         productViewingHistoryTokenStorageName = STOREFRONT_PRODUCT_VIEWING_HISTORY_TOKEN_STORAGE_NAME,
-      } = config || {};
+      } = config;
 
       if (!storeProductViewingHistoryToken) {
         return;
@@ -659,7 +659,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Initialize the user token.
    */
   const initializeUserToken = () => {
-    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config;
 
     if (!storeUserToken) {
       removeUserToken();
@@ -693,7 +693,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Remove the user token.
    */
   const removeUserToken = () => {
-    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config;
 
     storedUserToken = null;
 
@@ -709,7 +709,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Store the user token.
    */
   const storeUserToken = (token: string) => {
-    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config;
 
     storedUserToken = token;
 
@@ -732,7 +732,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       return false;
     }
 
-    const { exp, sub } = decodedToken || {};
+    const { exp, sub } = decodedToken;
     const currentTime = Date.now() / 1000;
     const isExpired = !exp || exp < currentTime;
 
@@ -781,7 +781,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     options: object = {},
   ): Promise<TResponse> =>
     gqlClient.request(gqlQuery, variables ?? ({} as TVariables), {
-      authorization: `Bearer ${config.storefrontToken || ''}`,
+      authorization: `Bearer ${config.storefrontToken}`,
       ...options,
     });
 
