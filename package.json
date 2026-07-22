@@ -41,7 +41,11 @@
     "format": "prettier --write .",
     "prebuild": "rimraf dist",
     "preinstall": "npx only-allow pnpm",
-    "build": "pnpm cleanup && tsup **/*.ts --format esm,cjs --dts"
+    "build": "pnpm cleanup && tsup **/*.ts --format esm,cjs --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
     "@afosto/graphql-client": "^3.0.0-alpha.7",
@@ -50,9 +54,13 @@
     "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.10",
+    "jsdom": "^29.1.1",
+    "msw": "^2.15.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.7",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vitest": "^4.1.10"
   }
 }
