@@ -1300,14 +1300,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       },
     });
 
-    const createdProductVieewingHistory =
+    const createdProductViewingHistory =
       response?.createProductViewingHistory?.productViewingHistory || null;
 
-    if (createdProductVieewingHistory?.token) {
-      storeWishlistTokenInStorage(createdProductVieewingHistory?.token);
+    if (createdProductViewingHistory?.token) {
+      storeWishlistTokenInStorage(createdProductViewingHistory?.token);
     }
 
-    return createdProductVieewingHistory;
+    return createdProductViewingHistory;
   };
 
   /**
