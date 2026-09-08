@@ -1098,7 +1098,13 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       },
     );
 
-    return response?.createWishlist?.wishlist || null;
+    const createdWishlist = response?.createWishlist?.wishlist || null;
+
+    if (createdWishlist?.token) {
+      storeWishlistTokenInStorage(createdWishlist?.token);
+    }
+
+    return createdWishlist;
   };
 
   /**
@@ -1208,6 +1214,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         {
           wishlistInput: {
             ...item,
+            expiresAt: item.expiresAt || getExpiresAtFromDays(config.wishlistDefaultExpiresInDays),
             token: currentWishlistToken as string,
           },
         },
@@ -1293,7 +1300,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       },
     });
 
-    return response?.createProductViewingHistory?.productViewingHistory || null;
+    const createdProductVieewingHistory =
+      response?.createProductViewingHistory?.productViewingHistory || null;
+
+    if (createdProductVieewingHistory?.token) {
+      storeWishlistTokenInStorage(createdProductVieewingHistory?.token);
+    }
+
+    return createdProductVieewingHistory;
   };
 
   /**
@@ -1430,6 +1444,8 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     >(addItemToProductViewingHistoryMutation, {
       productViewingHistoryInput: {
         ...item,
+        expiresAt:
+          item.expiresAt || getExpiresAtFromDays(config.productViewingHistoryDefaultExpiresInDays),
         token: currentProductViewingHistoryToken as string,
       },
     });
