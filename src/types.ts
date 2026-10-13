@@ -210,7 +210,7 @@ export enum PaymentMethodCodes {
   przelewy24 = 'PRZELEWY24',
   satispay = 'SATISPAY',
   sofort = 'SOFORT',
-  spraypay = 'SPAYPAY',
+  spraypay = 'SPRAYPAY',
   twint = 'TWINT',
   vipps = 'VIPPS',
   vvvCadeaukaart = 'VVV_CADEAUKAART',
