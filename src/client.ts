@@ -1304,7 +1304,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       response?.createProductViewingHistory?.productViewingHistory || null;
 
     if (createdProductViewingHistory?.token) {
-      storeWishlistTokenInStorage(createdProductViewingHistory?.token);
+      storeProductViewingHistoryTokenInStorage(createdProductViewingHistory?.token);
     }
 
     return createdProductViewingHistory;
