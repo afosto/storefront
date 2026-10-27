@@ -46,7 +46,7 @@
   "dependencies": {
     "@afosto/graphql-client": "^3.0.0-alpha.7",
     "@types/js-cookie": "^3.0.6",
-    "js-cookie": "^3.0.5",
+    "js-cookie": "^3.0.8",
     "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
