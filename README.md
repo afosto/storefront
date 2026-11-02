@@ -609,9 +609,17 @@ const wishlist = await client.addWishlistItem(
 
 ### Remove an item from a wishlist
 
-Remove an item from a wishlist by SKU.
+Remove an item from a wishlist by its id. Every item on a wishlist has an `id`.
 
 ```js
+const wishlist = await client.removeWishlistItem({ id: item.id });
+```
+
+Removing by SKU still works, but only for an item that was added without `metaData`. The same SKU with different `metaData` is a different item, so use the id.
+
+```js
+const wishlist = await client.removeWishlistItem({ sku: 'sku-123' });
+// or
 const wishlist = await client.removeWishlistItem('sku-123');
 ```
 
