@@ -22,12 +22,15 @@ export interface CoreWishlistItemProduct {
   gtin: string[];
   mpn: string;
   brand: string;
+  images: string[];
   categories: string[];
+  slug: string;
   filters: CoreWishlistItemProductFilter;
   prices: CoreWishlistItemProductPrice[];
 }
 
 export interface CoreWishlistItem {
+  id: string;
   product: CoreWishlistItemProduct;
   quantity: number;
   metaData: JSON;
@@ -48,6 +51,7 @@ export const CoreWishlistFragment = gql`
     label
     token
     items {
+      id
       quantity
       expires_at
       meta_data

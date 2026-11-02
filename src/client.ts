@@ -61,6 +61,7 @@ import {
   removeItemFromWishlistMutation,
   type RemoveItemFromWishlistInput,
   type RemoveItemFromWishlistResponse,
+  type RemoveWishlistItemIdentifier,
   reorderMutation,
   type ReorderInput,
   type ReorderResponse,
@@ -1240,11 +1241,13 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   };
 
   /**
-   * Remove an item from a wishlist
+   * Remove an item from a wishlist.
+   * Pass the item's id ({ id }) to remove exactly that item. A sku (as a string or { sku }) only
+   * finds an item that was added without meta data.
    */
   const removeWishlistItem = async (
-    sku: RemoveItemFromWishlistInput['wishlistInput']['sku'],
-    wishlistToken: WishlistToken,
+    item: RemoveWishlistItemIdentifier | string,
+    wishlistToken?: WishlistToken,
   ) => {
     try {
       let currentWishlistToken = wishlistToken || storedWishlistToken;
@@ -1253,15 +1256,17 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
         return Promise.reject(new Error('No wishlist token provided'));
       }
 
-      if (!isDefined(sku)) {
-        return Promise.reject(new Error('Provide a sku to remove'));
+      const { id, sku } = typeof item === 'string' ? { id: undefined, sku: item } : item || {};
+
+      if (!id && !sku) {
+        return Promise.reject(new Error('Provide an id or a sku to remove'));
       }
 
       const response = await request<RemoveItemFromWishlistResponse, RemoveItemFromWishlistInput>(
         removeItemFromWishlistMutation,
         {
           wishlistInput: {
-            sku,
+            ...(id ? { id } : { sku: sku as string }),
             token: currentWishlistToken as string,
           },
         },
