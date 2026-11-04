@@ -217,6 +217,7 @@ export enum PaymentMethodCodes {
   walley = 'WALLEY',
   webshopgiftcard = 'WEBSHOPGIFTCARD',
   wechatPay = 'WECHAT_PAY',
+  wero = 'WERO',
   yourgift = 'YOURGIFT',
 }
 
