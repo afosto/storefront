@@ -1,3 +1,6 @@
+import type Cookies from 'js-cookie';
+
+type CookieAttributes = NonNullable<Parameters<typeof Cookies.set>[2]>;
 import type { CoreAddress } from './fragments/CoreAddressFragment';
 import type { CoreCart } from './fragments/CoreCartFragment';
 import type { CoreAccount, CoreAccountOrganisation } from './fragments/CoreAccountFragment';
@@ -93,22 +96,22 @@ export interface StorefrontClientOptions {
   storeCartToken?: boolean;
   cartTokenStorageName?: string;
   cartTokenStorageType?: BrowserStorageTypes;
-  cartTokenCookieOptions?: Cookies.CookieAttributes;
+  cartTokenCookieOptions?: CookieAttributes;
   autoCreateProductViewingHistory?: boolean;
   storeProductViewingHistoryToken?: boolean;
   productViewingHistoryTokenStorageName?: string;
   productViewingHistoryTokenStorageType?: BrowserStorageTypes;
   productViewingHistoryDefaultLabel?: string;
   productViewingHistoryDefaultExpiresInDays?: number;
-  productViewingHistoryTokenCookieOptions?: Cookies.CookieAttributes;
-  userTokenCookieOptions?: Cookies.CookieAttributes;
+  productViewingHistoryTokenCookieOptions?: CookieAttributes;
+  userTokenCookieOptions?: CookieAttributes;
   autoCreateWishlist?: boolean;
   storeWishlistToken?: boolean;
   wishlistTokenStorageName?: string;
   wishlistTokenStorageType?: BrowserStorageTypes;
   wishlistDefaultLabel?: string;
   wishlistDefaultExpiresInDays?: number;
-  wishlistTokenCookieOptions?: Cookies.CookieAttributes;
+  wishlistTokenCookieOptions?: CookieAttributes;
   domain?: string;
   graphQLClientOptions?: GraphQLClientOptions;
   storeUserToken?: boolean;

@@ -21,3 +21,16 @@ gql`
 ` satisfies string;
 CoreCartFragment satisfies string;
 getCartQuery satisfies string;
+
+// The cookie options keep the js-cookie types, they must not become `any`.
+createStorefrontClient({
+  storefrontToken: 'token',
+  cartTokenCookieOptions: { sameSite: 'lax', expires: 7 },
+});
+createStorefrontClient({
+  storefrontToken: 'token',
+  cartTokenCookieOptions: {
+    // @ts-expect-error sameSite only accepts the known values
+    sameSite: 'nope',
+  },
+});

@@ -51,13 +51,13 @@
   },
   "dependencies": {
     "@afosto/graphql-client": "^3.0.0",
+    "@types/js-cookie": "^3.0.6",
     "js-cookie": "^3.0.8"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
     "@commitlint/cli": "^21.2.4",
-    "@types/js-cookie": "^3.0.6",
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.1.0",
     "husky": "^9.1.7",
