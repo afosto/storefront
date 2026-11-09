@@ -12,7 +12,7 @@ export interface UpdateAccountRmaItemsInput {
   input: {
     rmaId: string;
     items: UpdateAccountRmaItemsInputItem[];
-  }
+  };
 }
 
 export interface UpdateAccountRmaItemsResponse {

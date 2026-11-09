@@ -1,5 +1,8 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreSharedContactFragment, type CoreSharedContact } from '../fragments/CoreSharedContactFragment';
+import {
+  CoreSharedContactFragment,
+  type CoreSharedContact,
+} from '../fragments/CoreSharedContactFragment';
 import type { OrganisationType } from '../types';
 
 export interface InviteUserToAccountOrganisationInputContact {
@@ -12,7 +15,7 @@ export interface InviteUserToAccountOrganisationInput {
   inviteUserToAccountOrganisationInput: {
     organisationId: string;
     contact: InviteUserToAccountOrganisationInputContact;
-  }
+  };
 }
 
 export interface InviteUserToAccountOrganisationResponseOrganisation {

@@ -1,12 +1,15 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreSharedContactFragment, type CoreSharedContact } from '../fragments/CoreSharedContactFragment';
+import {
+  CoreSharedContactFragment,
+  type CoreSharedContact,
+} from '../fragments/CoreSharedContactFragment';
 import type { OrganisationType } from '../types';
 
 export interface RemoveUserFromAccountOrganisationInput {
   removeUserFromAccountOrganisationInput: {
     organisationId: string;
     contactId: string;
-  }
+  };
 }
 
 export interface RemoveUserFromAccountOrganisationResponseOrganisation {

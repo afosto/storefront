@@ -1,25 +1,17 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "files": ["src/index.ts"],
-  "include": ["src"],
-  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "declaration": true,
-    "declarationMap": true,
-    "lib": ["es2021", "DOM"],
-    "sourceMap": true,
-    "outDir": "./dist",
+    "target": "ES2020",
+    "lib": ["ES2021", "DOM"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "types": [],
     "strict": true,
-    "strictNullChecks": true,
     "isolatedModules": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "esModuleInterop": true,
-    "verbatimModuleSyntax": true
-  }
+    "declaration": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "test"],
+  "exclude": ["test/dist.types.ts"]
 }

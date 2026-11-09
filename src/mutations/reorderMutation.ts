@@ -6,7 +6,7 @@ export interface ReorderInput {
   reorderInput: {
     orderId: string;
     cartId?: string;
-  }
+  };
 }
 
 export interface ReorderResponse {

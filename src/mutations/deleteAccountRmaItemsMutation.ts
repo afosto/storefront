@@ -6,7 +6,7 @@ export interface DeleteAccountRmaItemsInput {
   input: {
     rmaId: string;
     items: string[];
-  }
+  };
 }
 
 export interface DeleteAccountRmaItemsResponse {

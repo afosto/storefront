@@ -4,7 +4,7 @@ export interface ChangePasswordInput {
   changePasswordInput: {
     newPassword: string;
     password: string;
-  }
+  };
 }
 
 export interface ChangePasswordResponse {
@@ -12,7 +12,7 @@ export interface ChangePasswordResponse {
     account: {
       email: string;
     };
-  }
+  };
 }
 
 export const changePasswordMutation = gql`

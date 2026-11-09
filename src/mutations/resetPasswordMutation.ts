@@ -4,7 +4,7 @@ export interface ResetPasswordInput {
   resetPasswordInput: {
     token: string;
     password: string;
-  }
+  };
 }
 
 export interface ResetPasswordResponse {

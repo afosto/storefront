@@ -4,7 +4,7 @@ export interface SignInInput {
   signInInput: {
     email: string;
     password: string;
-  }
+  };
 }
 
 export interface SignInResponse {

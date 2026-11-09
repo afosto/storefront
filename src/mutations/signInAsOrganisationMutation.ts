@@ -3,7 +3,7 @@ import { gql } from '@afosto/graphql-client';
 export interface SignInAsOrganisationInput {
   signInAsOrganisationInput: {
     organisationId: string;
-  }
+  };
 }
 
 export interface SignInAsOrganisationResponse {

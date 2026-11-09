@@ -4,7 +4,7 @@ export interface CreateStockUpdateSubscriptionInput {
   createStockUpdateSubscriptionInput: {
     email: string;
     sku: string;
-  }
+  };
 }
 
 export interface CreateStockUpdateSubscriptionResponseSubscriptionProductFilter {

@@ -16,7 +16,7 @@ export interface GetAccountRmasResponse {
   rmas: {
     nodes: AccountRma[];
     pageInfo: PageInfo;
-  }
+  };
 }
 
 export const getAccountRmasQuery = gql`

@@ -23,7 +23,7 @@ export interface CreateCartInput {
     sessionId?: string;
     successReturnUrl?: string;
     failureReturnUrl?: string;
-  }
+  };
 }
 
 export interface CreateCartResponse {
@@ -42,4 +42,3 @@ export const createCartMutation = gql`
     }
   }
 `;
-

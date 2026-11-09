@@ -16,12 +16,12 @@ export interface AddCouponToCartResponse {
 }
 
 export const addCouponToCartMutation = gql`
-    ${CoreCartFragment}
-    mutation AddCouponToCart($coupon_input: CouponInput!) {
-        addCouponToCart(input: $coupon_input) {
-            cart {
-                ...CoreCartFragment
-            }
-        }
+  ${CoreCartFragment}
+  mutation AddCouponToCart($coupon_input: CouponInput!) {
+    addCouponToCart(input: $coupon_input) {
+      cart {
+        ...CoreCartFragment
+      }
     }
+  }
 `;

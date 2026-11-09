@@ -223,7 +223,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     wishlistDefaultLabel: STOREFRONT_WISHLIST_DEFAULT_LABEL,
     wishlistDefaultExpiresInDays: STOREFRONT_WISHLIST_TOKEN_EXPIRES_IN_DAYS,
     wishlistTokenCookieOptions: {},
-    ...(options || {}),
+    ...options,
   };
 
   const defaultCookieOptions = {
@@ -1710,7 +1710,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
             }
           : null,
       };
-    } catch (error) {
+    } catch {
       return null;
     }
   };
@@ -2061,7 +2061,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     const response = await authenticatedRequest<GetAccountRmasResponse, GetAccountRmasParams>(
       getAccountRmasQuery,
       {
-        ...(query ?? {}),
+        ...query,
         filters: query?.filters ?? {},
       },
     );
@@ -2136,7 +2136,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       SearchAccountRmaItemsResponse,
       SearchAccountRmaItemsParams
     >(searchAccountRmaItemsQuery, {
-      ...(query ?? {}),
+      ...query,
       filters: query?.filters ?? {},
     });
     const searchRmaItemsResponse = response?.searchRmaItems || {};

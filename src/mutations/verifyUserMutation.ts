@@ -3,7 +3,7 @@ import { gql } from '@afosto/graphql-client';
 export interface VerifyUserInput {
   verifyUserInput: {
     token: string;
-  }
+  };
 }
 
 export interface VerifyUserResponse {
