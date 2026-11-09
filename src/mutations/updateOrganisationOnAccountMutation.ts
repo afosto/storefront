@@ -1,6 +1,12 @@
 import { gql } from '@afosto/graphql-client';
 import { CoreAccountFragment } from '../fragments/CoreAccountFragment';
-import type { AdministrationInput, AddressingInput, PhoneNumberInput, RegistrationInput, Account } from '../types';
+import type {
+  AdministrationInput,
+  AddressingInput,
+  PhoneNumberInput,
+  RegistrationInput,
+  Account,
+} from '../types';
 
 export interface UpdateOrganisationOnAccountInput {
   updateOrganisationOnAccountInput: {
@@ -11,7 +17,7 @@ export interface UpdateOrganisationOnAccountInput {
     phoneNumbers?: PhoneNumberInput[];
     registration?: RegistrationInput;
     cocNumber?: string;
-  }
+  };
 }
 
 export interface UpdateOrganisationOnAccountResponse {
@@ -19,7 +25,6 @@ export interface UpdateOrganisationOnAccountResponse {
     account: Account;
   };
 }
-
 
 export const updateOrganisationOnAccountMutation = gql`
   ${CoreAccountFragment}

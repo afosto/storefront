@@ -13,7 +13,7 @@ export interface CoreSharedContact {
     phoneNumbers: {
       primary: CorePhoneNumber;
     };
-  }
+  };
 }
 
 export const CoreSharedContactFragment = gql`

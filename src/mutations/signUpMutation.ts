@@ -10,7 +10,7 @@ export interface SignUpInput {
     familyName: string;
     addressing?: AddressingInput;
     phoneNumber?: PhoneNumberInput;
-  }
+  };
 }
 
 export interface SignUpResponse {

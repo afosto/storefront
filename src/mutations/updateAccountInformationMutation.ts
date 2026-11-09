@@ -11,7 +11,7 @@ export interface UpdateAccountInformationInput {
     billing?: AddressInput[];
     shipping?: AddressInput[];
     phoneNumbers?: PhoneNumberInput[];
-  }
+  };
 }
 
 export interface UpdateAccountInformationResponse {
@@ -22,7 +22,9 @@ export interface UpdateAccountInformationResponse {
 
 export const updateAccountInformationMutation = gql`
   ${CoreAccountFragment}
-  mutation UpdateAccountInformationMutation($update_account_information_input: UpdateAccountInput!) {
+  mutation UpdateAccountInformationMutation(
+    $update_account_information_input: UpdateAccountInput!
+  ) {
     updateAccount(input: $update_account_information_input) {
       account {
         ...CoreAccountFragment

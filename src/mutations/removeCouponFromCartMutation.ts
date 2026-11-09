@@ -6,7 +6,7 @@ export interface RemoveCouponFromCartInput {
   couponInput: {
     cartId: string;
     coupon: string;
-  }
+  };
 }
 
 export interface RemoveCouponFromCartResponse {
@@ -16,12 +16,12 @@ export interface RemoveCouponFromCartResponse {
 }
 
 export const removeCouponFromCartMutation = gql`
-    ${CoreCartFragment}
-    mutation RemoveCouponFromCart($coupon_input: CouponInput!) {
-        removeCouponFromCart(input: $coupon_input) {
-            cart {
-                ...CoreCartFragment
-            }
-        }
+  ${CoreCartFragment}
+  mutation RemoveCouponFromCart($coupon_input: CouponInput!) {
+    removeCouponFromCart(input: $coupon_input) {
+      cart {
+        ...CoreCartFragment
+      }
     }
+  }
 `;

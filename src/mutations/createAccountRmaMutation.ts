@@ -9,7 +9,7 @@ export interface CreateAccountRmaInput {
     organisationId?: string;
     dueAt?: number;
     status?: AccountRmaStatus;
-  }
+  };
 }
 
 export interface CreateAccountRmaResponse {

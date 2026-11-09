@@ -47,7 +47,19 @@ export interface CoreRmaItemProduct {
 
 export type CoreRmaItemStatus = 'AUTHORIZED' | 'PENDING' | 'REJECTED';
 
-export type CoreRmaItemReason = 'INCORRECT_PRODUCT' | 'UNSUITABLE' | 'DELIVERY_ISSUES' | 'DAMAGED' | 'DEFECTIVE' | 'SIZE_TOO_SMALL' | 'SIZE_TOO_LARGE' | 'IMAGE_DOES_NOT_MATCH' | 'ALLERGIC_REACTION' | 'UNCOMPETITIVE_PRICING' | 'ORDER_ERROR' | 'ORDERED_MULTIPLE_SIZES';
+export type CoreRmaItemReason =
+  | 'INCORRECT_PRODUCT'
+  | 'UNSUITABLE'
+  | 'DELIVERY_ISSUES'
+  | 'DAMAGED'
+  | 'DEFECTIVE'
+  | 'SIZE_TOO_SMALL'
+  | 'SIZE_TOO_LARGE'
+  | 'IMAGE_DOES_NOT_MATCH'
+  | 'ALLERGIC_REACTION'
+  | 'UNCOMPETITIVE_PRICING'
+  | 'ORDER_ERROR'
+  | 'ORDERED_MULTIPLE_SIZES';
 
 export interface CoreRmaItemOrder {
   id: string;

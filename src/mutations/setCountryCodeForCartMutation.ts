@@ -6,7 +6,7 @@ export interface SetCountryCodeForCartInput {
   setCountryCodeForCartInput: {
     cartId: string;
     countryCode: string;
-  }
+  };
 }
 
 export interface SetCountryCodeForCartResponse {

@@ -4,7 +4,7 @@ import type { Cart } from '../types';
 
 export interface AddItemsToCartInputItemMetaData {
   [key: string]: any;
-};
+}
 
 export type AddItemsToCartInputItemDeliveryType = 'SHIP' | 'COLLECT';
 
@@ -30,7 +30,6 @@ export interface AddItemsToCartInputItemChild {
   price?: number;
   metaData?: AddItemsToCartInputItemMetaData;
 }
-
 
 export interface AddItemsToCartInputItem {
   sku: string;

@@ -223,7 +223,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     wishlistDefaultLabel: STOREFRONT_WISHLIST_DEFAULT_LABEL,
     wishlistDefaultExpiresInDays: STOREFRONT_WISHLIST_TOKEN_EXPIRES_IN_DAYS,
     wishlistTokenCookieOptions: {},
-    ...(options || {}),
+    ...options,
   };
 
   const defaultCookieOptions = {
@@ -660,9 +660,12 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Initialize the user token.
    */
   const initializeUserToken = () => {
-    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const {
+      storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+      storeUserToken: shouldStoreUserToken,
+    } = config || {};
 
-    if (!storeUserToken) {
+    if (!shouldStoreUserToken) {
       removeUserToken();
       return;
     }
@@ -694,11 +697,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Remove the user token.
    */
   const removeUserToken = () => {
-    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const {
+      storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+      storeUserToken: shouldStoreUserToken,
+    } = config || {};
 
     storedUserToken = null;
 
-    if (storeUserToken) {
+    if (shouldStoreUserToken) {
       Cookies.remove(
         `${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`,
         userTokenCookieOptions,
@@ -710,11 +716,14 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
    * Store the user token.
    */
   const storeUserToken = (token: string) => {
-    const { storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX, storeUserToken } = config || {};
+    const {
+      storageKeyPrefix = STOREFRONT_STORAGE_KEY_PREFIX,
+      storeUserToken: shouldStoreUserToken,
+    } = config || {};
 
     storedUserToken = token;
 
-    if (storeUserToken) {
+    if (shouldStoreUserToken) {
       Cookies.set(
         `${storageKeyPrefix}${STOREFRONT_USER_TOKEN_COOKIE_NAME}`,
         token,
@@ -766,11 +775,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   >(
     gqlQuery: string,
     variables?: TVariables,
-    options: object = {},
+    requestOptions: object = {},
   ): Promise<TResponse> =>
     gqlClient.request(gqlQuery, variables ?? ({} as TVariables), {
       authorization: `Bearer ${storedUserToken || ''}`,
-      ...options,
+      ...requestOptions,
     });
 
   /**
@@ -779,11 +788,11 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
   const request = async <TResponse, TVariables extends Record<string, any> = Record<string, any>>(
     gqlQuery: string,
     variables?: TVariables,
-    options: object = {},
+    requestOptions: object = {},
   ): Promise<TResponse> =>
     gqlClient.request(gqlQuery, variables ?? ({} as TVariables), {
       authorization: `Bearer ${config.storefrontToken || ''}`,
-      ...options,
+      ...requestOptions,
     });
 
   /**
@@ -1710,7 +1719,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
             }
           : null,
       };
-    } catch (error) {
+    } catch {
       return null;
     }
   };
@@ -1884,7 +1893,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     }
 
     const organisation = accountOrganisations.find(
-      organisation => organisation.id === userOrganisationId,
+      sharedOrganisation => sharedOrganisation.id === userOrganisationId,
     );
 
     return { users: organisation?.sharedContacts || [] };
@@ -2061,7 +2070,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
     const response = await authenticatedRequest<GetAccountRmasResponse, GetAccountRmasParams>(
       getAccountRmasQuery,
       {
-        ...(query ?? {}),
+        ...query,
         filters: query?.filters ?? {},
       },
     );
@@ -2136,7 +2145,7 @@ export const createStorefrontClient = (options: StorefrontClientOptions) => {
       SearchAccountRmaItemsResponse,
       SearchAccountRmaItemsParams
     >(searchAccountRmaItemsQuery, {
-      ...(query ?? {}),
+      ...query,
       filters: query?.filters ?? {},
     });
     const searchRmaItemsResponse = response?.searchRmaItems || {};

@@ -1,5 +1,8 @@
 import { gql } from '@afosto/graphql-client';
-import { CoreSharedContactFragment, type CoreSharedContact } from '../fragments/CoreSharedContactFragment';
+import {
+  CoreSharedContactFragment,
+  type CoreSharedContact,
+} from '../fragments/CoreSharedContactFragment';
 import type { OrganisationType } from '../types';
 
 export interface UpdateContactRoleInOrganisationInput {
@@ -7,7 +10,7 @@ export interface UpdateContactRoleInOrganisationInput {
     organisationId: string;
     contactId: string;
     role: string;
-  }
+  };
 }
 
 export interface UpdateContactRoleInOrganisationResponseOrganisation {

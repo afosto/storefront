@@ -8,7 +8,7 @@ export interface UpdateAccountRmaInput {
     status?: AccountRmaStatus;
     addressId?: string;
     dueAt?: number;
-  }
+  };
 }
 
 export interface UpdateAccountRmaResponse {

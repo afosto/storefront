@@ -14,7 +14,7 @@ export interface CreateAccountRmaItemsInput {
   input: {
     rmaId: string;
     items: CreateAccountRmaItemInput[];
-  }
+  };
 }
 
 export interface CreateAccountRmaItemsResponse {

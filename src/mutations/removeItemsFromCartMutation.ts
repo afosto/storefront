@@ -6,7 +6,7 @@ export interface RemoveItemsFromCartInput {
   removeItemsFromCartInput: {
     cartId: string;
     ids: string[];
-  }
+  };
 }
 
 export interface RemoveItemsFromCartResponse {

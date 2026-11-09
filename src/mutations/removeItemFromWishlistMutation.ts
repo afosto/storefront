@@ -2,7 +2,9 @@ import { gql } from '@afosto/graphql-client';
 import { CoreWishlistFragment } from '../fragments/CoreWishlistFragment';
 import type { Wishlist } from '../types';
 
-export type RemoveWishlistItemIdentifier = { id: string; sku?: never } | { sku: string; id?: never };
+export type RemoveWishlistItemIdentifier =
+  | { id: string; sku?: never }
+  | { sku: string; id?: never };
 
 export interface RemoveItemFromWishlistInput {
   wishlistInput: RemoveWishlistItemIdentifier & {
