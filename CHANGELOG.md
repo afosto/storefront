@@ -1,5 +1,13 @@
 # @afosto/storefront
 
+## 5.0.1
+
+### Patch Changes
+
+- [#100](https://github.com/afosto/storefront/pull/100) [`c874e0b`](https://github.com/afosto/storefront/commit/c874e0b469eee6c3eec4bff17194c2a2017efb59) Thanks [@afosto-portal](https://github.com/apps/afosto-portal)! - Restore the types of the cookie options (`cartTokenCookieOptions` and the others). Since 5.0.0 they resolved to `any`, or failed to compile with `skipLibCheck` off, because `@types/js-cookie` was no longer installed with the package.
+
+- [#100](https://github.com/afosto/storefront/pull/100) [`b3efbcc`](https://github.com/afosto/storefront/commit/b3efbcc028ddaf524bea2cd820889a142cc8e072) Thanks [@afosto-portal](https://github.com/apps/afosto-portal)! - Internal: the client is split per domain and the cart, wishlist and product viewing history tokens share one token store. The public API and behaviour are unchanged.
+
 ## 5.0.0
 
 ### Major Changes
