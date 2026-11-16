@@ -1,5 +1,13 @@
 # @afosto/storefront
 
+## 5.1.0
+
+### Minor Changes
+
+- [#102](https://github.com/afosto/storefront/pull/102) [`33d4cde`](https://github.com/afosto/storefront/commit/33d4cde413e5754c65de41a880f59f5fb4e0319f) Thanks [@afosto-portal](https://github.com/apps/afosto-portal)! - Add `requestBusinessAccount`, which registers a user together with an account request for the
+  organisation it orders for. The user is signed in right away, but the organisation can only be used
+  once an administrator approves the request in Afosto.
+
 ## 5.0.1
 
 ### Patch Changes
