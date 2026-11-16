@@ -2,6 +2,9 @@ import {
   type ChangePasswordInput,
   changePasswordMutation,
   type ChangePasswordResponse,
+  type RequestBusinessAccountInput,
+  requestBusinessAccountMutation,
+  type RequestBusinessAccountResponse,
   type RequestPasswordResetInput,
   requestPasswordResetMutation,
   type RequestPasswordResetResponse,
@@ -52,6 +55,50 @@ export const createAuthClient = ({
     );
 
     return !!response?.setPasswordForAccount?.account?.email;
+  };
+
+  /**
+   * Register a user together with an account request for the organisation it orders for.
+   * The user is signed in afterwards, but the organisation can only be used once an
+   * administrator approves the request.
+   */
+  const requestBusinessAccount = async (
+    input: RequestBusinessAccountInput['requestBusinessAccountInput'],
+  ) => {
+    const { givenName, additionalName, familyName, email, password, phoneNumber, organisation } =
+      input || {};
+    const { name, cocNumber, registration, administrationEmail, addressing, phoneNumbers } =
+      organisation || {};
+    const response = await request<RequestBusinessAccountResponse, RequestBusinessAccountInput>(
+      requestBusinessAccountMutation,
+      {
+        requestBusinessAccountInput: {
+          givenName,
+          additionalName,
+          familyName,
+          email,
+          password,
+          phoneNumber,
+          organisation: {
+            name,
+            cocNumber,
+            registration,
+            administrationEmail,
+            addressing,
+            phoneNumbers,
+          },
+        },
+      },
+    );
+    const { token } = response?.requestBusinessAccount || {};
+
+    if (!token || !validateUserToken(token)) {
+      return Promise.reject('Invalid user token');
+    }
+
+    storeUserToken(token);
+
+    return getUser();
   };
 
   /**
@@ -251,6 +298,7 @@ export const createAuthClient = ({
 
   return {
     changePassword,
+    requestBusinessAccount,
     requestPasswordReset,
     requestUserVerification,
     resetPassword,

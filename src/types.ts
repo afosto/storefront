@@ -335,6 +335,15 @@ export interface OrganisationInput {
   number?: string;
 }
 
+export interface BusinessAccountOrganisationInput {
+  name: string;
+  cocNumber?: string;
+  registration?: RegistrationInput;
+  administrationEmail?: string;
+  addressing?: AddressingInput;
+  phoneNumbers?: PhoneNumberInput[];
+}
+
 export interface CustomerInput {
   contact?: ContactInput;
   contactId?: string;

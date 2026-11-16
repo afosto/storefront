@@ -231,6 +231,46 @@ const user = await client.signUp({
 });
 ```
 
+### Request a business account
+
+Register a user together with an account request for the organisation it orders for. The user is
+signed in right away, but the organisation can only be used once an administrator approves the
+request in Afosto: until then `signInAsOrganisation` is refused and confirming a cart for the
+organisation fails with the validation error `ORGANISATION_UNAPPROVED`.
+
+Of the organisation only `name` is required. `registration` is the VAT registration, `cocNumber` the
+chamber of commerce number, and `administrationEmail` defaults to the email of the user.
+
+```js
+const user = await client.requestBusinessAccount({
+  givenName: 'John',
+  additionalName: '',
+  familyName: 'Doe',
+  email: 'johndoe@example.com',
+  password: '******',
+  phoneNumber: { countryCode: 'NL', number: '0612345678' },
+  organisation: {
+    name: 'Example B.V.',
+    cocNumber: '12345678',
+    registration: { countryCode: 'NL', number: 'NL123456789B01' },
+    administrationEmail: 'administration@example.com',
+    phoneNumbers: [{ countryCode: 'NL', number: '0612345678' }],
+    addressing: {
+      billing: [
+        {
+          countryCode: 'NL',
+          locality: 'Groningen',
+          postalCode: '9726 AC',
+          addressLine1: 'Stationsweg 1',
+          thoroughfare: 'Stationsweg',
+          premiseNumber: 1,
+        },
+      ],
+    },
+  },
+});
+```
+
 ### Get current user
 
 Get the current user information or null when the user isn't signed in.
