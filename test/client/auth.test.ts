@@ -158,6 +158,52 @@ describe('auth / user token', () => {
       });
     });
 
+    it('requestBusinessAccount sends the organisation along and stores the token', async () => {
+      const token = validUserToken();
+      let captured: CapturedRequest | undefined;
+      server.use(
+        mockOperation(
+          'RequestBusinessAccountMutation',
+          { requestBusinessAccount: { token } },
+          info => {
+            captured = info;
+          },
+        ),
+      );
+
+      const client = createTestClient();
+      const user = await client.requestBusinessAccount({
+        givenName: 'Ada',
+        familyName: 'Lovelace',
+        email: 'ada@example.com',
+        password: 'secret',
+        organisation: {
+          name: 'Analytical Engines',
+          cocNumber: '12345678',
+          registration: { countryCode: 'NL', number: 'NL123456789B01' },
+          administrationEmail: 'administration@example.com',
+          phoneNumbers: [{ countryCode: 'NL', number: '0612345678' }],
+        },
+      });
+
+      expect(user?.email).toBe('ada@example.com');
+      expect(client.getUserToken()).toBe(token);
+      expect(captured?.authorization).toBe(`Bearer ${STOREFRONT_TOKEN}`);
+      expect(captured?.variables.request_business_account_input).toEqual({
+        given_name: 'Ada',
+        family_name: 'Lovelace',
+        email: 'ada@example.com',
+        password: 'secret',
+        organisation: {
+          name: 'Analytical Engines',
+          coc_number: '12345678',
+          registration: { country_code: 'NL', number: 'NL123456789B01' },
+          administration_email: 'administration@example.com',
+          phone_numbers: [{ country_code: 'NL', number: '0612345678' }],
+        },
+      });
+    });
+
     it('verifyUser stores the returned token and returns the user', async () => {
       const token = validUserToken();
       server.use(mockOperation('VerifyUserMutation', { verifyCustomer: { token } }));
