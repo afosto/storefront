@@ -1,5 +1,6 @@
 import type { createGraphQLClient } from '@afosto/graphql-client';
 import type { StorefrontClientConfig } from '../types';
+import { toSchemaVariables } from '../utils';
 import type { TokenStore } from './tokenStore';
 import type { UserTokenStore } from './userToken';
 
@@ -14,7 +15,8 @@ export type GraphQLRequest = <
 
 /**
  * Creates the two ways to send a request: with the storefront token (public storefront data)
- * and with the user token (account data).
+ * and with the user token (account data). Both run the variables through `toSchemaVariables`
+ * first, which repairs the keys the snake_case conversion spells differently from the schema.
  */
 export const createRequests = (
   gqlClient: ReturnType<typeof createGraphQLClient>,
@@ -25,7 +27,7 @@ export const createRequests = (
    * Send a graphQL request.
    */
   const request: GraphQLRequest = async (gqlQuery, variables, requestOptions = {}) =>
-    gqlClient.request(gqlQuery, variables ?? {}, {
+    gqlClient.request(gqlQuery, toSchemaVariables(variables ?? {}), {
       authorization: `Bearer ${config.storefrontToken || ''}`,
       ...requestOptions,
     });
@@ -34,7 +36,7 @@ export const createRequests = (
    * Send an authenticated graphQL request with the user token.
    */
   const authenticatedRequest: GraphQLRequest = async (gqlQuery, variables, requestOptions = {}) =>
-    gqlClient.request(gqlQuery, variables ?? {}, {
+    gqlClient.request(gqlQuery, toSchemaVariables(variables ?? {}), {
       authorization: `Bearer ${getUserToken() || ''}`,
       ...requestOptions,
     });

@@ -228,8 +228,25 @@ const user = await client.signUp({
   familyName: 'Doe',
   email: 'johndoe@example.com',
   password: '******',
+  phoneNumber: { countryCode: 'NL', number: '0612345678' },
+  addressing: {
+    billing: [
+      {
+        countryCode: 'NL',
+        locality: 'Groningen',
+        postalCode: '9726 AC',
+        addressLine1: 'Stationsweg 1',
+        thoroughfare: 'Stationsweg',
+        premiseNumber: 1,
+      },
+    ],
+  },
 });
 ```
+
+An address is written in camelCase, the same way it comes back from the API: `addressLine1`,
+`addressLine2` and `addressLine3` are sent to Afosto as `address_line_1`, `address_line_2` and
+`address_line_3`.
 
 ### Request a business account
 

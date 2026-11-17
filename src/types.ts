@@ -278,6 +278,7 @@ export interface AddressInput {
   sortingCode?: string;
   addressLine1: string;
   addressLine2?: string;
+  addressLine3?: string;
   thoroughfare: string;
   premiseNumber: number;
   premiseNumberSuffix?: string;

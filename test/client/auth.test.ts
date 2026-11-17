@@ -158,6 +158,51 @@ describe('auth / user token', () => {
       });
     });
 
+    it('signUp sends the address lines under the names the schema uses', async () => {
+      const token = validUserToken();
+      let variables: Record<string, unknown> | undefined;
+      server.use(
+        mockOperation('SignUpMutation', { registerCustomer: { token } }, info => {
+          variables = info.variables;
+        }),
+      );
+
+      const client = createTestClient();
+      await client.signUp({
+        givenName: 'Ada',
+        familyName: 'Lovelace',
+        email: 'ada@example.com',
+        password: 'secret',
+        addressing: {
+          billing: [
+            {
+              countryCode: 'NL',
+              locality: 'Groningen',
+              postalCode: '9726 AC',
+              addressLine1: 'Stationsweg 1',
+              addressLine2: 'Second floor',
+              thoroughfare: 'Stationsweg',
+              premiseNumber: 1,
+            },
+          ],
+        },
+      });
+
+      expect((variables?.sign_up_input as Record<string, any>)?.addressing).toEqual({
+        billing: [
+          {
+            country_code: 'NL',
+            locality: 'Groningen',
+            postal_code: '9726 AC',
+            address_line_1: 'Stationsweg 1',
+            address_line_2: 'Second floor',
+            thoroughfare: 'Stationsweg',
+            premise_number: 1,
+          },
+        ],
+      });
+    });
+
     it('requestBusinessAccount sends the organisation along and stores the token', async () => {
       const token = validUserToken();
       let captured: CapturedRequest | undefined;
@@ -183,6 +228,18 @@ describe('auth / user token', () => {
           registration: { countryCode: 'NL', number: 'NL123456789B01' },
           administrationEmail: 'administration@example.com',
           phoneNumbers: [{ countryCode: 'NL', number: '0612345678' }],
+          addressing: {
+            billing: [
+              {
+                countryCode: 'NL',
+                locality: 'Groningen',
+                postalCode: '9726 AC',
+                addressLine1: 'Stationsweg 1',
+                thoroughfare: 'Stationsweg',
+                premiseNumber: 1,
+              },
+            ],
+          },
         },
       });
 
@@ -200,6 +257,18 @@ describe('auth / user token', () => {
           registration: { country_code: 'NL', number: 'NL123456789B01' },
           administration_email: 'administration@example.com',
           phone_numbers: [{ country_code: 'NL', number: '0612345678' }],
+          addressing: {
+            billing: [
+              {
+                country_code: 'NL',
+                locality: 'Groningen',
+                postal_code: '9726 AC',
+                address_line_1: 'Stationsweg 1',
+                thoroughfare: 'Stationsweg',
+                premise_number: 1,
+              },
+            ],
+          },
         },
       });
     });
