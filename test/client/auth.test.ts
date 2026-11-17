@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import Cookies from 'js-cookie';
 import { server } from '../msw/server';
-import { type CapturedRequest, mockOperation } from '../msw/graphql';
+import { type CapturedRequest, mockOperation, mockOperationError } from '../msw/graphql';
 import {
   expiredUserToken,
   makeUserJwt,
@@ -237,6 +237,19 @@ describe('auth / user token', () => {
       expect(captured?.authorization).toBe(`Bearer ${userToken}`);
       expect(client.getUserToken()).toBe(orgToken);
       expect(Cookies.get(USER_TOKEN_COOKIE_KEY)).toBe(orgToken);
+    });
+
+    it('signInAsOrganisation passes on the refusal of an account request that is still being reviewed', async () => {
+      const { client, userToken } = createSignedInClient();
+      server.use(
+        mockOperationError('SignInAsOrganisation', [{ message: 'organisation is unapproved' }]),
+      );
+
+      const error = await client.signInAsOrganisation({ organisationId: 'OR_2' }).catch(e => e);
+
+      expect(error?.response?.errors?.[0]?.message).toBe('organisation is unapproved');
+      expect(client.getUserToken()).toBe(userToken);
+      expect(Cookies.get(USER_TOKEN_COOKIE_KEY)).toBe(userToken);
     });
 
     it('signOutOfOrganisation swaps back to the account token', async () => {
