@@ -203,6 +203,23 @@ const user = await client.signInAsOrganisation({
 });
 ```
 
+The call is refused while the organisation is an account request that nobody approved yet. Afosto
+answers with the message `organisation is unapproved`, which is how a shop tells a request that is
+still being reviewed apart from an organisation the user may not use: an organisation that does not
+exist answers `not found`, and a user who is not a member of it answers
+`contact cannot be authorized for organisation`.
+
+```js
+try {
+  await client.signInAsOrganisation({ organisationId: 'organisation-id' });
+} catch (error) {
+  const isPending = error?.response?.errors?.some(({ message }) =>
+    message?.includes('organisation is unapproved'),
+  );
+  // isPending: tell the user the account request is still being reviewed.
+}
+```
+
 ### Sign out
 
 ```js
@@ -252,8 +269,13 @@ An address is written in camelCase, the same way it comes back from the API: `ad
 
 Register a user together with an account request for the organisation it orders for. The user is
 signed in right away, but the organisation can only be used once an administrator approves the
-request in Afosto: until then `signInAsOrganisation` is refused and confirming a cart for the
-organisation fails with the validation error `ORGANISATION_UNAPPROVED`.
+request in Afosto: until then `signInAsOrganisation` is refused with the message
+`organisation is unapproved` (see [Sign in as organisation](#sign-in-as-organisation)) and confirming
+a cart for the organisation fails with the validation error `ORGANISATION_UNAPPROVED`.
+
+So do not call `signInAsOrganisation` right after the request: it fails until the request is
+approved. Show the user that the request has been filed and is being reviewed, and let them sign in
+to the organisation once they receive the approval email from Afosto.
 
 Of the organisation only `name` is required. `registration` is the VAT registration, `cocNumber` the
 chamber of commerce number, and `administrationEmail` defaults to the email of the user.
